@@ -1,3 +1,4 @@
+
 "use client";
 
 import type { FC } from 'react';
@@ -57,7 +58,19 @@ export const TenderExperienceStep: FC<TenderExperienceStepProps> = ({ form }) =>
             <FormItem>
               <FormLabel>Success Rate (Optional, %)</FormLabel>
               <FormControl>
-                <Input type="number" min="0" max="100" placeholder="e.g., 85" {...field} />
+                <Input
+                  type="number"
+                  min="0"
+                  max="100"
+                  placeholder="e.g., 85"
+                  {...field} // Spread field props (name, onBlur, ref)
+                  value={field.value ?? ''} // Ensure value is never undefined
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    // For optional numbers, pass undefined if empty, otherwise parseFloat
+                    field.onChange(val === '' ? undefined : parseFloat(val));
+                  }}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
