@@ -58,7 +58,7 @@ export const CompanyDetailsStep: FC<CompanyDetailsStepProps> = ({ form }) => {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Company Type</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select onValueChange={field.onChange} value={field.value || ''}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select company type" />
@@ -81,7 +81,7 @@ export const CompanyDetailsStep: FC<CompanyDetailsStepProps> = ({ form }) => {
             <FormItem>
               <FormLabel>Year of Establishment</FormLabel>
               <FormControl>
-                <Input type="number" placeholder="e.g., 2005" {...field} onChange={e => field.onChange(parseInt(e.target.value,10) || '')} />
+                <Input type="number" placeholder="e.g., 2005" {...field} onChange={e => field.onChange(parseInt(e.target.value,10) || undefined)} value={field.value ?? ''} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -93,7 +93,13 @@ export const CompanyDetailsStep: FC<CompanyDetailsStepProps> = ({ form }) => {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Country</FormLabel>
-              <Select onValueChange={(value) => {field.onChange(value); form.setValue('companyDetails.state', '');}} defaultValue={field.value}>
+              <Select 
+                onValueChange={(value) => {
+                  field.onChange(value); 
+                  form.setValue('companyDetails.state', '', { shouldValidate: true, shouldDirty: true, shouldTouch: true });
+                }} 
+                value={field.value || ''}
+              >
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select country" />
@@ -115,7 +121,7 @@ export const CompanyDetailsStep: FC<CompanyDetailsStepProps> = ({ form }) => {
           render={({ field }) => (
             <FormItem>
               <FormLabel>State</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value} defaultValue={field.value} disabled={!selectedCountry}>
+              <Select onValueChange={field.onChange} value={field.value || ''} disabled={!selectedCountry}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select state" />

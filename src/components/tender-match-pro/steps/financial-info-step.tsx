@@ -10,15 +10,15 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
-import { Landmark } from 'lucide-react'; // Changed icon
+import { Landmark } from 'lucide-react';
 
-interface FinancialLegalInfoStepProps { // Renamed props interface
+interface FinancialLegalInfoStepProps {
   form: UseFormReturn<RegistrationFormData>;
 }
 
 const CURRENCY_OPTIONS = ["USD", "INR"];
 
-export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }) => { // Renamed component
+export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }) => {
   const watchIsBlacklisted = form.watch('financialLegalInfo.isBlacklistedOrLitigation');
 
   const renderTurnoverFields = (fyLabel: string, amountFieldName: keyof RegistrationFormData['financialLegalInfo'], currencyFieldName: keyof RegistrationFormData['financialLegalInfo'] ) => (
@@ -44,7 +44,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
           render={({ field }) => (
             <FormItem>
               <FormLabel>Currency</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select onValueChange={field.onChange} value={field.value || ''}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select currency" />
@@ -154,7 +154,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Net Worth Currency (Optional)</FormLabel>
-                 <Select onValueChange={field.onChange} defaultValue={field.value}>
+                 <Select onValueChange={field.onChange} value={field.value || ''}>
                     <FormControl>
                     <SelectTrigger>
                         <SelectValue placeholder="Select currency" />

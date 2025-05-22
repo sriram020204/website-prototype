@@ -92,7 +92,13 @@ export const TenderExperienceStep: FC<TenderExperienceStepProps> = ({ form }) =>
             <FormItem>
               <FormLabel>Highest Order Value Fulfilled (Optional, in your primary currency)</FormLabel>
               <FormControl>
-                 <Input type="number" placeholder="e.g., 1000000" {...field} onChange={e => field.onChange(parseFloat(e.target.value) || undefined)} value={field.value ?? ''} />
+                 <Input 
+                    type="number" 
+                    placeholder="e.g., 1000000" 
+                    {...field} 
+                    onChange={e => field.onChange(e.target.value === '' ? undefined : parseFloat(e.target.value))} 
+                    value={field.value ?? ''} 
+                  />
               </FormControl>
               <FormMessage />
             </FormItem>
