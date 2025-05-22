@@ -1,57 +1,78 @@
+
 "use client";
 
 import { useEffect, useCallback } from 'react';
-import type { UseFormReturn, FieldValues, Path } from 'react-hook-form';
+import type { UseFormReturn, FieldValues, Path, PathValue } from 'react-hook-form';
 
 export function useFormPersistence<T extends FieldValues>(
   form: UseFormReturn<T>,
   storageKey: string
 ) {
-  const { watch, reset, formState: { isSubmitSuccessful } } = form;
+  const { watch, reset, setValue, getValues, formState: { isSubmitSuccessful, defaultValues } } = form;
 
   const loadFromStorage = useCallback(() => {
-    const storedData = localStorage.getItem(storageKey);
-    if (storedData) {
+    const storedDataString = localStorage.getItem(storageKey);
+    if (storedDataString) {
       try {
-        const parsedData = JSON.parse(storedData);
-        // Ensure all keys defined in the schema are present in parsedData,
-        // otherwise, react-hook-form might not update controlled components correctly.
-        // This is a shallow merge, assuming one level of nesting for top-level form sections.
-        const defaultValues = form.formState.defaultValues as T;
-        const mergedData = { ...defaultValues, ...parsedData };
-        
-        // Specifically reset each top-level key to ensure deep updates
-        // This helps if a section was empty and now has data or vice-versa.
-        Object.keys(defaultValues || {}).forEach(key => {
+        const parsedData = JSON.parse(storedDataString) as Partial<T>;
+        const currentDefaultValues = defaultValues || ({} as T);
+
+        // Iterate over the keys of the defaultValues to ensure structure
+        // This helps in merging stored data with potentially new/changed default structure
+        const mergedData = { ...currentDefaultValues };
+
+        for (const key in currentDefaultValues) {
           const sectionKey = key as Path<T>;
-          if (parsedData[key]) {
-            form.setValue(sectionKey, parsedData[key]);
+          if (parsedData.hasOwnProperty(key)) {
+            // If the stored data for a section is an object, merge it with defaults for that section
+            if (typeof parsedData[sectionKey] === 'object' && parsedData[sectionKey] !== null && typeof currentDefaultValues[sectionKey] === 'object' && currentDefaultValues[sectionKey] !== null) {
+               mergedData[sectionKey] = { ...currentDefaultValues[sectionKey], ...parsedData[sectionKey] } as PathValue<T, Path<T>>;
+            } else {
+              // Otherwise, just take the stored value
+              mergedData[sectionKey] = parsedData[sectionKey] as PathValue<T, Path<T>>;
+            }
           }
-        });
-        // Fallback reset if individual setValue calls aren't enough
+        }
+        
+        // Reset the form with the merged data.
+        // This ensures that even if some fields were not in localStorage,
+        // they get their default values.
         reset(mergedData, { keepDefaultValues: false });
 
       } catch (error) {
         console.error("Failed to parse stored form data:", error);
-        localStorage.removeItem(storageKey);
+        localStorage.removeItem(storageKey); // Clear corrupted data
+      }
+    } else {
+      // If no stored data, ensure form is reset to its initial default values
+      // This is important if defaultValues are loaded asynchronously or change
+       if (defaultValues) {
+        reset(defaultValues);
       }
     }
-  }, [reset, storageKey, form]);
+  }, [reset, storageKey, defaultValues]);
 
   useEffect(() => {
     loadFromStorage();
-  }, [loadFromStorage]);
+  }, [loadFromStorage]); // Rerun if defaultValues itself changes, e.g. loaded async
 
   useEffect(() => {
     const subscription = watch((value) => {
-      localStorage.setItem(storageKey, JSON.stringify(value));
+      // Only save if the form isn't about to be/being submitted or just succeeded
+      if (!form.formState.isSubmitting && !form.formState.isSubmitSuccessful) {
+        localStorage.setItem(storageKey, JSON.stringify(value));
+      }
     });
     return () => subscription.unsubscribe();
-  }, [watch, storageKey]);
+  }, [watch, storageKey, form.formState.isSubmitting, form.formState.isSubmitSuccessful]);
 
   useEffect(() => {
     if (isSubmitSuccessful) {
       localStorage.removeItem(storageKey);
+      // Optionally, reset to initial default values after successful submission and clearing storage
+      if (defaultValues) {
+        reset(defaultValues);
+      }
     }
-  }, [isSubmitSuccessful, storageKey]);
+  }, [isSubmitSuccessful, storageKey, reset, defaultValues]);
 }

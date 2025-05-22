@@ -1,3 +1,4 @@
+
 "use client";
 
 import type { FC } from 'react';
@@ -11,9 +12,10 @@ interface FormNavigationProps {
   onPrevious: () => void;
   isNextDisabled?: boolean;
   isSubmitting?: boolean;
-  isAIValidating?: boolean;
-  onValidateAI?: () => void;
-  aiValidated?: boolean;
+  // AI related props removed
+  // isAIValidating?: boolean;
+  // onValidateAI?: () => void;
+  // aiValidated?: boolean;
 }
 
 export const FormNavigation: FC<FormNavigationProps> = ({
@@ -23,12 +25,13 @@ export const FormNavigation: FC<FormNavigationProps> = ({
   onPrevious,
   isNextDisabled = false,
   isSubmitting = false,
-  isAIValidating = false,
-  onValidateAI,
-  aiValidated = false,
+  // AI related props removed
+  // isAIValidating = false,
+  // onValidateAI,
+  // aiValidated = false,
 }) => {
   const isFirstStep = currentStep === 0;
-  const isLastDataEntryStep = currentStep === totalSteps - 2; // Before review step
+  // const isLastDataEntryStep = currentStep === totalSteps - 2; // Before review step - this logic might need adjustment if AI button is removed
   const isReviewStep = currentStep === totalSteps - 1;
 
   return (
@@ -36,7 +39,7 @@ export const FormNavigation: FC<FormNavigationProps> = ({
       <Button
         variant="outline"
         onClick={onPrevious}
-        disabled={isFirstStep || isSubmitting || isAIValidating}
+        disabled={isFirstStep || isSubmitting /*|| isAIValidating - removed */}
         className="btn"
       >
         <ArrowLeft className="mr-2 h-4 w-4" />
@@ -45,7 +48,8 @@ export const FormNavigation: FC<FormNavigationProps> = ({
 
       {isReviewStep ? (
         <>
-          {onValidateAI && !aiValidated && (
+          {/* AI Validate Button Removed */}
+          {/* {onValidateAI && !aiValidated && (
             <Button
               onClick={onValidateAI}
               disabled={isAIValidating || isSubmitting}
@@ -59,11 +63,11 @@ export const FormNavigation: FC<FormNavigationProps> = ({
               )}
               Validate with AI
             </Button>
-          )}
+          )} */}
           <Button
-            type="submit" // This button should trigger the main form submission
-            onClick={onNext} // Assuming onNext for review step is final submit
-            disabled={isSubmitting || isAIValidating || !aiValidated}
+            type="submit" 
+            onClick={onNext} 
+            disabled={isSubmitting /* || isAIValidating || !aiValidated - removed, adjust if submit depends on something else now */}
             className="btn"
           >
             {isSubmitting ? (
@@ -75,8 +79,8 @@ export const FormNavigation: FC<FormNavigationProps> = ({
           </Button>
         </>
       ) : (
-        <Button onClick={onNext} disabled={isNextDisabled || isSubmitting || isAIValidating} className="btn">
-          {isLastDataEntryStep ? 'Review Profile' : 'Next'}
+        <Button onClick={onNext} disabled={isNextDisabled || isSubmitting /*|| isAIValidating - removed */} className="btn">
+          {currentStep === totalSteps - 2 ? 'Review Profile' : 'Next'} {/* Adjusted condition as AI button removed */}
           <ArrowRight className="ml-2 h-4 w-4" />
         </Button>
       )}
