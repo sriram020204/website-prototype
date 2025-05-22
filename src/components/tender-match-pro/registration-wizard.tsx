@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useMemo }  from 'react'; // Added useMemo
+import { useState, useMemo } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { 
@@ -37,14 +37,13 @@ const STEPS = [
   { id: 'reviewSubmit', title: 'Review & Submit', component: ReviewSubmitStep, schema: registrationSchema, fields: [] as const }, 
 ];
 
-const STORAGE_KEY = 'tenderMatchProRegistrationForm_v2';
+const STORAGE_KEY = 'tenderMatchProRegistrationForm_v2'; // Changed key due to schema changes
 
 export function RegistrationWizard() {
   const [currentStep, setCurrentStep] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
-  // Memoize defaultValues to prevent re-creation on every render
   const initialDefaultValues = useMemo<RegistrationFormData>(() => ({
     companyDetails: { 
       companyName: '', 
@@ -70,7 +69,7 @@ export function RegistrationWizard() {
       pan: '',
       gstin: '',
       msmeUdyamNsicNumber: '',
-      msmeUdyamNsicCertificate: '',
+      msmeUdyamNsicCertificate: '', // File name
       annualTurnoverFY1Amount: '',
       annualTurnoverFY1Currency: '',
       annualTurnoverFY2Amount: '',
@@ -85,8 +84,8 @@ export function RegistrationWizard() {
     tenderExperience: { 
       suppliedToGovtPsus: false,
       pastClients: '', 
-      purchaseOrders: '', 
-      performanceReports: '',
+      purchaseOrders: '', // File names
+      performanceReports: '', // File names
       highestOrderValueFulfilled: undefined,
       tenderTypesHandled: ''
     },
@@ -99,14 +98,14 @@ export function RegistrationWizard() {
       preferredTenderLanguages: ''
     },
     declarationsUploads: {
-      panUpload: '',
-      gstUpload: '',
-      msmeCertUpload: '',
-      isoCertUpload: '',
-      bisCertUpload: '',
+      panUpload: '', // File name
+      gstUpload: '', // File name
+      msmeCertUpload: '', // File name
+      isoCertUpload: '', // File name
+      bisCertUpload: '', // File name
       infoConfirmed: false,
       blacklistingDeclaration: false,
-      blacklistingDeclarationUpload: ''
+      blacklistingDeclarationUpload: '' // File name
     },
   }), []);
 
@@ -114,10 +113,10 @@ export function RegistrationWizard() {
   const methods = useForm<RegistrationFormData>({
     resolver: zodResolver(registrationSchema),
     mode: 'onChange', 
-    defaultValues: initialDefaultValues, // Use memoized defaultValues
+    defaultValues: initialDefaultValues,
   });
 
-  useFormPersistence(methods, STORAGE_KEY);
+  useFormPersistence(methods, STORAGE_KEY, initialDefaultValues); // Pass memoized initialDefaultValues
 
   const handleNext = async () => {
     if (currentStep < STEPS.length - 1) { 
@@ -148,16 +147,16 @@ export function RegistrationWizard() {
   const onSubmit = async (data: RegistrationFormData) => {
     setIsSubmitting(true);
     console.log("Form Submitted:", data);
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1500)); 
     setIsSubmitting(false);
     toast({
       title: "Profile Submitted!",
       description: "Your company profile has been successfully submitted.",
-      className: "bg-green-500 text-white",
+      className: "bg-green-500 text-white", // Example custom styling for success
     });
-    // methods.reset(); // This will be handled by useFormPersistence on successful submit
+    // Clearing storage and resetting form is now handled by useFormPersistence
     setCurrentStep(0); 
-    // localStorage.removeItem(STORAGE_KEY); // This is also handled by useFormPersistence
   };
 
   const CurrentStepComponent = STEPS[currentStep].component;
@@ -175,10 +174,11 @@ export function RegistrationWizard() {
           totalSteps={STEPS.length}
           onNext={handleNext}
           onPrevious={handlePrevious}
-          isNextDisabled={methods.formState.isSubmitting}
+          isNextDisabled={methods.formState.isSubmitting || currentStep === STEPS.length -1 && !methods.formState.isValid && methods.formState.isSubmitted } // Prevent next on review if form invalid and submitted once
           isSubmitting={isSubmitting}
         />
       </form>
     </FormProvider>
   );
 }
+

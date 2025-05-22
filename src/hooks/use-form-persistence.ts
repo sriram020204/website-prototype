@@ -6,59 +6,54 @@ import type { UseFormReturn, FieldValues, Path, PathValue } from 'react-hook-for
 
 export function useFormPersistence<T extends FieldValues>(
   form: UseFormReturn<T>,
-  storageKey: string
+  storageKey: string,
+  initialDefaultValuesFromProps: T // Accept memoized default values as a prop
 ) {
-  const { watch, reset, setValue, getValues, formState: { isSubmitSuccessful, defaultValues } } = form;
+  const { watch, reset, setValue, getValues, formState: { isSubmitSuccessful } } = form;
 
   const loadFromStorage = useCallback(() => {
     const storedDataString = localStorage.getItem(storageKey);
     if (storedDataString) {
       try {
         const parsedData = JSON.parse(storedDataString) as Partial<T>;
-        const currentDefaultValues = defaultValues || ({} as T);
+        // Use the passed-in initialDefaultValuesFromProps for merging structure
+        const currentDefaultValues = initialDefaultValuesFromProps || ({} as T);
 
-        // Iterate over the keys of the defaultValues to ensure structure
-        // This helps in merging stored data with potentially new/changed default structure
         const mergedData = { ...currentDefaultValues };
 
         for (const key in currentDefaultValues) {
           const sectionKey = key as Path<T>;
           if (parsedData.hasOwnProperty(key)) {
-            // If the stored data for a section is an object, merge it with defaults for that section
             if (typeof parsedData[sectionKey] === 'object' && parsedData[sectionKey] !== null && typeof currentDefaultValues[sectionKey] === 'object' && currentDefaultValues[sectionKey] !== null) {
-               mergedData[sectionKey] = { ...currentDefaultValues[sectionKey], ...parsedData[sectionKey] } as PathValue<T, Path<T>>;
+               mergedData[sectionKey] = { ...(currentDefaultValues[sectionKey] as object), ...(parsedData[sectionKey] as object) } as PathValue<T, Path<T>>;
             } else {
-              // Otherwise, just take the stored value
               mergedData[sectionKey] = parsedData[sectionKey] as PathValue<T, Path<T>>;
             }
           }
         }
         
-        // Reset the form with the merged data.
-        // This ensures that even if some fields were not in localStorage,
-        // they get their default values.
         reset(mergedData, { keepDefaultValues: false });
 
       } catch (error) {
         console.error("Failed to parse stored form data:", error);
         localStorage.removeItem(storageKey); // Clear corrupted data
+         if (initialDefaultValuesFromProps) { // Fallback to initial defaults if parsing fails
+            reset(initialDefaultValuesFromProps);
+        }
       }
     } else {
-      // If no stored data, ensure form is reset to its initial default values
-      // This is important if defaultValues are loaded asynchronously or change
-       if (defaultValues) {
-        reset(defaultValues);
+      if (initialDefaultValuesFromProps) {
+        reset(initialDefaultValuesFromProps);
       }
     }
-  }, [reset, storageKey, defaultValues]);
+  }, [reset, storageKey, initialDefaultValuesFromProps]); // Depend on the passed-in stable initialDefaultValuesFromProps
 
   useEffect(() => {
     loadFromStorage();
-  }, [loadFromStorage]); // Rerun if defaultValues itself changes, e.g. loaded async
+  }, [loadFromStorage]); 
 
   useEffect(() => {
     const subscription = watch((value) => {
-      // Only save if the form isn't about to be/being submitted or just succeeded
       if (!form.formState.isSubmitting && !form.formState.isSubmitSuccessful) {
         localStorage.setItem(storageKey, JSON.stringify(value));
       }
@@ -69,10 +64,10 @@ export function useFormPersistence<T extends FieldValues>(
   useEffect(() => {
     if (isSubmitSuccessful) {
       localStorage.removeItem(storageKey);
-      // Optionally, reset to initial default values after successful submission and clearing storage
-      if (defaultValues) {
-        reset(defaultValues);
+      if (initialDefaultValuesFromProps) {
+        reset(initialDefaultValuesFromProps);
       }
     }
-  }, [isSubmitSuccessful, storageKey, reset, defaultValues]);
+  }, [isSubmitSuccessful, storageKey, reset, initialDefaultValuesFromProps]); // Depend on the passed-in stable initialDefaultValuesFromProps
 }
+
