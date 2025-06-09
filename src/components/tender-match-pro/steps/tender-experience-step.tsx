@@ -46,13 +46,15 @@ const TENDER_TYPE_OPTIONS = [
   "Renewable Energy System Installation (Solar, Wind, etc.)", "Solid Waste Management and Recycling Services",
   "Water Treatment Plant Construction and Operation", "Biomedical Waste Disposal Services",
   "Energy Efficiency Improvement Projects", "Green Building Certification and Consultancy", "Statutory Audit Services",
-  "Internal Audit and Risk Assessment Services", "Financial Due Diligence Services", "Insurance and Risk Management Services",
-  "Bookkeeping and Accounting Services", "Payroll Processing Services", "Vocational and Skill Development Training Programs",
+  "Internal Audit and Risk Assessment Services", "Financial Due Dilation Services",
+  "Insurance and Risk Management Services", "Bookkeeping and Accounting Services",
+  "Payroll Processing Services", "Vocational and Skill Development Training Programs",
   "Educational Content and Curriculum Development", "Classroom Technology Deployment Projects",
   "Training and Capacity Building Programs", "E-learning and Digital Education Solutions",
   "Scientific Research and Innovation Projects", "Product Development and Prototyping Services",
   "Laboratory Testing and Certification Services", "Academic Research Support Services", "Pilot Study and Field Testing Projects"
-].sort();
+].filter((value, index, self) => self.indexOf(value) === index) // Ensure unique values
+ .sort();
 
 
 export const TenderExperienceStep: FC<TenderExperienceStepProps> = ({ form }) => {
@@ -111,7 +113,7 @@ export const TenderExperienceStep: FC<TenderExperienceStepProps> = ({ form }) =>
               </FormControl>
               <div className="space-y-1 leading-none">
                 <FormLabel htmlFor={field.name} className="font-normal">
-                  Do you have specific past clients you can list?
+                  Do you have past clients you can list?
                 </FormLabel>
               </div>
             </FormItem>
@@ -213,3 +215,4 @@ export const TenderExperienceStep: FC<TenderExperienceStepProps> = ({ form }) =>
     </Card>
   );
 };
+
