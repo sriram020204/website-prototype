@@ -22,13 +22,13 @@ const CURRENCY_OPTIONS = ["USD", "INR", "EUR", "GBP", "JPY", "AUD", "CAD", "CHF"
 const generateFinancialYearOptions = () => {
   const currentYear = new Date().getFullYear();
   const options = [];
-  for (let i = 19; i >= 0; i--) { 
-    const yearStart = currentYear - 1 - i;
-    const yearEnd = currentYear - i;
+  // Go back 20 years from the current year for the start of the financial year
+  for (let i = 0; i <= 20; i++) { 
+    const yearStart = currentYear - 20 + i;
+    const yearEnd = yearStart + 1;
     options.push(`${yearStart}-${yearEnd.toString().slice(-2)}`);
   }
-  options.push(`${currentYear}-${(currentYear + 1).toString().slice(-2)}`);
-  return options;
+  return options.reverse(); // Show newest years first in dropdown
 };
 
 const FINANCIAL_YEAR_OPTIONS = generateFinancialYearOptions();
@@ -89,7 +89,11 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
           <Landmark className="mr-2 h-6 w-6 text-primary" />
           Financial & Legal Information
         </CardTitle>
-        <CardDescription>Provide your company's financial and legal details. All fields in this section are required unless conditional on a previous selection.</CardDescription>
+        <CardDescription>
+          Provide your company's financial and legal details. 
+          For PAN, GSTIN, MSME/Udyam, and NSIC, if you indicate possession by checking the box, providing the details becomes mandatory. 
+          Net Worth and Annual Turnover details are required.
+        </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         <FormField
@@ -127,7 +131,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
                 <FormControl>
                   <Input type="text" placeholder="Enter PAN" {...field} />
                 </FormControl>
-                <FormDescription>Required if 'Has PAN' is checked.</FormDescription>
+                <FormDescription>Required if 'Do you have a PAN' is checked.</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -169,7 +173,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
                 <FormControl>
                   <Input type="text" placeholder="Enter GSTIN" {...field} />
                 </FormControl>
-                <FormDescription>Required if 'Has GSTIN' is checked.</FormDescription>
+                <FormDescription>Required if 'Do you have a GSTIN' is checked.</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -213,7 +217,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
                   <FormControl>
                     <Input type="text" placeholder="Enter MSME/Udyam registration number" {...field} />
                   </FormControl>
-                  <FormDescription>Required if 'Has MSME/Udyam' is checked.</FormDescription>
+                  <FormDescription>Required if 'Do you have an MSME/Udyam Registration' is checked.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -227,7 +231,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
                   <FormControl>
                      <FileInputControl field={field} placeholder="MSME/Udyam Certificate file" />
                   </FormControl>
-                  <FormDescription>Required if 'Has MSME/Udyam' is checked. Select your MSME/Udyam certificate file.</FormDescription>
+                  <FormDescription>Required if 'Do you have an MSME/Udyam Registration' is checked. Select your MSME/Udyam certificate file.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -272,7 +276,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
                   <FormControl>
                     <Input type="text" placeholder="Enter NSIC registration number" {...field} />
                   </FormControl>
-                  <FormDescription>Required if 'Has NSIC' is checked.</FormDescription>
+                  <FormDescription>Required if 'Do you have an NSIC Registration' is checked.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -286,7 +290,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
                   <FormControl>
                      <FileInputControl field={field} placeholder="NSIC Certificate file" />
                   </FormControl>
-                  <FormDescription>Required if 'Has NSIC' is checked. Select your NSIC certificate file.</FormDescription>
+                  <FormDescription>Required if 'Do you have an NSIC Registration' is checked. Select your NSIC certificate file.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -378,7 +382,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
                   )}
                 />
               </div>
-              {fields.length > 1 && ( // Only show remove button if more than one entry
+              {fields.length > 1 && ( 
                 <Button
                   type="button"
                   variant="destructive"
@@ -448,5 +452,4 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
     </Card>
   );
 };
-
     
