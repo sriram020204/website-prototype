@@ -56,7 +56,11 @@ export default function TenderMatchProPage() {
         </Card>
         
         <footer className="text-center text-sm text-muted-foreground mt-12">
-          &copy; {currentYear || new Date().getFullYear()} TenderMatch Pro. All rights reserved. {/* Display currentYear or fallback during SSR/initial load */}
+          {currentYear !== null ? (
+            `© ${currentYear} TenderMatch Pro. All rights reserved.`
+          ) : (
+            `© TenderMatch Pro. All rights reserved.` // Fallback text during SSR/initial client render
+          )}
           <div className="mt-2">
             <Image src="https://placehold.co/150x50.png?text=PoweredByAI" alt="Powered by AI" width={150} height={50} data-ai-hint="logo ai" className="mx-auto opacity-75" />
           </div>
