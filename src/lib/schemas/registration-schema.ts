@@ -46,9 +46,19 @@ const turnoverEntrySchema = z.object({
 
 export const financialLegalInfoSchema = z.object({
   hasPan: z.boolean().default(false),
-  pan: z.string().regex(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, { message: "Invalid PAN format." }).optional().or(z.literal('')),
+  pan: z.string()
+    .optional()
+    .or(z.literal(''))
+    .refine(val => val === '' || val === undefined || /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(val), {
+      message: "Invalid PAN format if provided."
+    }),
   hasGstin: z.boolean().default(false),
-  gstin: z.string().regex(/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/, { message: "Invalid GSTIN format." }).optional().or(z.literal('')),
+  gstin: z.string()
+    .optional()
+    .or(z.literal(''))
+    .refine(val => val === '' || val === undefined || /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/.test(val), {
+      message: "Invalid GSTIN format if provided."
+    }),
   
   hasMsmeUdyam: z.boolean().default(false),
   msmeUdyamNumber: z.string().optional().or(z.literal('')),
@@ -64,45 +74,8 @@ export const financialLegalInfoSchema = z.object({
   netWorthCurrency: z.string().min(1, { message: "Net worth currency is required." }),
   isBlacklistedOrLitigation: z.boolean().default(false),
   blacklistedDetails: z.string().optional().or(z.literal('')),
-}).superRefine((data, ctx) => {
-  if (data.hasPan && (!data.pan || data.pan.trim() === "" || !data.pan.match(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/))) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      message: "Valid PAN Number is required if 'Has PAN' is checked.",
-      path: ['pan'],
-    });
-  }
-  if (data.hasGstin && (!data.gstin || data.gstin.trim() === "" || !data.gstin.match(/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/))) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      message: "Valid GSTIN is required if 'Has GSTIN' is checked.",
-      path: ['gstin'],
-    });
-  }
-  if (data.hasMsmeUdyam) {
-    if (!data.msmeUdyamNumber || data.msmeUdyamNumber.trim() === "") {
-      ctx.addIssue({ code: z.ZodIssueCode.custom, message: "MSME/Udyam Number is required when 'Has MSME/Udyam' is checked.", path: ['msmeUdyamNumber'] });
-    }
-    if (!data.msmeUdyamCertificate || data.msmeUdyamCertificate.trim() === "") {
-      ctx.addIssue({ code: z.ZodIssueCode.custom, message: "MSME/Udyam Certificate file name is required when 'Has MSME/Udyam' is checked.", path: ['msmeUdyamCertificate'] });
-    }
-  }
-  if (data.hasNsic) {
-    if (!data.nsicNumber || data.nsicNumber.trim() === "") {
-      ctx.addIssue({ code: z.ZodIssueCode.custom, message: "NSIC Number is required when 'Has NSIC' is checked.", path: ['nsicNumber'] });
-    }
-    if (!data.nsicCertificate || data.nsicCertificate.trim() === "") {
-      ctx.addIssue({ code: z.ZodIssueCode.custom, message: "NSIC Certificate file name is required when 'Has NSIC' is checked.", path: ['nsicCertificate'] });
-    }
-  }
-  if (data.isBlacklistedOrLitigation && (!data.blacklistedDetails || data.blacklistedDetails.trim() === "")) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      message: "Details are required if blacklisted or in litigation.",
-      path: ['blacklistedDetails'],
-    });
-  }
 });
+// Removed superRefine block that made details mandatory if corresponding 'has<Property>' was true.
 
 
 // Step 4: Tender Experience

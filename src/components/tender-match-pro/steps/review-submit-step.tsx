@@ -21,9 +21,14 @@ const formatDisplayData = (data: any, fieldName?: string, sectionData?: Record<s
      if (fieldName === 'websiteUrl' && sectionData && (sectionData as RegistrationFormData['companyDetails']).websiteUrl === '') {
         return 'Not Provided';
      }
-     // For other fields that are now mandatory or conditionally mandatory, 
-     // this path should ideally not be hit if validation is working correctly.
-     // However, as a fallback display:
+     if (fieldName === 'technicalCapabilities' && sectionData && (sectionData as RegistrationFormData['businessCapabilities']).technicalCapabilities === '') {
+        return 'Not Provided';
+     }
+     // For conditional fields that are now truly optional for data entry
+     const financialFields = ['pan', 'gstin', 'msmeUdyamNumber', 'msmeUdyamCertificate', 'nsicNumber', 'nsicCertificate', 'blacklistedDetails'];
+     if (financialFields.includes(fieldName || '')) {
+         return 'Details not provided';
+     }
     return 'N/A (Data Missing)'; 
   }
 
@@ -50,44 +55,53 @@ const renderSectionData = (title: string, sectionData: Record<string, any> | und
     );
   }
 
-  const booleanFlagsToSkip = [
-    'hasNoCertifications', 
-    'hasPan', 'hasGstin', 'hasMsmeUdyam', 'hasNsic', 
-    'isBlacklistedOrLitigation'
-  ];
+  const booleanFlagsToRenderDirectly: Record<string, string> = {
+    hasPan: "PAN Holder",
+    hasGstin: "GSTIN Holder",
+    hasMsmeUdyam: "MSME/Udyam Registered",
+    hasNsic: "NSIC Registered",
+    isBlacklistedOrLitigation: "Blacklisted or in Litigation",
+    hasNoCertifications: "No Certifications Held (as declared)"
+  };
+
 
   return (
     <div className="mb-6">
       <h3 className="text-lg font-semibold text-primary mb-2">{title}</h3>
       <div className="p-4 bg-muted/50 rounded-md text-sm space-y-2">
         {Object.entries(sectionData).map(([key, value]) => {
-          if (booleanFlagsToSkip.includes(key)) {
-            return null; // Skip rendering the boolean flags themselves
-          }
-
           const displayKey = key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
           let displayValue;
 
-          // Specific handling for conditional fields based on their boolean flags
+          if (booleanFlagsToRenderDirectly[key]) {
+            return (
+              <div key={key} className="grid grid-cols-1 md:grid-cols-3 gap-1 md:gap-2 items-start">
+                <span className="font-medium col-span-1 capitalize break-words">
+                  {booleanFlagsToRenderDirectly[key]}:
+                </span>
+                <span className="col-span-1 md:col-span-2 whitespace-pre-wrap break-words">{formatDisplayData(value)}</span>
+              </div>
+            );
+          }
+          
           if (title === "Business Capabilities" && key === 'certifications') {
-            displayValue = sectionData.hasNoCertifications 
-              ? "No Certifications Held" 
-              : formatDisplayData(value, key, sectionData);
+             if (sectionData.hasNoCertifications) return null; // Already handled by the flag above
+             displayValue = formatDisplayData(value, key, sectionData);
           } else if (title === "Financial & Legal Information") {
             if (key === 'pan') {
-              displayValue = sectionData.hasPan ? formatDisplayData(value, key, sectionData) : "No PAN Provided";
+              displayValue = sectionData.hasPan ? (value ? formatDisplayData(value, key, sectionData) : "Details not provided") : "Not Applicable (No PAN)";
             } else if (key === 'gstin') {
-              displayValue = sectionData.hasGstin ? formatDisplayData(value, key, sectionData) : "No GSTIN Provided";
+              displayValue = sectionData.hasGstin ? (value ? formatDisplayData(value, key, sectionData) : "Details not provided") : "Not Applicable (No GSTIN)";
             } else if (key === 'msmeUdyamNumber') {
-              displayValue = sectionData.hasMsmeUdyam ? formatDisplayData(value, key, sectionData) : "Not Applicable";
+              displayValue = sectionData.hasMsmeUdyam ? (value ? formatDisplayData(value, key, sectionData) : "Details not provided") : "Not Applicable (No MSME/Udyam)";
             } else if (key === 'msmeUdyamCertificate') {
-              displayValue = sectionData.hasMsmeUdyam ? formatDisplayData(value, key, sectionData) : "Not Applicable";
+              displayValue = sectionData.hasMsmeUdyam ? (value ? formatDisplayData(value, key, sectionData) : "File name not provided") : "Not Applicable (No MSME/Udyam)";
             } else if (key === 'nsicNumber') {
-              displayValue = sectionData.hasNsic ? formatDisplayData(value, key, sectionData) : "Not Applicable";
+              displayValue = sectionData.hasNsic ? (value ? formatDisplayData(value, key, sectionData) : "Details not provided") : "Not Applicable (No NSIC)";
             } else if (key === 'nsicCertificate') {
-              displayValue = sectionData.hasNsic ? formatDisplayData(value, key, sectionData) : "Not Applicable";
+              displayValue = sectionData.hasNsic ? (value ? formatDisplayData(value, key, sectionData) : "File name not provided") : "Not Applicable (No NSIC)";
             } else if (key === 'blacklistedDetails') {
-              displayValue = sectionData.isBlacklistedOrLitigation ? formatDisplayData(value, key, sectionData) : "Not Blacklisted or in Litigation";
+              displayValue = sectionData.isBlacklistedOrLitigation ? (value ? formatDisplayData(value, key, sectionData) : "Details not provided") : "Not Blacklisted or in Litigation";
             } else if (key === 'annualTurnovers' && Array.isArray(value)) {
                 const netWorthCurrency = (sectionData as any).netWorthCurrency;
                 const currencySuffix = netWorthCurrency ? ` (in ${netWorthCurrency})` : '';
@@ -139,7 +153,7 @@ export const ReviewSubmitStep: FC<ReviewSubmitStepProps> = ({ form }) => {
     <Card className="w-full shadow-lg">
       <CardHeader>
         <CardTitle className="text-2xl">Review Your Profile</CardTitle>
-        <CardDescription>Please review all your information carefully before submission. Fields are mandatory as per the requirements of each step.</CardDescription>
+        <CardDescription>Please review all your information carefully before submission. Ensure all mandatory fields are filled as per each step's requirements. For items like PAN/GSTIN, checking the box indicates possession; providing the detail itself is optional but recommended.</CardDescription>
       </CardHeader>
       <CardContent>
         {renderSectionData("Company Details", formData.companyDetails)}

@@ -22,13 +22,12 @@ const CURRENCY_OPTIONS = ["USD", "INR", "EUR", "GBP", "JPY", "AUD", "CAD", "CHF"
 const generateFinancialYearOptions = () => {
   const currentYear = new Date().getFullYear();
   const options = [];
-  // Go back 20 years from the current year for the start of the financial year
   for (let i = 0; i <= 20; i++) { 
     const yearStart = currentYear - 20 + i;
     const yearEnd = yearStart + 1;
     options.push(`${yearStart}-${yearEnd.toString().slice(-2)}`);
   }
-  return options.reverse(); // Show newest years first in dropdown
+  return options; 
 };
 
 const FINANCIAL_YEAR_OPTIONS = generateFinancialYearOptions();
@@ -91,7 +90,8 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
         </CardTitle>
         <CardDescription>
           Provide your company's financial and legal details. 
-          For PAN, GSTIN, MSME/Udyam, and NSIC, if you indicate possession by checking the box, providing the details becomes mandatory. 
+          For PAN, GSTIN, MSME/Udyam, and NSIC, check the box if your company possesses the item. 
+          Providing the specific number or file name is optional but recommended if possessed.
           Net Worth and Annual Turnover details are required.
         </CardDescription>
       </CardHeader>
@@ -129,9 +129,9 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
               <FormItem className="pl-10"> 
                 <FormLabel>PAN Number</FormLabel>
                 <FormControl>
-                  <Input type="text" placeholder="Enter PAN" {...field} />
+                  <Input type="text" placeholder="Enter PAN (if available)" {...field} />
                 </FormControl>
-                <FormDescription>Required if 'Do you have a PAN' is checked.</FormDescription>
+                <FormDescription>Enter your PAN if you have one. Format will be checked if provided.</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -171,9 +171,9 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
               <FormItem className="pl-10"> 
                 <FormLabel>GSTIN Number</FormLabel>
                 <FormControl>
-                  <Input type="text" placeholder="Enter GSTIN" {...field} />
+                  <Input type="text" placeholder="Enter GSTIN (if available)" {...field} />
                 </FormControl>
-                <FormDescription>Required if 'Do you have a GSTIN' is checked.</FormDescription>
+                <FormDescription>Enter your GSTIN if you have one. Format will be checked if provided.</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -215,9 +215,9 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
                 <FormItem> 
                   <FormLabel>MSME/Udyam Number</FormLabel>
                   <FormControl>
-                    <Input type="text" placeholder="Enter MSME/Udyam registration number" {...field} />
+                    <Input type="text" placeholder="Enter MSME/Udyam registration number (if available)" {...field} />
                   </FormControl>
-                  <FormDescription>Required if 'Do you have an MSME/Udyam Registration' is checked.</FormDescription>
+                  <FormDescription>Enter if available.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -229,9 +229,9 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
                 <FormItem> 
                   <FormLabel>MSME/Udyam Certificate File Name</FormLabel>
                   <FormControl>
-                     <FileInputControl field={field} placeholder="MSME/Udyam Certificate file" />
+                     <FileInputControl field={field} placeholder="MSME/Udyam Certificate file (if available)" />
                   </FormControl>
-                  <FormDescription>Required if 'Do you have an MSME/Udyam Registration' is checked. Select your MSME/Udyam certificate file.</FormDescription>
+                  <FormDescription>Select your MSME/Udyam certificate file if available.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -274,9 +274,9 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
                 <FormItem> 
                   <FormLabel>NSIC Number</FormLabel>
                   <FormControl>
-                    <Input type="text" placeholder="Enter NSIC registration number" {...field} />
+                    <Input type="text" placeholder="Enter NSIC registration number (if available)" {...field} />
                   </FormControl>
-                  <FormDescription>Required if 'Do you have an NSIC Registration' is checked.</FormDescription>
+                  <FormDescription>Enter if available.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -288,9 +288,9 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
                 <FormItem> 
                   <FormLabel>NSIC Certificate File Name</FormLabel>
                   <FormControl>
-                     <FileInputControl field={field} placeholder="NSIC Certificate file" />
+                     <FileInputControl field={field} placeholder="NSIC Certificate file (if available)" />
                   </FormControl>
-                  <FormDescription>Required if 'Do you have an NSIC Registration' is checked. Select your NSIC certificate file.</FormDescription>
+                  <FormDescription>Select your NSIC certificate file if available.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -440,9 +440,9 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
               <FormItem className="pl-10"> 
                 <FormLabel>Details of Blacklisting/Litigation</FormLabel>
                 <FormControl>
-                  <Textarea rows={3} placeholder="Provide details if yes..." {...field} />
+                  <Textarea rows={3} placeholder="Provide details if yes (optional)" {...field} />
                 </FormControl>
-                <FormDescription>Required if 'Is blacklisted' is checked.</FormDescription>
+                <FormDescription>Enter details if applicable.</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
