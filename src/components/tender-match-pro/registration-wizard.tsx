@@ -63,8 +63,6 @@ export function RegistrationWizard() {
       hsnCodes: '', 
       sacCodes: '',
       technicalCapabilities: '', 
-      monthlyCapacityValue: undefined,
-      monthlyCapacityUnit: '',
       certifications: '' 
     },
     financialLegalInfo: {

@@ -275,34 +275,6 @@ export const BusinessCapabilitiesStep: FC<BusinessCapabilitiesStepProps> = ({ fo
             </FormItem>
           )}
         />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <FormField
-            control={form.control}
-            name="businessCapabilities.monthlyCapacityValue"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Monthly Capacity Value (Optional)</FormLabel>
-                <FormControl>
-                  <Input type="number" placeholder="e.g., 1000" {...field} onChange={e => field.onChange(e.target.value === '' ? undefined : parseFloat(e.target.value))} value={field.value ?? ''} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="businessCapabilities.monthlyCapacityUnit"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Monthly Capacity Unit (Optional)</FormLabel>
-                <FormControl>
-                  <Input type="text" placeholder="e.g., Units, Tons, Projects" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
         <FormField
           control={form.control}
           name="businessCapabilities.certifications"

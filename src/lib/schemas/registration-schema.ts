@@ -21,8 +21,6 @@ export const businessCapabilitiesSchema = z.object({
   hsnCodes: z.string().describe("HSN (Harmonized System of Nomenclature) codes for goods").optional().or(z.literal('')),
   sacCodes: z.string().describe("SAC (Services Accounting Code) codes for services").optional().or(z.literal('')),
   technicalCapabilities: z.string().min(10, { message: "Technical capabilities must be at least 10 characters." }),
-  monthlyCapacityValue: z.coerce.number().min(0, { message: "Capacity value must be non-negative." }).optional(),
-  monthlyCapacityUnit: z.string().min(1, { message: "Capacity unit is required if value is provided." }).optional().or(z.literal('')),
   certifications: z.string().optional().or(z.literal('')),
 });
 
