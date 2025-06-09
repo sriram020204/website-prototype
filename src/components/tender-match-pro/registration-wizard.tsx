@@ -61,7 +61,8 @@ export function RegistrationWizard() {
       industrySectors: '', 
       productServiceKeywords: '', 
       technicalCapabilities: '', 
-      certifications: '' 
+      certifications: '',
+      hasNoCertifications: false,
     },
     financialLegalInfo: {
       hasPan: false,

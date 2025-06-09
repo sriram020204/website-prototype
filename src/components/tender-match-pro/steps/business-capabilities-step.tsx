@@ -2,13 +2,14 @@
 "use client";
 
 import type { FC } from 'react';
-import React from 'react';
+import React, { useEffect } from 'react'; // Added useEffect
 import type { UseFormReturn } from 'react-hook-form';
 import type { RegistrationFormData } from '@/lib/schemas/registration-schema';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { TagInput } from '@/components/ui/tag-input';
+import { Checkbox } from '@/components/ui/checkbox'; // Added Checkbox
 import { Zap } from 'lucide-react';
 
 interface BusinessCapabilitiesStepProps {
@@ -75,6 +76,14 @@ const CERTIFICATION_OPTIONS = [
 
 
 export const BusinessCapabilitiesStep: FC<BusinessCapabilitiesStepProps> = ({ form }) => {
+  const watchHasNoCertifications = form.watch('businessCapabilities.hasNoCertifications');
+
+  useEffect(() => {
+    if (watchHasNoCertifications) {
+      form.setValue('businessCapabilities.certifications', '', { shouldValidate: true, shouldDirty: true });
+    }
+  }, [watchHasNoCertifications, form.setValue, form]);
+
 
   return (
     <Card className="w-full shadow-lg">
@@ -83,7 +92,7 @@ export const BusinessCapabilitiesStep: FC<BusinessCapabilitiesStepProps> = ({ fo
           <Zap className="mr-2 h-6 w-6 text-primary" />
           Business Capabilities
         </CardTitle>
-        <CardDescription>Describe your company's roles, sectors, products, and capacities. All fields are required.</CardDescription>
+        <CardDescription>Describe your company's roles, sectors, products, and capacities. All fields are required unless explicitly stated otherwise.</CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         <FormField
@@ -172,6 +181,35 @@ export const BusinessCapabilitiesStep: FC<BusinessCapabilitiesStepProps> = ({ fo
             </FormItem>
           )}
         />
+
+        <FormField
+          control={form.control}
+          name="businessCapabilities.hasNoCertifications"
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4 shadow-sm">
+              <FormControl>
+                <Checkbox
+                  checked={field.value}
+                  onCheckedChange={(checked) => {
+                    field.onChange(checked);
+                    // Effect hook will handle clearing certifications
+                  }}
+                  id={field.name}
+                />
+              </FormControl>
+              <div className="space-y-1 leading-none">
+                <FormLabel htmlFor={field.name} className="font-normal">
+                  I have no certifications.
+                </FormLabel>
+                <FormDescription>
+                  Check this box if your company does not hold any certifications.
+                </FormDescription>
+              </div>
+               <FormMessage />
+            </FormItem>
+          )}
+        />
+        
         <FormField
           control={form.control}
           name="businessCapabilities.certifications"
@@ -186,10 +224,11 @@ export const BusinessCapabilitiesStep: FC<BusinessCapabilitiesStepProps> = ({ fo
                   id="certifications"
                   aria-describedby="certifications-description"
                   aria-invalid={!!form.formState.errors.businessCapabilities?.certifications}
+                  disabled={watchHasNoCertifications}
                 />
               </FormControl>
               <FormDescription id="certifications-description">
-                Enter certification names. Upload actual files in the 'Declarations & Uploads' step.
+                Enter certification names if applicable. Upload actual files in the 'Declarations & Uploads' step.
               </FormDescription>
               <FormMessage />
             </FormItem>

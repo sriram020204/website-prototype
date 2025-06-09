@@ -19,7 +19,23 @@ export const businessCapabilitiesSchema = z.object({
   industrySectors: z.string().min(3, { message: "Please enter at least one industry sector." }),
   productServiceKeywords: z.string().min(3, { message: "Please enter product/service keywords." }),
   technicalCapabilities: z.string().min(10, { message: "Technical capabilities must be at least 10 characters." }),
-  certifications: z.string().min(1, {message: "Certification names are required."}),
+  certifications: z.string().optional(), // Made optional here, enforced by superRefine
+  hasNoCertifications: z.boolean().default(false),
+}).superRefine((data, ctx) => {
+  if (!data.hasNoCertifications && (!data.certifications || data.certifications.trim() === "")) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: "Certification names are required, or check the 'I have no certifications' box.",
+      path: ['certifications'],
+    });
+  }
+  if (data.hasNoCertifications && data.certifications && data.certifications.trim() !== "") {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: "If 'I have no certifications' is checked, the certifications list must be empty. Please clear certifications or uncheck the box.",
+      path: ['certifications'],
+    });
+  }
 });
 
 // Step 3: Financial & Legal Info

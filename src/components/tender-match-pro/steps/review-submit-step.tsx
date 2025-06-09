@@ -13,27 +13,24 @@ interface ReviewSubmitStepProps {
   form: UseFormReturn<RegistrationFormData>;
 }
 
-const formatDisplayData = (data: any, fieldName?: string): string => {
+const formatDisplayData = (data: any, fieldName?: string, sectionData?: Record<string, any>): string => {
   if (typeof data === 'boolean') return data ? 'Yes' : 'No';
   if (typeof data === 'number') return data.toString();
   
-  // Since all fields are now mandatory, empty string or undefined should ideally not occur
-  // if form validation is working correctly before reaching review.
-  // However, we can keep a fallback for robustness.
   if (data === null || data === undefined || data === '') {
-     // The optionalTextLikeFields array is removed as all fields are now mandatory.
-     // If a field reaches here as empty, it might indicate a bypass of validation or an issue.
-     // For display purposes, we'll show "Not Provided" or "N/A".
+     if (fieldName === 'websiteUrl' && sectionData && (sectionData as RegistrationFormData['companyDetails']).websiteUrl === '') {
+        return 'Not Provided';
+     }
     return 'N/A (Data Missing)'; 
   }
 
   if (Array.isArray(data) && fieldName !== 'annualTurnovers') {
-    if (data.length === 0) return 'None (Data Missing)'; // Should not happen for mandatory array
+    if (data.length === 0) return 'None (Data Missing)';
     return data.join(', ');
   }
   if (typeof data === 'object' && data !== null && !Array.isArray(data)) { 
     return Object.entries(data)
-      .map(([key, value]) => `${key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}: ${formatDisplayData(value, key)}`)
+      .map(([key, value]) => `${key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}: ${formatDisplayData(value, key, data as Record<string, any>)}`)
       .join('; '); 
   }
   return String(data);
@@ -56,6 +53,22 @@ const renderSectionData = (title: string, sectionData: Record<string, any> | und
         {Object.entries(sectionData).map(([key, value]) => {
           const displayKey = key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
           
+          if (key === 'hasNoCertifications' && title === "Business Capabilities") {
+            return null; // Do not display the boolean flag itself
+          }
+
+          if (key === 'certifications' && title === "Business Capabilities") {
+            const displayValue = sectionData.hasNoCertifications 
+              ? "No Certifications" 
+              : formatDisplayData(value, key, sectionData);
+            return (
+              <div key={key} className="grid grid-cols-1 md:grid-cols-3 gap-1 md:gap-2 items-start">
+                <span className="font-medium col-span-1 capitalize break-words">{displayKey}:</span>
+                <span className="col-span-1 md:col-span-2 whitespace-pre-wrap break-words">{displayValue}</span>
+              </div>
+            );
+          }
+
           if (key === 'annualTurnovers' && title === "Financial & Legal Information" && Array.isArray(value)) {
             const netWorthCurrency = (sectionData as any).netWorthCurrency;
             const currencySuffix = netWorthCurrency ? ` (in ${netWorthCurrency})` : '';
@@ -66,11 +79,11 @@ const renderSectionData = (title: string, sectionData: Record<string, any> | und
                   <ul className="list-disc pl-5 space-y-0.5">
                     {value.map((entry: TurnoverEntry, index: number) => (
                       <li key={index} className="whitespace-pre-wrap break-words">
-                        {`FY: ${formatDisplayData(entry.financialYear, 'financialYear')}, Amount: ${formatDisplayData(entry.amount, 'amount')}${currencySuffix}`}
+                        {`FY: ${formatDisplayData(entry.financialYear, 'financialYear', sectionData)}, Amount: ${formatDisplayData(entry.amount, 'amount', sectionData)}${currencySuffix}`}
                       </li>
                     ))}
                   </ul>
-                ) : ( // This case should not be reached if annualTurnovers is mandatory and requires min 1 entry
+                ) : ( 
                   <span className="col-span-1 md:col-span-2 whitespace-pre-wrap break-words"> No turnover entries provided (Data Missing).</span>
                 )}
               </div>
@@ -82,7 +95,7 @@ const renderSectionData = (title: string, sectionData: Record<string, any> | und
               <span className="font-medium col-span-1 capitalize break-words">
                 {displayKey}:
               </span>
-              <span className="col-span-1 md:col-span-2 whitespace-pre-wrap break-words">{formatDisplayData(value, key)}</span>
+              <span className="col-span-1 md:col-span-2 whitespace-pre-wrap break-words">{formatDisplayData(value, key, sectionData)}</span>
             </div>
           );
         })}
@@ -99,7 +112,7 @@ export const ReviewSubmitStep: FC<ReviewSubmitStepProps> = ({ form }) => {
     <Card className="w-full shadow-lg">
       <CardHeader>
         <CardTitle className="text-2xl">Review Your Profile</CardTitle>
-        <CardDescription>Please review all your information carefully before submission. All fields were required.</CardDescription>
+        <CardDescription>Please review all your information carefully before submission. All fields were required unless explicitly stated otherwise.</CardDescription>
       </CardHeader>
       <CardContent>
         {renderSectionData("Company Details", formData.companyDetails)}
