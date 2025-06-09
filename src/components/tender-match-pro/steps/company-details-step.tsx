@@ -140,7 +140,7 @@ export const CompanyDetailsStep: FC<CompanyDetailsStepProps> = ({ form }) => {
             <FormItem>
               <FormLabel>Company Name</FormLabel>
               <FormControl>
-                <Input type="text" placeholder="e.g., Acme Innovations Inc." {...field} value={field.value || ''} />
+                <Input type="text" placeholder="e.g., Acme Innovations Inc." {...field} value={field.value ?? ''} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -152,7 +152,7 @@ export const CompanyDetailsStep: FC<CompanyDetailsStepProps> = ({ form }) => {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Company Type</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value || ''}>
+              <Select onValueChange={field.onChange} value={field.value ?? ''}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select company type" />
@@ -192,7 +192,7 @@ export const CompanyDetailsStep: FC<CompanyDetailsStepProps> = ({ form }) => {
                   field.onChange(value); 
                   form.setValue('companyDetails.state', '', { shouldValidate: true, shouldDirty: true, shouldTouch: true });
                 }} 
-                value={field.value || ''}
+                value={field.value ?? ''}
               >
                 <FormControl>
                   <SelectTrigger>
@@ -215,7 +215,7 @@ export const CompanyDetailsStep: FC<CompanyDetailsStepProps> = ({ form }) => {
           render={({ field }) => (
             <FormItem>
               <FormLabel>{stateLabel}</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value || ''} disabled={!selectedCountry}>
+              <Select onValueChange={field.onChange} value={field.value ?? ''} disabled={!selectedCountry}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder={`Select ${stateLabel.toLowerCase()}`} />
@@ -239,7 +239,7 @@ export const CompanyDetailsStep: FC<CompanyDetailsStepProps> = ({ form }) => {
             <FormItem>
               <FormLabel>City</FormLabel>
               <FormControl>
-                <Input type="text" placeholder="e.g., Mumbai" {...field} value={field.value || ''} />
+                <Input type="text" placeholder="e.g., Mumbai" {...field} value={field.value ?? ''} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -252,7 +252,7 @@ export const CompanyDetailsStep: FC<CompanyDetailsStepProps> = ({ form }) => {
             <FormItem>
               <FormLabel>Full Company Address</FormLabel>
               <FormControl>
-                <Textarea rows={3} placeholder="e.g., 123 Tech Park, Silicon Valley, CA 94000" {...field} value={field.value || ''} />
+                <Textarea rows={3} placeholder="e.g., 123 Tech Park, Silicon Valley, CA 94000" {...field} value={field.value ?? ''} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -265,7 +265,7 @@ export const CompanyDetailsStep: FC<CompanyDetailsStepProps> = ({ form }) => {
             <FormItem>
               <FormLabel>Company Website URL (Optional)</FormLabel>
               <FormControl>
-                <Input type="url" placeholder="e.g., https://www.acmeinnovations.com" {...field} value={field.value || ''} />
+                <Input type="url" placeholder="e.g., https://www.acmeinnovations.com" {...field} value={field.value ?? ''} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -275,5 +275,4 @@ export const CompanyDetailsStep: FC<CompanyDetailsStepProps> = ({ form }) => {
     </Card>
   );
 };
-
     
