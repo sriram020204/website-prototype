@@ -263,7 +263,7 @@ export const CompanyDetailsStep: FC<CompanyDetailsStepProps> = ({ form }) => {
           name="companyDetails.websiteUrl"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Company Website URL (Optional)</FormLabel>
+              <FormLabel>Company Website URL</FormLabel>
               <FormControl>
                 <Input type="url" placeholder="e.g., https://www.acmeinnovations.com" {...field} value={field.value ?? ''} />
               </FormControl>

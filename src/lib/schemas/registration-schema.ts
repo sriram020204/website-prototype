@@ -10,7 +10,7 @@ export const companyDetailsSchema = z.object({
   state: z.string().min(2, { message: "Please select a state." }),
   city: z.string().min(2, { message: "Please enter a city." }),
   address: z.string().min(5, { message: "Address must be at least 5 characters." }), // Textarea
-  websiteUrl: z.string().url({ message: "Invalid URL." }).optional().or(z.literal('')),
+  websiteUrl: z.string().url({ message: "Invalid URL." }).min(1, { message: "Company website URL is required." }),
 });
 
 // Step 2: Business Capabilities
