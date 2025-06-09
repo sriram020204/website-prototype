@@ -7,7 +7,7 @@ import { RegistrationFormData, TurnoverEntry } from '@/lib/schemas/registration-
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Separator } from '@/components/ui/separator';
-import { Info } from 'lucide-react'; 
+import { Info } from 'lucide-react';
 
 interface ReviewSubmitStepProps {
   form: UseFormReturn<RegistrationFormData>;
@@ -16,7 +16,7 @@ interface ReviewSubmitStepProps {
 const formatDisplayData = (data: any, fieldName?: string, sectionData?: Record<string, any>): string => {
   if (typeof data === 'boolean') return data ? 'Yes' : 'No';
   if (typeof data === 'number') return data.toString();
-  
+
   if (data === null || data === undefined || data === '') {
      if (fieldName === 'websiteUrl' && sectionData && (sectionData as RegistrationFormData['companyDetails']).websiteUrl === '') {
         return 'Not Provided';
@@ -26,7 +26,7 @@ const formatDisplayData = (data: any, fieldName?: string, sectionData?: Record<s
      }
      const financialFields = ['pan', 'gstin', 'msmeUdyamNumber', 'msmeUdyamCertificate', 'nsicNumber', 'nsicCertificate', 'blacklistedDetails'];
      if (financialFields.includes(fieldName || '')) {
-         return 'Details not provided'; 
+         return 'Details not provided';
      }
      if (fieldName === 'pastClients' && sectionData && (sectionData as RegistrationFormData['tenderExperience']).hasPastClients && (sectionData as RegistrationFormData['tenderExperience']).pastClients === '') {
         return 'Details not provided';
@@ -37,17 +37,17 @@ const formatDisplayData = (data: any, fieldName?: string, sectionData?: Record<s
      if (fieldName === 'countriesServed' && sectionData && (sectionData as RegistrationFormData['geographicDigitalReach']).exportsToOtherCountries && (sectionData as RegistrationFormData['geographicDigitalReach']).countriesServed === '') {
         return 'Details not provided';
      }
-    return 'N/A (Data Missing)'; 
+    return 'N/A (Data Missing)';
   }
 
   if (Array.isArray(data) && fieldName !== 'annualTurnovers') {
     if (data.length === 0) return 'None (Data Missing)';
     return data.join(', ');
   }
-  if (typeof data === 'object' && data !== null && !Array.isArray(data)) { 
+  if (typeof data === 'object' && data !== null && !Array.isArray(data)) {
     return Object.entries(data)
       .map(([key, value]) => `${key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}: ${formatDisplayData(value, key, data as Record<string, any>)}`)
-      .join('; '); 
+      .join('; ');
   }
   return String(data);
 };
@@ -138,7 +138,7 @@ const renderSectionData = (title: string, sectionData: Record<string, any> | und
             } else if (key === 'annualTurnovers' && Array.isArray(value)) {
                 const netWorthCurrency = (sectionData as any).netWorthCurrency;
                 const currencySuffix = netWorthCurrency ? ` (in ${netWorthCurrency})` : '';
-                
+
                 const sortedTurnovers = [...value].sort((a, b) => {
                   if (a.financialYear && b.financialYear) {
                     const yearA = parseInt(a.financialYear.substring(0,4), 10);
@@ -159,7 +159,7 @@ const renderSectionData = (title: string, sectionData: Record<string, any> | und
                           </li>
                         ))}
                       </ul>
-                    ) : ( 
+                    ) : (
                       <span className="col-span-1 md:col-span-2 whitespace-pre-wrap break-words"> No turnover entries provided (Data Missing).</span>
                     )}
                   </div>
@@ -176,8 +176,8 @@ const renderSectionData = (title: string, sectionData: Record<string, any> | und
                 </div>
               );
             } else if (key === 'pastClients') {
-              displayValue = sectionData.hasPastClients 
-                ? (value ? formatDisplayData(value, key, sectionData) : "Details not provided") 
+              displayValue = sectionData.hasPastClients
+                ? (value ? formatDisplayData(value, key, sectionData) : "Details not provided")
                 : "Not Applicable (Indicated no past clients to list)";
             } else {
               displayValue = formatDisplayData(value, key, sectionData);
@@ -191,8 +191,8 @@ const renderSectionData = (title: string, sectionData: Record<string, any> | und
                 </div>
               );
             } else if (key === 'operationalStates') {
-              displayValue = sectionData.operatesInMultipleStates 
-                ? (value ? formatDisplayData(value, key, sectionData) : "Details not provided") 
+              displayValue = sectionData.operatesInMultipleStates
+                ? (value ? formatDisplayData(value, key, sectionData) : "Details not provided")
                 : "Not Applicable (Single state or no export to other states indicated)";
             } else if (key === 'exportsToOtherCountries') {
               return (
@@ -202,8 +202,8 @@ const renderSectionData = (title: string, sectionData: Record<string, any> | und
                 </div>
               );
             } else if (key === 'countriesServed') {
-              displayValue = sectionData.exportsToOtherCountries 
-                ? (value ? formatDisplayData(value, key, sectionData) : "Details not provided") 
+              displayValue = sectionData.exportsToOtherCountries
+                ? (value ? formatDisplayData(value, key, sectionData) : "Details not provided")
                 : "Not Applicable (No export to other countries indicated)";
             } else {
               displayValue = formatDisplayData(value, key, sectionData);
@@ -212,7 +212,7 @@ const renderSectionData = (title: string, sectionData: Record<string, any> | und
           else {
             displayValue = formatDisplayData(value, key, sectionData);
           }
-          
+
           const handledFlags = ['hasPan', 'hasGstin', 'hasMsmeUdyam', 'hasNsic', 'isBlacklistedOrLitigation', 'hasNoCertifications', 'hasPastClients', 'operatesInMultipleStates', 'exportsToOtherCountries'];
           if (handledFlags.includes(key)) {
             return null;
@@ -244,8 +244,8 @@ export const ReviewSubmitStep: FC<ReviewSubmitStepProps> = ({ form }) => {
       <CardHeader>
         <CardTitle className="text-2xl">Review Your Profile</CardTitle>
         <CardDescription>
-          Please review all your information carefully before submission. 
-          Ensure all fields marked as required in each step are filled. 
+          Please review all your information carefully before submission.
+          Ensure all fields marked as required in each step are filled.
         </CardDescription>
       </CardHeader>
       <CardContent>

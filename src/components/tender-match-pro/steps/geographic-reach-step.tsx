@@ -37,22 +37,22 @@ const US_STATES = [
 const WORLD_COUNTRIES = [
   "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", "Argentina", "Armenia",
   "Australia", "Austria", "Azerbaijan", "Bahamas, The", "Bahrain", "Bangladesh", "Barbados", "Belarus",
-  "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil",
-  "Brunei", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada",
-  "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Congo, Democratic Republic of the",
-  "Congo, Republic of the", "Cook Islands", "Costa Rica", "Cote d'Ivoire", "Croatia", "Cuba", "Cyprus",
-  "Czechia", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador",
-  "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon",
-  "Gambia, The", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau",
-  "Guyana", "Haiti", "Holy See", "Honduras", "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq",
-  "Ireland", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati",
-  "Korea, North", "Korea, South", "Kosovo", "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho",
-  "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "Madagascar", "Malawi", "Malaysia",
-  "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia",
-  "Moldova", "Monaco", "Mongolia", "Montenegro", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru",
-  "Nepal", "Netherlands, The", "New Zealand", "Nicaragua", "Niger", "Nigeria", "Niue", "North Macedonia",
-  "Norway", "Oman", "Pakistan", "Palau", "Palestine State", "Panama", "Papua New Guinea", "Paraguay",
-  "Peru", "Philippines", "Poland", "Portugal", "Qatar", "Romania", "Russia", "Rwanda",
+  "Belgium", "Belize", "Benin (Dahomey)", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil",
+  "Brunei", "Bulgaria", "Burkina Faso (Upper Volta)", "Burma", "Burundi", "Cabo Verde", "Cambodia", "Cameroon",
+  "Canada", "Cayman Islands, The", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros",
+  "Congo, Democratic Republic of the", "Congo, Republic of the", "Cook Islands", "Costa Rica",
+  "Cote d’Ivoire (Ivory Coast)", "Croatia", "Cuba", "Cyprus", "Czechia", "Denmark", "Djibouti", "Dominica",
+  "Dominican Republic", "East Timor (Timor-Leste)", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea",
+  "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Gambia, The", "Georgia", "Germany",
+  "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Holy See", "Honduras",
+  "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Israel", "Italy", "Jamaica", "Japan",
+  "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea, North", "Korea, South", "Kosovo", "Kuwait", "Kyrgyzstan",
+  "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg",
+  "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius",
+  "Mexico", "Micronesia", "Moldova", "Monaco", "Mongolia", "Montenegro", "Morocco", "Mozambique", "Myanmar",
+  "Namibia", "Nauru", "Nepal", "Netherlands, The", "New Zealand", "Nicaragua", "Niger", "Nigeria", "Niue",
+  "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Palestine State", "Panama", "Papua New Guinea",
+  "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Qatar", "Romania", "Russia", "Rwanda",
   "Saint Kitts and Nevis", "Saint Lucia", "Saint Vincent and the Grenadines", "Samoa", "San Marino",
   "Sao Tome and Principe", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore",
   "Slovakia", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka",
@@ -103,7 +103,7 @@ export const GeographicDigitalReachStep: FC<GeographicDigitalReachStepProps> = (
       </CardHeader>
       <CardContent className="space-y-6">
         <h3 className="text-lg font-semibold text-primary mt-4">Geographic Reach</h3>
-        
+
         <FormField
           control={control}
           name="geographicDigitalReach.operatesInMultipleStates"
@@ -178,7 +178,7 @@ export const GeographicDigitalReachStep: FC<GeographicDigitalReachStepProps> = (
             </FormItem>
           )}
         />
-        
+
         {watchExportsToOtherCountries && (
           <FormField
             control={control}
@@ -194,7 +194,7 @@ export const GeographicDigitalReachStep: FC<GeographicDigitalReachStepProps> = (
                     id="countriesServed"
                     aria-describedby="countriesServed-description"
                     aria-invalid={!!form.formState.errors.geographicDigitalReach?.countriesServed}
-                    allowCreate={false} 
+                    allowCreate={false}
                   />
                 </FormControl>
                 <FormDescription id="countriesServed-description">
@@ -208,7 +208,7 @@ export const GeographicDigitalReachStep: FC<GeographicDigitalReachStepProps> = (
 
         <FormField
           control={control}
-          name="geographicDigitalReach.hasImportExportLicense"
+          name="geographicDigitalReach.hasImportLicense"
           render={({ field }) => (
             <FormItem className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4 shadow-sm mt-4">
               <FormControl>
@@ -220,12 +220,33 @@ export const GeographicDigitalReachStep: FC<GeographicDigitalReachStepProps> = (
               </FormControl>
               <div className="space-y-1 leading-none">
                 <FormLabel htmlFor={field.name} className="font-normal">
-                  Have Import/Export License?
+                  Have Import License?
                 </FormLabel>
               </div>
             </FormItem>
           )}
         />
+        <FormField
+          control={control}
+          name="geographicDigitalReach.hasExportLicense"
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4 shadow-sm">
+              <FormControl>
+                <Checkbox
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                  id={field.name}
+                />
+              </FormControl>
+              <div className="space-y-1 leading-none">
+                <FormLabel htmlFor={field.name} className="font-normal">
+                  Have Export License?
+                </FormLabel>
+              </div>
+            </FormItem>
+          )}
+        />
+
 
         <h3 className="text-lg font-semibold text-primary mt-8">Digital Readiness</h3>
         <FormField

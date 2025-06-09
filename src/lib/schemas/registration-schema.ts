@@ -40,7 +40,7 @@ export const businessCapabilitiesSchema = z.object({
 
 // Step 3: Financial & Legal Info
 const turnoverEntrySchema = z.object({
-  financialYear: z.string().min(4, { message: "Financial year is required." }), 
+  financialYear: z.string().min(4, { message: "Financial year is required." }),
   amount: z.string().regex(/^\d+(\.\d{1,2})?$/, { message: "Invalid amount format." }).min(1, {message: "Amount is required."}),
 });
 
@@ -59,15 +59,15 @@ export const financialLegalInfoSchema = z.object({
     .refine(val => val === '' || val === undefined || /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/.test(val), {
       message: "Invalid GSTIN format if provided."
     }),
-  
+
   hasMsmeUdyam: z.boolean().default(false),
   msmeUdyamNumber: z.string().optional().or(z.literal('')),
   msmeUdyamCertificate: z.string().describe("Name of MSME/Udyam certificate file").optional().or(z.literal('')),
-  
+
   hasNsic: z.boolean().default(false),
   nsicNumber: z.string().optional().or(z.literal('')),
   nsicCertificate: z.string().describe("Name of NSIC certificate file").optional().or(z.literal('')),
-  
+
   annualTurnovers: z.array(turnoverEntrySchema).min(1, { message: "At least one annual turnover entry is required." }),
 
   netWorthAmount: z.string().regex(/^\d+(\.\d{1,2})?$/, { message: "Invalid amount format." }).min(1, { message: "Net worth amount is required." }),
@@ -100,9 +100,10 @@ export const geographicDigitalReachSchema = z.object({
   operationalStates: z.string().optional().or(z.literal('')),
   exportsToOtherCountries: z.boolean().default(false),
   countriesServed: z.string().optional().or(z.literal('')),
-  hasImportExportLicense: z.boolean().default(false), 
-  registeredOnPortals: z.boolean().default(false), 
-  hasDigitalSignature: z.boolean().default(false), 
+  hasImportLicense: z.boolean().default(false),
+  hasExportLicense: z.boolean().default(false),
+  registeredOnPortals: z.boolean().default(false),
+  hasDigitalSignature: z.boolean().default(false),
   preferredTenderLanguages: z.string().min(2, { message: "Enter preferred languages, comma-separated." }),
 }).superRefine((data, ctx) => {
   if (data.operatesInMultipleStates && (!data.operationalStates || data.operationalStates.trim().length < 2)) {

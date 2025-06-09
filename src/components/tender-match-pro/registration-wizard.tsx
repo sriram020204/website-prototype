@@ -4,13 +4,13 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { 
-  registrationSchema, 
-  RegistrationFormData, 
-  companyDetailsSchema, 
-  businessCapabilitiesSchema, 
+import {
+  registrationSchema,
+  RegistrationFormData,
+  companyDetailsSchema,
+  businessCapabilitiesSchema,
   financialLegalInfoSchema,
-  tenderExperienceSchema, 
+  tenderExperienceSchema,
   geographicDigitalReachSchema,
   declarationsUploadsSchema
 } from '@/lib/schemas/registration-schema';
@@ -34,7 +34,7 @@ const STEPS = [
   { id: 'tenderExperience', title: 'Tender Experience', component: TenderExperienceStep, schema: tenderExperienceSchema, fields: ['tenderExperience'] as const },
   { id: 'geographicDigitalReach', title: 'Geographic & Digital', component: GeographicDigitalReachStep, schema: geographicDigitalReachSchema, fields: ['geographicDigitalReach'] as const },
   { id: 'declarationsUploads', title: 'Declarations & Uploads', component: DeclarationsUploadsStep, schema: declarationsUploadsSchema, fields: ['declarationsUploads'] as const },
-  { id: 'reviewSubmit', title: 'Review & Submit', component: ReviewSubmitStep, schema: registrationSchema, fields: [] as const }, 
+  { id: 'reviewSubmit', title: 'Review & Submit', component: ReviewSubmitStep, schema: registrationSchema, fields: [] as const },
 ];
 
 const FORM_DATA_STORAGE_KEY = 'tenderMatchProRegistrationForm_v2';
@@ -46,21 +46,21 @@ export function RegistrationWizard() {
   const { toast } = useToast();
 
   const initialDefaultValues = useMemo<RegistrationFormData>(() => ({
-    companyDetails: { 
-      companyName: '', 
-      companyType: '', 
-      yearOfEstablishment: undefined, 
-      country: '', 
-      state: '', 
-      city: '', 
-      address: '', 
-      websiteUrl: '' 
+    companyDetails: {
+      companyName: '',
+      companyType: '',
+      yearOfEstablishment: undefined,
+      country: '',
+      state: '',
+      city: '',
+      address: '',
+      websiteUrl: ''
     },
-    businessCapabilities: { 
-      businessRoles: '', 
-      industrySectors: '', 
-      productServiceKeywords: '', 
-      technicalCapabilities: '', 
+    businessCapabilities: {
+      businessRoles: '',
+      industrySectors: '',
+      productServiceKeywords: '',
+      technicalCapabilities: '',
       certifications: '',
       hasNoCertifications: false,
     },
@@ -75,16 +75,16 @@ export function RegistrationWizard() {
       hasNsic: false,
       nsicNumber: '',
       nsicCertificate: '',
-      annualTurnovers: [], 
+      annualTurnovers: [],
       netWorthAmount: '',
       netWorthCurrency: '',
       isBlacklistedOrLitigation: false,
       blacklistedDetails: ''
     },
-    tenderExperience: { 
+    tenderExperience: {
       suppliedToGovtPsus: false,
       hasPastClients: false,
-      pastClients: '', 
+      pastClients: '',
       highestOrderValueFulfilled: undefined,
       tenderTypesHandled: ''
     },
@@ -93,16 +93,17 @@ export function RegistrationWizard() {
       operationalStates: '',
       exportsToOtherCountries: false,
       countriesServed: '',
-      hasImportExportLicense: false,
+      hasImportLicense: false,
+      hasExportLicense: false,
       registeredOnPortals: false,
       hasDigitalSignature: false,
       preferredTenderLanguages: ''
     },
     declarationsUploads: {
-      panUpload: '', 
-      gstUpload: '', 
-      isoCertUpload: '', 
-      bisCertUpload: '', 
+      panUpload: '',
+      gstUpload: '',
+      isoCertUpload: '',
+      bisCertUpload: '',
       otherCertificatesUpload: '',
       infoConfirmed: false,
     },
@@ -111,11 +112,11 @@ export function RegistrationWizard() {
 
   const methods = useForm<RegistrationFormData>({
     resolver: zodResolver(registrationSchema),
-    mode: 'onChange', 
+    mode: 'onChange',
     defaultValues: initialDefaultValues,
   });
 
-  useFormPersistence(methods, FORM_DATA_STORAGE_KEY, initialDefaultValues); 
+  useFormPersistence(methods, FORM_DATA_STORAGE_KEY, initialDefaultValues);
 
   useEffect(() => {
     const savedStep = localStorage.getItem(CURRENT_STEP_STORAGE_KEY);
@@ -133,9 +134,9 @@ export function RegistrationWizard() {
 
 
   const handleNext = async () => {
-    if (currentStep < STEPS.length - 1) { 
+    if (currentStep < STEPS.length - 1) {
       const currentStepFields = STEPS[currentStep].fields as (keyof RegistrationFormData)[];
-      
+
       const isValid = await methods.trigger(currentStepFields.length > 0 ? currentStepFields as any : undefined);
 
       if (isValid) {
@@ -158,11 +159,11 @@ export function RegistrationWizard() {
           variant: "destructive",
         });
       }
-    } else { 
+    } else {
       await methods.handleSubmit(onSubmit)();
     }
   };
-  
+
   const handlePrevious = () => {
     if (currentStep > 0) {
       setCurrentStep(prev => prev - 1);
@@ -172,15 +173,15 @@ export function RegistrationWizard() {
   const onSubmit = async (data: RegistrationFormData) => {
     setIsSubmitting(true);
     console.log("Form Submitted:", data);
-    await new Promise(resolve => setTimeout(resolve, 1500)); 
+    await new Promise(resolve => setTimeout(resolve, 1500));
     setIsSubmitting(false);
     toast({
       title: "Profile Submitted!",
       description: "Your company profile has been successfully submitted.",
-      className: "bg-green-500 text-white", 
+      className: "bg-green-500 text-white",
     });
     localStorage.removeItem(CURRENT_STEP_STORAGE_KEY);
-    setCurrentStep(0); 
+    setCurrentStep(0);
   };
 
   const CurrentStepComponent = STEPS[currentStep].component;
@@ -190,7 +191,7 @@ export function RegistrationWizard() {
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(onSubmit)} className="space-y-8 w-full">
         <Progress value={progressValue} className="w-full mb-6 h-3" />
-        
+
         <CurrentStepComponent form={methods} />
 
         <FormNavigation
@@ -198,7 +199,7 @@ export function RegistrationWizard() {
           totalSteps={STEPS.length}
           onNext={handleNext}
           onPrevious={handlePrevious}
-          isNextDisabled={methods.formState.isSubmitting || currentStep === STEPS.length -1 && !methods.formState.isValid && methods.formState.isSubmitted } 
+          isNextDisabled={methods.formState.isSubmitting || currentStep === STEPS.length -1 && !methods.formState.isValid && methods.formState.isSubmitted }
           isSubmitting={isSubmitting}
         />
       </form>
