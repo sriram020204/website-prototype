@@ -214,7 +214,7 @@ export const BusinessCapabilitiesStep: FC<BusinessCapabilitiesStepProps> = ({ fo
           name="businessCapabilities.hsnCodes"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>HSN Codes (Optional - for Goods)</FormLabel>
+              <FormLabel>HSN Codes (for Goods)</FormLabel>
               <FormControl>
                 <TagInput
                   {...field}
@@ -238,7 +238,7 @@ export const BusinessCapabilitiesStep: FC<BusinessCapabilitiesStepProps> = ({ fo
           name="businessCapabilities.sacCodes"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>SAC Codes (Optional - for Services)</FormLabel>
+              <FormLabel>SAC Codes (for Services)</FormLabel>
               <FormControl>
                 <TagInput
                   {...field}
@@ -280,7 +280,7 @@ export const BusinessCapabilitiesStep: FC<BusinessCapabilitiesStepProps> = ({ fo
           name="businessCapabilities.certifications"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Certifications (Optional)</FormLabel>
+              <FormLabel>Certifications</FormLabel>
               <FormControl>
                  <TagInput
                   {...field}
@@ -302,3 +302,6 @@ export const BusinessCapabilitiesStep: FC<BusinessCapabilitiesStepProps> = ({ fo
     </Card>
   );
 };
+
+
+    

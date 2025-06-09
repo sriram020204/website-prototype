@@ -50,7 +50,7 @@ const FileInputControl: FC<{ field: any; placeholder: string }> = ({ field, plac
       />
       {value && (
          <div className="mt-2 text-sm flex items-center justify-between">
-          <div className="flex items-center min-w-0">
+          <div className="flex items-center min-w-0"> 
             <span className="text-muted-foreground mr-2 shrink-0">Selected:</span>
             <span className="truncate break-all" title={value}>{value}</span>
           </div>
@@ -298,7 +298,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
             name="financialLegalInfo.netWorthAmount"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Net Worth (Optional)</FormLabel>
+                <FormLabel>Net Worth Amount</FormLabel>
                 <FormControl>
                   <Input type="text" placeholder="e.g., 1000000" {...field} />
                 </FormControl>
@@ -311,7 +311,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
             name="financialLegalInfo.netWorthCurrency"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Net Worth & Annual Turnover Currency (Optional)</FormLabel>
+                <FormLabel>Net Worth & Annual Turnover Currency</FormLabel>
                  <Select onValueChange={field.onChange} value={field.value || ''}>
                     <FormControl>
                     <SelectTrigger>
@@ -443,5 +443,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
     </Card>
   );
 };
+
+    
 
     

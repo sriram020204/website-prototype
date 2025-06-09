@@ -82,7 +82,7 @@ export const DeclarationsUploadsStep: FC<DeclarationsUploadsStepProps> = ({ form
           name="declarationsUploads.gstUpload"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>GST Certificate (Optional)</FormLabel>
+              <FormLabel>GST Certificate</FormLabel>
               <FormControl>
                 <FileInputControl field={field} placeholder="GST Certificate file" />
               </FormControl>
@@ -95,7 +95,7 @@ export const DeclarationsUploadsStep: FC<DeclarationsUploadsStepProps> = ({ form
           name="declarationsUploads.isoCertUpload"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>ISO Certificate(s) (Optional)</FormLabel>
+              <FormLabel>ISO Certificate(s)</FormLabel>
               <FormControl>
                 <FileInputControl field={field} placeholder="ISO Certificate file(s)" />
               </FormControl>
@@ -109,7 +109,7 @@ export const DeclarationsUploadsStep: FC<DeclarationsUploadsStepProps> = ({ form
           name="declarationsUploads.bisCertUpload"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>BIS Certificate(s) (Optional)</FormLabel>
+              <FormLabel>BIS Certificate(s)</FormLabel>
               <FormControl>
                 <FileInputControl field={field} placeholder="BIS Certificate file(s)" />
               </FormControl>
@@ -123,7 +123,7 @@ export const DeclarationsUploadsStep: FC<DeclarationsUploadsStepProps> = ({ form
           name="declarationsUploads.otherCertificatesUpload"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Other Listed Certificates (Optional)</FormLabel>
+              <FormLabel>Other Listed Certificates</FormLabel>
               <FormControl>
                 <FileInputControl field={field} placeholder="Other certificate file(s)" />
               </FormControl>
@@ -138,7 +138,7 @@ export const DeclarationsUploadsStep: FC<DeclarationsUploadsStepProps> = ({ form
           control={form.control}
           name="declarationsUploads.infoConfirmed"
           render={({ field }) => (
-            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow">
+            <FormItem className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4 shadow">
               <FormControl>
                 <Checkbox
                   checked={field.value}
@@ -159,3 +159,6 @@ export const DeclarationsUploadsStep: FC<DeclarationsUploadsStepProps> = ({ form
     </Card>
   );
 };
+
+
+    

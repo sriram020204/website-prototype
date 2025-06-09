@@ -53,7 +53,7 @@ export const TenderExperienceStep: FC<TenderExperienceStepProps> = ({ form }) =>
           name="tenderExperience.pastClients"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Past Clients (Optional)</FormLabel>
+              <FormLabel>Past Clients</FormLabel>
               <FormControl>
                 <Textarea rows={3} placeholder="e.g., Ministry of Defence, Tata Motors, Reliance Industries" {...field} />
               </FormControl>
@@ -67,7 +67,7 @@ export const TenderExperienceStep: FC<TenderExperienceStepProps> = ({ form }) =>
           name="tenderExperience.purchaseOrders"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Purchase Orders (Optional)</FormLabel>
+              <FormLabel>Purchase Orders</FormLabel>
               <FormControl>
                 <Input type="text" placeholder="e.g., PO_Ref_123.pdf, ClientX_Order.docx" {...field} />
               </FormControl>
@@ -81,7 +81,7 @@ export const TenderExperienceStep: FC<TenderExperienceStepProps> = ({ form }) =>
           name="tenderExperience.performanceReports"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Performance Reports (Optional)</FormLabel>
+              <FormLabel>Performance Reports</FormLabel>
               <FormControl>
                 <Input type="text" placeholder="e.g., Q1_Report.pdf, ProjectAlpha_Completion.doc" {...field} />
               </FormControl>
@@ -96,8 +96,8 @@ export const TenderExperienceStep: FC<TenderExperienceStepProps> = ({ form }) =>
           render={({ field }) => (
             <FormItem>
               <FormLabel>
-                Highest Order Value Fulfilled (Optional
-                {netWorthCurrency ? `, in ${netWorthCurrency}` : ', in your primary currency'})
+                Highest Order Value Fulfilled
+                {netWorthCurrency ? `, in ${netWorthCurrency}` : ', in your primary currency'}
               </FormLabel>
               <FormControl>
                  <Input 
@@ -117,7 +117,7 @@ export const TenderExperienceStep: FC<TenderExperienceStepProps> = ({ form }) =>
           name="tenderExperience.tenderTypesHandled"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Tender Types Handled (Optional)</FormLabel>
+              <FormLabel>Tender Types Handled</FormLabel>
               <FormControl>
                 <Textarea rows={2} placeholder="e.g., Goods, Services, EPC, AMC" {...field} />
               </FormControl>
@@ -130,3 +130,6 @@ export const TenderExperienceStep: FC<TenderExperienceStepProps> = ({ form }) =>
     </Card>
   );
 };
+
+
+    
