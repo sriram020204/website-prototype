@@ -25,6 +25,12 @@ export const businessCapabilitiesSchema = z.object({
 });
 
 // Step 3: Financial & Legal Info
+const turnoverEntrySchema = z.object({
+  financialYear: z.string().min(4, { message: "Financial year is required (e.g., 2022-23 or YYYY)." }),
+  amount: z.string().regex(/^\d+(\.\d{1,2})?$/, { message: "Invalid amount format." }).min(1, {message: "Amount is required."}),
+  currency: z.string().min(1, { message: "Currency is required." }),
+});
+
 export const financialLegalInfoSchema = z.object({
   hasPan: z.boolean().default(false),
   pan: z.string().regex(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, { message: "Invalid PAN format." }).optional().or(z.literal('')),
@@ -36,12 +42,9 @@ export const financialLegalInfoSchema = z.object({
   hasNsic: z.boolean().default(false),
   nsicNumber: z.string().optional().or(z.literal('')),
   nsicCertificate: z.string().describe("Name or path of NSIC certificate file").optional().or(z.literal('')),
-  annualTurnoverFY1Amount: z.string().regex(/^\d+(\.\d{1,2})?$/, { message: "Invalid amount format." }).optional().or(z.literal('')),
-  annualTurnoverFY1Currency: z.string().optional().or(z.literal('')),
-  annualTurnoverFY2Amount: z.string().regex(/^\d+(\.\d{1,2})?$/, { message: "Invalid amount format." }).optional().or(z.literal('')),
-  annualTurnoverFY2Currency: z.string().optional().or(z.literal('')),
-  annualTurnoverFY3Amount: z.string().regex(/^\d+(\.\d{1,2})?$/, { message: "Invalid amount format." }).optional().or(z.literal('')),
-  annualTurnoverFY3Currency: z.string().optional().or(z.literal('')),
+  
+  annualTurnovers: z.array(turnoverEntrySchema).optional(),
+
   netWorthAmount: z.string().regex(/^\d+(\.\d{1,2})?$/, { message: "Invalid amount format." }).optional().or(z.literal('')),
   netWorthCurrency: z.string().optional().or(z.literal('')),
   isBlacklistedOrLitigation: z.boolean().default(false),
@@ -90,3 +93,4 @@ export const registrationSchema = z.object({
 }).strict();
 
 export type RegistrationFormData = z.infer<typeof registrationSchema>;
+export type TurnoverEntry = z.infer<typeof turnoverEntrySchema>;

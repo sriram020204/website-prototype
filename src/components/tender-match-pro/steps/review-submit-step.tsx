@@ -3,7 +3,7 @@
 
 import type { FC } from 'react';
 import type { UseFormReturn } from 'react-hook-form';
-import { RegistrationFormData } from '@/lib/schemas/registration-schema';
+import { RegistrationFormData, TurnoverEntry } from '@/lib/schemas/registration-schema';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Separator } from '@/components/ui/separator';
@@ -23,12 +23,20 @@ const formatDisplayData = (data: any, fieldName?: string): string => {
         'msmeUdyamNumber', 'msmeUdyamCertificate', // FinancialLegal (MSME/Udyam)
         'nsicNumber', 'nsicCertificate', // FinancialLegal (NSIC)
         'blacklistedDetails', // FinancialLegal
-        'annualTurnoverFY1Amount', 'annualTurnoverFY2Amount', 'annualTurnoverFY3Amount', 'netWorthAmount', // FinancialLegal (amounts)
+        'netWorthAmount', // FinancialLegal (amounts)
         'pastClients', 'purchaseOrders', 'performanceReports', 'tenderTypesHandled', // TenderExperience
         'panUpload', 'gstUpload', 'isoCertUpload', 'bisCertUpload', 'otherCertificatesUpload' // Declarations
     ];
+    // For individual fields within an annual turnover entry
+    if (fieldName && ['financialYear', 'amount', 'currency'].includes(fieldName) && data === '') return 'Not Provided';
     if (fieldName && optionalTextLikeFields.includes(fieldName)) return 'Not Provided';
     return 'N/A'; 
+  }
+   if (Array.isArray(data) && fieldName === 'annualTurnovers') { // Special handling for annualTurnovers
+    if (data.length === 0) return 'No turnover entries provided.';
+    return data.map((entry: TurnoverEntry, index: number) => 
+      `Entry ${index + 1}: FY: ${formatDisplayData(entry.financialYear, 'financialYear')}, Amount: ${formatDisplayData(entry.amount, 'amount')} ${formatDisplayData(entry.currency, 'currency')}`
+    ).join('\n');
   }
   if (typeof data === 'object' && data !== null) {
     return Object.entries(data)
@@ -52,14 +60,37 @@ const renderSectionData = (title: string, data: Record<string, any> | undefined)
     <div className="mb-6">
       <h3 className="text-lg font-semibold text-primary mb-2">{title}</h3>
       <div className="p-4 bg-muted/50 rounded-md text-sm space-y-2">
-        {Object.entries(data).map(([key, value]) => (
-          <div key={key} className="grid grid-cols-1 md:grid-cols-3 gap-1 md:gap-2 items-start">
-            <span className="font-medium col-span-1 capitalize break-words">
-              {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}:
-            </span>
-            <span className="col-span-1 md:col-span-2 whitespace-pre-wrap break-words">{formatDisplayData(value, key)}</span>
-          </div>
-        ))}
+        {Object.entries(data).map(([key, value]) => {
+          const displayKey = key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+          
+          if (key === 'annualTurnovers' && Array.isArray(value)) {
+            return (
+              <div key={key} className="space-y-1">
+                <span className="font-medium col-span-1 capitalize break-words">{displayKey}:</span>
+                {value.length > 0 ? (
+                  <ul className="list-disc pl-5 space-y-0.5">
+                    {value.map((entry: TurnoverEntry, index: number) => (
+                      <li key={index} className="whitespace-pre-wrap break-words">
+                        {`FY: ${formatDisplayData(entry.financialYear, 'financialYear')}, Amount: ${formatDisplayData(entry.amount, 'amount')} ${formatDisplayData(entry.currency, 'currency')}`}
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <span className="col-span-1 md:col-span-2 whitespace-pre-wrap break-words"> No turnover entries provided.</span>
+                )}
+              </div>
+            );
+          }
+
+          return (
+            <div key={key} className="grid grid-cols-1 md:grid-cols-3 gap-1 md:gap-2 items-start">
+              <span className="font-medium col-span-1 capitalize break-words">
+                {displayKey}:
+              </span>
+              <span className="col-span-1 md:col-span-2 whitespace-pre-wrap break-words">{formatDisplayData(value, key)}</span>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

@@ -76,12 +76,7 @@ export function RegistrationWizard() {
       hasNsic: false,
       nsicNumber: '',
       nsicCertificate: '',
-      annualTurnoverFY1Amount: '',
-      annualTurnoverFY1Currency: '',
-      annualTurnoverFY2Amount: '',
-      annualTurnoverFY2Currency: '',
-      annualTurnoverFY3Amount: '',
-      annualTurnoverFY3Currency: '',
+      annualTurnovers: [], // Initialize as empty array
       netWorthAmount: '',
       netWorthCurrency: '',
       isBlacklistedOrLitigation: false,

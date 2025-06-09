@@ -2,7 +2,7 @@
 "use client";
 
 import type { FC } from 'react';
-import type { UseFormReturn } from 'react-hook-form';
+import { useFieldArray, type UseFormReturn } from 'react-hook-form';
 import type { RegistrationFormData } from '@/lib/schemas/registration-schema';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from '@/components/ui/form';
@@ -11,13 +11,14 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
-import { X, Landmark } from 'lucide-react';
+import { X, Landmark, Trash2, PlusCircle } from 'lucide-react';
 
 interface FinancialLegalInfoStepProps {
   form: UseFormReturn<RegistrationFormData>;
 }
 
-const CURRENCY_OPTIONS = ["USD", "INR"];
+const CURRENCY_OPTIONS = ["USD", "INR", "EUR", "GBP", "JPY", "AUD", "CAD", "CHF", "CNY", "SGD", "AED"];
+
 
 const FileInputControl: FC<{ field: any; placeholder: string }> = ({ field, placeholder }) => {
   const { name, value, onChange, ref } = field;
@@ -54,55 +55,18 @@ const FileInputControl: FC<{ field: any; placeholder: string }> = ({ field, plac
 };
 
 export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }) => {
-  const watchIsBlacklisted = form.watch('financialLegalInfo.isBlacklistedOrLitigation');
-  const watchHasPan = form.watch('financialLegalInfo.hasPan');
-  const watchHasGstin = form.watch('financialLegalInfo.hasGstin');
-  const watchHasMsmeUdyam = form.watch('financialLegalInfo.hasMsmeUdyam');
-  const watchHasNsic = form.watch('financialLegalInfo.hasNsic');
+  const { control, watch, setValue } = form;
 
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "financialLegalInfo.annualTurnovers",
+  });
 
-  const renderTurnoverFields = (fyLabel: string, amountFieldName: keyof RegistrationFormData['financialLegalInfo'], currencyFieldName: keyof RegistrationFormData['financialLegalInfo'] ) => (
-    <div className="space-y-2 p-3 border rounded-md">
-      <FormLabel className="text-md font-semibold">{fyLabel}</FormLabel>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <FormField
-          control={form.control}
-          name={amountFieldName}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Amount</FormLabel>
-              <FormControl>
-                <Input type="text" placeholder="e.g., 5000000" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name={currencyFieldName}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Currency</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value || ''}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select currency" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {CURRENCY_OPTIONS.map(currency => (
-                    <SelectItem key={currency} value={currency}>{currency}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      </div>
-    </div>
-  );
+  const watchIsBlacklisted = watch('financialLegalInfo.isBlacklistedOrLitigation');
+  const watchHasPan = watch('financialLegalInfo.hasPan');
+  const watchHasGstin = watch('financialLegalInfo.hasGstin');
+  const watchHasMsmeUdyam = watch('financialLegalInfo.hasMsmeUdyam');
+  const watchHasNsic = watch('financialLegalInfo.hasNsic');
   
   return (
     <Card className="w-full shadow-lg">
@@ -115,7 +79,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
       </CardHeader>
       <CardContent className="space-y-6">
         <FormField
-          control={form.control}
+          control={control}
           name="financialLegalInfo.hasPan"
           render={({ field }) => (
             <FormItem className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4 shadow-sm">
@@ -125,7 +89,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
                   onCheckedChange={(checked) => {
                     field.onChange(checked);
                     if (!checked) {
-                      form.setValue('financialLegalInfo.pan', '', { shouldValidate: true });
+                      setValue('financialLegalInfo.pan', '', { shouldValidate: true });
                     }
                   }}
                   id={field.name}
@@ -141,7 +105,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
         />
         {watchHasPan && (
           <FormField
-            control={form.control}
+            control={control}
             name="financialLegalInfo.pan"
             render={({ field }) => (
               <FormItem className="pl-10"> 
@@ -156,7 +120,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
         )}
 
         <FormField
-          control={form.control}
+          control={control}
           name="financialLegalInfo.hasGstin"
           render={({ field }) => (
              <FormItem className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4 shadow-sm">
@@ -166,7 +130,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
                   onCheckedChange={(checked) => {
                     field.onChange(checked);
                     if (!checked) {
-                      form.setValue('financialLegalInfo.gstin', '', { shouldValidate: true });
+                      setValue('financialLegalInfo.gstin', '', { shouldValidate: true });
                     }
                   }}
                   id={field.name}
@@ -182,7 +146,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
         />
         {watchHasGstin && (
           <FormField
-            control={form.control}
+            control={control}
             name="financialLegalInfo.gstin"
             render={({ field }) => (
               <FormItem className="pl-10"> 
@@ -197,7 +161,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
         )}
         
         <FormField
-          control={form.control}
+          control={control}
           name="financialLegalInfo.hasMsmeUdyam"
           render={({ field }) => (
             <FormItem className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4 shadow-sm">
@@ -207,8 +171,8 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
                   onCheckedChange={(checked) => {
                     field.onChange(checked);
                     if (!checked) {
-                      form.setValue('financialLegalInfo.msmeUdyamNumber', '', { shouldValidate: true });
-                      form.setValue('financialLegalInfo.msmeUdyamCertificate', '', { shouldValidate: true });
+                      setValue('financialLegalInfo.msmeUdyamNumber', '', { shouldValidate: true });
+                      setValue('financialLegalInfo.msmeUdyamCertificate', '', { shouldValidate: true });
                     }
                   }}
                   id={field.name}
@@ -223,12 +187,12 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
           )}
         />
         {watchHasMsmeUdyam && (
-          <>
+          <div className="pl-10 space-y-4">
             <FormField
-              control={form.control}
+              control={control}
               name="financialLegalInfo.msmeUdyamNumber"
               render={({ field }) => (
-                <FormItem className="pl-10"> 
+                <FormItem> 
                   <FormLabel>MSME/Udyam Number (Optional)</FormLabel>
                   <FormControl>
                     <Input type="text" placeholder="Enter MSME/Udyam registration number" {...field} />
@@ -238,10 +202,10 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
               )}
             />
             <FormField
-              control={form.control}
+              control={control}
               name="financialLegalInfo.msmeUdyamCertificate"
               render={({ field }) => (
-                <FormItem className="pl-10"> 
+                <FormItem> 
                   <FormLabel>MSME/Udyam Certificate File Name (Optional)</FormLabel>
                   <FormControl>
                      <FileInputControl field={field} placeholder="MSME/Udyam Certificate file" />
@@ -251,11 +215,11 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
                 </FormItem>
               )}
             />
-          </>
+          </div>
         )}
 
         <FormField
-          control={form.control}
+          control={control}
           name="financialLegalInfo.hasNsic"
           render={({ field }) => (
              <FormItem className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4 shadow-sm">
@@ -265,8 +229,8 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
                   onCheckedChange={(checked) => {
                     field.onChange(checked);
                     if (!checked) {
-                      form.setValue('financialLegalInfo.nsicNumber', '', { shouldValidate: true });
-                      form.setValue('financialLegalInfo.nsicCertificate', '', { shouldValidate: true });
+                      setValue('financialLegalInfo.nsicNumber', '', { shouldValidate: true });
+                      setValue('financialLegalInfo.nsicCertificate', '', { shouldValidate: true });
                     }
                   }}
                   id={field.name}
@@ -281,12 +245,12 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
           )}
         />
         {watchHasNsic && (
-          <>
+          <div className="pl-10 space-y-4">
             <FormField
-              control={form.control}
+              control={control}
               name="financialLegalInfo.nsicNumber"
               render={({ field }) => (
-                <FormItem className="pl-10"> 
+                <FormItem> 
                   <FormLabel>NSIC Number (Optional)</FormLabel>
                   <FormControl>
                     <Input type="text" placeholder="Enter NSIC registration number" {...field} />
@@ -296,10 +260,10 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
               )}
             />
             <FormField
-              control={form.control}
+              control={control}
               name="financialLegalInfo.nsicCertificate"
               render={({ field }) => (
-                <FormItem className="pl-10"> 
+                <FormItem> 
                   <FormLabel>NSIC Certificate File Name (Optional)</FormLabel>
                   <FormControl>
                      <FileInputControl field={field} placeholder="NSIC Certificate file" />
@@ -309,19 +273,94 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
                 </FormItem>
               )}
             />
-          </>
+          </div>
         )}
         
         <div className="space-y-4">
-          <h4 className="text-lg font-medium">Annual Turnover for Last 3 Financial Years (Optional)</h4>
-          {renderTurnoverFields("FY1 (e.g., 2022-23)", "financialLegalInfo.annualTurnoverFY1Amount", "financialLegalInfo.annualTurnoverFY1Currency")}
-          {renderTurnoverFields("FY2 (e.g., 2021-22)", "financialLegalInfo.annualTurnoverFY2Amount", "financialLegalInfo.annualTurnoverFY2Currency")}
-          {renderTurnoverFields("FY3 (e.g., 2020-21)", "financialLegalInfo.annualTurnoverFY3Amount", "financialLegalInfo.annualTurnoverFY3Currency")}
+          <h4 className="text-lg font-medium">Annual Turnover (Optional)</h4>
+          {fields.map((item, index) => (
+            <div key={item.id} className="p-4 border rounded-md space-y-4 relative">
+              <FormLabel className="text-md font-semibold block mb-2">Turnover Entry #{index + 1}</FormLabel>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
+                <FormField
+                  control={control}
+                  name={`financialLegalInfo.annualTurnovers.${index}.financialYear`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Financial Year</FormLabel>
+                      <FormControl>
+                        <Input type="text" placeholder="e.g., 2022-23 or YYYY" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={control}
+                  name={`financialLegalInfo.annualTurnovers.${index}.amount`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Amount</FormLabel>
+                      <FormControl>
+                        <Input type="text" placeholder="e.g., 5000000" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={control}
+                  name={`financialLegalInfo.annualTurnovers.${index}.currency`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Currency</FormLabel>
+                      <Select onValueChange={field.onChange} value={field.value || ''}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select currency" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {CURRENCY_OPTIONS.map(currency => (
+                            <SelectItem key={currency} value={currency}>{currency}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <Button
+                type="button"
+                variant="destructive"
+                size="sm"
+                onClick={() => remove(index)}
+                className="absolute top-2 right-2"
+                aria-label={`Remove turnover entry ${index + 1}`}
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </div>
+          ))}
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => append({ financialYear: '', amount: '', currency: '' })}
+            className="mt-2"
+          >
+            <PlusCircle className="mr-2 h-4 w-4" />
+            Add Turnover Year
+          </Button>
+           <FormDescription>
+             You can add multiple financial year turnover entries. Please provide accurate figures.
+           </FormDescription>
         </div>
+
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
            <FormField
-            control={form.control}
+            control={control}
             name="financialLegalInfo.netWorthAmount"
             render={({ field }) => (
               <FormItem>
@@ -334,7 +373,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
             )}
           />
           <FormField
-            control={form.control}
+            control={control}
             name="financialLegalInfo.netWorthCurrency"
             render={({ field }) => (
               <FormItem>
@@ -358,7 +397,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
         </div>
         
         <FormField
-          control={form.control}
+          control={control}
           name="financialLegalInfo.isBlacklistedOrLitigation"
           render={({ field }) => (
             <FormItem className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4 shadow-sm">
@@ -368,7 +407,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
                   onCheckedChange={(checked) => {
                     field.onChange(checked)
                     if (!checked) {
-                        form.setValue('financialLegalInfo.blacklistedDetails', '', { shouldValidate: true });
+                        setValue('financialLegalInfo.blacklistedDetails', '', { shouldValidate: true });
                     }
                   }}
                   id={field.name}
@@ -384,7 +423,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
         />
         {watchIsBlacklisted && (
           <FormField
-            control={form.control}
+            control={control}
             name="financialLegalInfo.blacklistedDetails"
             render={({ field }) => (
               <FormItem className="pl-10"> 
