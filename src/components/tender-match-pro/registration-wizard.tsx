@@ -85,8 +85,8 @@ export function RegistrationWizard() {
       suppliedToGovtPsus: false,
       hasPastClients: false,
       pastClients: '', 
-      purchaseOrders: '', 
-      performanceReports: '', 
+      // purchaseOrders: '', 
+      // performanceReports: '', 
       highestOrderValueFulfilled: undefined,
       tenderTypesHandled: ''
     },

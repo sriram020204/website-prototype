@@ -46,14 +46,14 @@ const TENDER_TYPE_OPTIONS = [
   "Renewable Energy System Installation (Solar, Wind, etc.)", "Solid Waste Management and Recycling Services",
   "Water Treatment Plant Construction and Operation", "Biomedical Waste Disposal Services",
   "Energy Efficiency Improvement Projects", "Green Building Certification and Consultancy", "Statutory Audit Services",
-  "Internal Audit and Risk Assessment Services", "Financial Due Dilation Services",
+  "Internal Audit and Risk Assessment Services", "Financial Due Diligence Services",
   "Insurance and Risk Management Services", "Bookkeeping and Accounting Services",
   "Payroll Processing Services", "Vocational and Skill Development Training Programs",
   "Educational Content and Curriculum Development", "Classroom Technology Deployment Projects",
   "Training and Capacity Building Programs", "E-learning and Digital Education Solutions",
   "Scientific Research and Innovation Projects", "Product Development and Prototyping Services",
   "Laboratory Testing and Certification Services", "Academic Research Support Services", "Pilot Study and Field Testing Projects"
-].filter((value, index, self) => self.indexOf(value) === index) // Ensure unique values
+].filter((value, index, self) => self.indexOf(value) === index)
  .sort();
 
 
@@ -139,34 +139,6 @@ export const TenderExperienceStep: FC<TenderExperienceStepProps> = ({ form }) =>
 
         <FormField
           control={control}
-          name="tenderExperience.purchaseOrders"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Purchase Orders (File Names)</FormLabel>
-              <FormControl>
-                <Input type="text" placeholder="e.g., PO_Ref_123.pdf, ClientX_Order.docx" {...field} />
-              </FormControl>
-              <FormDescription>Required. Enter file names separated by commas. Upload actual files in the 'Declarations & Uploads' step.</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={control}
-          name="tenderExperience.performanceReports"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Performance Reports (File Names)</FormLabel>
-              <FormControl>
-                <Input type="text" placeholder="e.g., Q1_Report.pdf, ProjectAlpha_Completion.doc" {...field} />
-              </FormControl>
-              <FormDescription>Required. Enter file names separated by commas. Upload actual files in the 'Declarations & Uploads' step.</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={control}
           name="tenderExperience.highestOrderValueFulfilled"
           render={({ field }) => (
             <FormItem>
@@ -215,4 +187,3 @@ export const TenderExperienceStep: FC<TenderExperienceStepProps> = ({ form }) =>
     </Card>
   );
 };
-

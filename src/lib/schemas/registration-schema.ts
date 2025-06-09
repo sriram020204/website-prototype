@@ -40,7 +40,7 @@ export const businessCapabilitiesSchema = z.object({
 
 // Step 3: Financial & Legal Info
 const turnoverEntrySchema = z.object({
-  financialYear: z.string().min(4, { message: "Financial year is required." }), // e.g. "2023-24"
+  financialYear: z.string().min(4, { message: "Financial year is required." }), // e.g. "2024-25"
   amount: z.string().regex(/^\d+(\.\d{1,2})?$/, { message: "Invalid amount format." }).min(1, {message: "Amount is required."}),
 });
 
@@ -82,8 +82,8 @@ export const tenderExperienceSchema = z.object({
   suppliedToGovtPsus: z.boolean().default(false),
   hasPastClients: z.boolean().default(false),
   pastClients: z.string().optional().or(z.literal('')),
-  purchaseOrders: z.string().min(1, {message: "Purchase order file names are required."}).describe("Names of PO files, comma-separated"),
-  performanceReports: z.string().min(1, {message: "Performance report file names are required."}).describe("Names of report files, comma-separated"),
+  // purchaseOrders: z.string().min(1, {message: "Purchase order file names are required."}).describe("Names of PO files, comma-separated"),
+  // performanceReports: z.string().min(1, {message: "Performance report file names are required."}).describe("Names of report files, comma-separated"),
   highestOrderValueFulfilled: z.coerce.number().min(0, {message: "Highest order value fulfilled is required (can be 0)."}),
   tenderTypesHandled: z.string().min(3, { message: "Tender types handled are required." }),
 }).superRefine((data, ctx) => {
