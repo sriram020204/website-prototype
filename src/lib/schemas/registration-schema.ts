@@ -1,3 +1,4 @@
+
 import { z } from 'zod';
 
 // Step 1: Company Details
@@ -14,14 +15,15 @@ export const companyDetailsSchema = z.object({
 
 // Step 2: Business Capabilities
 export const businessCapabilitiesSchema = z.object({
-  businessRoles: z.string().min(3, { message: "Please enter at least one business role (comma-separated)." }), // Multi-select chips (as Textarea)
-  industrySectors: z.string().min(3, { message: "Please enter at least one industry sector (comma-separated)." }), // Multi-select chips (as Textarea)
-  productServiceKeywords: z.string().min(3, { message: "Please enter product/service keywords (comma-separated)." }), // Tag input (as Textarea)
-  hsnSacCodes: z.string().optional().or(z.literal('')), // Tag input (as Textarea, optional)
-  technicalCapabilities: z.string().min(10, { message: "Technical capabilities must be at least 10 characters." }), // Textarea or tag
+  businessRoles: z.string().min(3, { message: "Please enter at least one business role (comma-separated)." }),
+  industrySectors: z.string().min(3, { message: "Please enter at least one industry sector (comma-separated)." }),
+  productServiceKeywords: z.string().min(3, { message: "Please enter product/service keywords (comma-separated)." }),
+  hsnCodes: z.string().describe("HSN (Harmonized System of Nomenclature) codes for goods").optional().or(z.literal('')),
+  sacCodes: z.string().describe("SAC (Services Accounting Code) codes for services").optional().or(z.literal('')),
+  technicalCapabilities: z.string().min(10, { message: "Technical capabilities must be at least 10 characters." }),
   monthlyCapacityValue: z.coerce.number().min(0, { message: "Capacity value must be non-negative." }).optional(),
   monthlyCapacityUnit: z.string().min(1, { message: "Capacity unit is required if value is provided." }).optional().or(z.literal('')),
-  certifications: z.string().optional().or(z.literal('')), // "upload with multi-select" -> Textarea for names
+  certifications: z.string().optional().or(z.literal('')),
 });
 
 // Step 3: Financial & Legal Info
@@ -29,9 +31,9 @@ export const financialLegalInfoSchema = z.object({
   pan: z.string().regex(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, { message: "Invalid PAN format." }),
   gstin: z.string().regex(/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/, { message: "Invalid GSTIN format." }).optional().or(z.literal('')),
   msmeUdyamNsicNumber: z.string().optional().or(z.literal('')),
-  msmeUdyamNsicCertificate: z.string().describe("Name or path of MSME/Udyam/NSIC certificate file").optional().or(z.literal('')), // "upload" -> text
+  msmeUdyamNsicCertificate: z.string().describe("Name or path of MSME/Udyam/NSIC certificate file").optional().or(z.literal('')),
   annualTurnoverFY1Amount: z.string().regex(/^\d+(\.\d{1,2})?$/, { message: "Invalid amount format." }).optional().or(z.literal('')),
-  annualTurnoverFY1Currency: z.string().optional().or(z.literal('')), // USD/INR
+  annualTurnoverFY1Currency: z.string().optional().or(z.literal('')),
   annualTurnoverFY2Amount: z.string().regex(/^\d+(\.\d{1,2})?$/, { message: "Invalid amount format." }).optional().or(z.literal('')),
   annualTurnoverFY2Currency: z.string().optional().or(z.literal('')),
   annualTurnoverFY3Amount: z.string().regex(/^\d+(\.\d{1,2})?$/, { message: "Invalid amount format." }).optional().or(z.literal('')),
@@ -39,27 +41,27 @@ export const financialLegalInfoSchema = z.object({
   netWorthAmount: z.string().regex(/^\d+(\.\d{1,2})?$/, { message: "Invalid amount format." }).optional().or(z.literal('')),
   netWorthCurrency: z.string().optional().or(z.literal('')),
   isBlacklistedOrLitigation: z.boolean().default(false),
-  blacklistedDetails: z.string().optional().or(z.literal('')), // Optional textarea
+  blacklistedDetails: z.string().optional().or(z.literal('')),
 });
 
 // Step 4: Tender Experience
 export const tenderExperienceSchema = z.object({
   suppliedToGovtPsus: z.boolean().default(false),
-  pastClients: z.string().min(3, { message: "Enter past clients, comma-separated." }).optional().or(z.literal('')), // Text list
-  purchaseOrders: z.string().describe("Names of PO files, comma-separated").optional().or(z.literal('')), // Multi-upload -> text
-  performanceReports: z.string().describe("Names of report files, comma-separated").optional().or(z.literal('')), // Multi-upload -> text
+  pastClients: z.string().min(3, { message: "Enter past clients, comma-separated." }).optional().or(z.literal('')),
+  purchaseOrders: z.string().describe("Names of PO files, comma-separated").optional().or(z.literal('')),
+  performanceReports: z.string().describe("Names of report files, comma-separated").optional().or(z.literal('')),
   highestOrderValueFulfilled: z.coerce.number().min(0).optional(),
-  tenderTypesHandled: z.string().min(3, { message: "Enter tender types, comma-separated." }).optional().or(z.literal('')), // Multi-select -> Textarea
+  tenderTypesHandled: z.string().min(3, { message: "Enter tender types, comma-separated." }).optional().or(z.literal('')),
 });
 
 // Step 5: Geographic Reach & Digital Readiness
 export const geographicDigitalReachSchema = z.object({
-  operationalStates: z.string().min(2, { message: "Enter operational states, comma-separated." }), // Multi-select -> Textarea
-  countriesServed: z.string().min(2, { message: "Enter countries served, comma-separated." }), // Multi-select -> Textarea
+  operationalStates: z.string().min(2, { message: "Enter operational states, comma-separated." }),
+  countriesServed: z.string().min(2, { message: "Enter countries served, comma-separated." }),
   hasImportExportLicense: z.boolean().default(false),
-  registeredOnPortals: z.boolean().default(false), // GeM / CPPP / State Portals
+  registeredOnPortals: z.boolean().default(false),
   hasDigitalSignature: z.boolean().default(false),
-  preferredTenderLanguages: z.string().min(2, { message: "Enter preferred languages, comma-separated." }), // Multi-select -> Textarea
+  preferredTenderLanguages: z.string().min(2, { message: "Enter preferred languages, comma-separated." }),
 });
 
 // Step 6: Declarations & Uploads
@@ -79,10 +81,10 @@ export const declarationsUploadsSchema = z.object({
 export const registrationSchema = z.object({
   companyDetails: companyDetailsSchema,
   businessCapabilities: businessCapabilitiesSchema,
-  financialLegalInfo: financialLegalInfoSchema, // Renamed from financialInformation
+  financialLegalInfo: financialLegalInfoSchema,
   tenderExperience: tenderExperienceSchema,
-  geographicDigitalReach: geographicDigitalReachSchema, // New combined step
-  declarationsUploads: declarationsUploadsSchema, // New step
-}).strict(); // Using strict to catch any unexpected fields
+  geographicDigitalReach: geographicDigitalReachSchema,
+  declarationsUploads: declarationsUploadsSchema,
+}).strict();
 
 export type RegistrationFormData = z.infer<typeof registrationSchema>;

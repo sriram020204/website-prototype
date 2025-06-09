@@ -4,42 +4,33 @@
 import type { FC } from 'react';
 import type { UseFormReturn } from 'react-hook-form';
 import { RegistrationFormData } from '@/lib/schemas/registration-schema';
-// ValidateProfileOutput removed as AI validation is gone
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Separator } from '@/components/ui/separator';
-// Icons for AI validation removed: CheckCircle, AlertTriangle, Loader2
-import { Info } from 'lucide-react'; // Using Info for a general message
+import { Info } from 'lucide-react'; 
 
 interface ReviewSubmitStepProps {
   form: UseFormReturn<RegistrationFormData>;
-  // AI related props removed
-  // aiValidationResult: ValidateProfileOutput | null;
-  // isAIValidating: boolean;
 }
 
-// Helper function to format data for display
 const formatDisplayData = (data: any, fieldName?: string): string => {
   if (typeof data === 'boolean') return data ? 'Yes' : 'No';
   if (typeof data === 'number') return data.toString();
   if (data === null || data === undefined || data === '') {
-    // For specific fields that are optional file uploads or descriptions, show "Not Provided" if empty.
     const optionalTextLikeFields = [
-        'hsnSacCodes', 'certifications', // BusinessCapabilities
+        'hsnCodes', 'sacCodes', 'certifications', // BusinessCapabilities (hsnSacCodes replaced)
         'msmeUdyamNsicNumber', 'msmeUdyamNsicCertificate', 'blacklistedDetails', // FinancialLegal
         'annualTurnoverFY1Amount', 'annualTurnoverFY2Amount', 'annualTurnoverFY3Amount', 'netWorthAmount', // FinancialLegal (amounts)
         'pastClients', 'purchaseOrders', 'performanceReports', 'tenderTypesHandled', // TenderExperience
         'panUpload', 'gstUpload', 'msmeCertUpload', 'isoCertUpload', 'bisCertUpload', 'blacklistingDeclarationUpload' // Declarations
     ];
     if (fieldName && optionalTextLikeFields.includes(fieldName)) return 'Not Provided';
-    return 'N/A'; // General placeholder for other empty/undefined fields
+    return 'N/A'; 
   }
   if (typeof data === 'object' && data !== null) {
-    // This case should ideally not be hit if all nested objects are handled by specific renderSection calls for each form section.
-    // If it is, it means there's a deeper object not being explicitly rendered.
     return Object.entries(data)
       .map(([key, value]) => `${key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}: ${formatDisplayData(value, key)}`)
-      .join('; '); // Changed newline to semicolon for better inline display if this case is hit
+      .join('; '); 
   }
   return String(data);
 };
@@ -91,7 +82,6 @@ export const ReviewSubmitStep: FC<ReviewSubmitStepProps> = ({ form }) => {
 
         <Separator className="my-8" />
 
-        {/* AI Validation section removed */}
         <Alert variant="default" className="bg-blue-50 border-blue-300 dark:bg-blue-900/50 dark:border-blue-700/50">
             <Info className="h-4 w-4 text-blue-600 dark:text-blue-400" />
             <AlertTitle className="text-blue-800 dark:text-blue-300">Ready to Submit?</AlertTitle>

@@ -60,7 +60,8 @@ export function RegistrationWizard() {
       businessRoles: '', 
       industrySectors: '', 
       productServiceKeywords: '', 
-      hsnSacCodes: '', 
+      hsnCodes: '', 
+      sacCodes: '',
       technicalCapabilities: '', 
       monthlyCapacityValue: undefined,
       monthlyCapacityUnit: '',
@@ -119,7 +120,6 @@ export function RegistrationWizard() {
 
   useFormPersistence(methods, FORM_DATA_STORAGE_KEY, initialDefaultValues); 
 
-  // Load current step from localStorage on mount
   useEffect(() => {
     const savedStep = localStorage.getItem(CURRENT_STEP_STORAGE_KEY);
     if (savedStep) {
@@ -130,7 +130,6 @@ export function RegistrationWizard() {
     }
   }, []);
 
-  // Save current step to localStorage when it changes
   useEffect(() => {
     localStorage.setItem(CURRENT_STEP_STORAGE_KEY, currentStep.toString());
   }, [currentStep]);
@@ -183,8 +182,6 @@ export function RegistrationWizard() {
       description: "Your company profile has been successfully submitted.",
       className: "bg-green-500 text-white", 
     });
-    // Clearing storage and resetting form is handled by useFormPersistence
-    // Also clear the persisted step
     localStorage.removeItem(CURRENT_STEP_STORAGE_KEY);
     setCurrentStep(0); 
   };

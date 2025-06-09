@@ -36,9 +36,14 @@ const EXAMPLE_KEYWORD_OPTIONS = [
   "Digital Marketing", "Logistics", "Hardware Manufacturing", "AI Solutions"
 ].sort();
 
-const EXAMPLE_HSN_SAC_OPTIONS = [
-  "8471", "998313", "4901", "7308", "9954", "8517", "6203", "9018"
+const EXAMPLE_HSN_OPTIONS = [
+  "8471", "4901", "7308", "8517", "6203", "9018" // Example HSN codes for goods
 ].sort();
+
+const EXAMPLE_SAC_OPTIONS = [
+  "998313", "9954", "998311", "998314", "998315" // Example SAC codes for services
+].sort();
+
 
 const rawCertifications = [
   "MSME Registration", "UDYAM Registration", "GSTIN", "PAN", "TAN",
@@ -72,8 +77,8 @@ const rawCertifications = [
 const CERTIFICATION_OPTIONS = [
   "No Certificates", 
   ...rawCertifications
-    .filter((value, index, self) => self.indexOf(value) === index) // Deduplicate
-    .sort() // Sort alphabetically
+    .filter((value, index, self) => self.indexOf(value) === index) 
+    .sort() 
 ];
 
 
@@ -159,22 +164,45 @@ export const BusinessCapabilitiesStep: FC<BusinessCapabilitiesStepProps> = ({ fo
         />
         <FormField
           control={form.control}
-          name="businessCapabilities.hsnSacCodes"
+          name="businessCapabilities.hsnCodes"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>HSN/SAC Codes (Optional)</FormLabel>
+              <FormLabel>HSN Codes (Optional - for Goods)</FormLabel>
               <FormControl>
                 <TagInput
                   {...field}
-                  options={EXAMPLE_HSN_SAC_OPTIONS}
-                  placeholder="Enter HSN/SAC codes..."
-                  id="hsnSacCodes"
-                  aria-describedby="hsnSacCodes-description"
-                  aria-invalid={!!form.formState.errors.businessCapabilities?.hsnSacCodes}
+                  options={EXAMPLE_HSN_OPTIONS}
+                  placeholder="Enter HSN codes..."
+                  id="hsnCodes"
+                  aria-describedby="hsnCodes-description"
+                  aria-invalid={!!form.formState.errors.businessCapabilities?.hsnCodes}
                 />
               </FormControl>
-              <FormDescription id="hsnSacCodes-description">
-                Enter applicable HSN (for goods) or SAC (for services) codes.
+              <FormDescription id="hsnCodes-description">
+                Enter applicable HSN (Harmonized System of Nomenclature) codes for goods.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="businessCapabilities.sacCodes"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>SAC Codes (Optional - for Services)</FormLabel>
+              <FormControl>
+                <TagInput
+                  {...field}
+                  options={EXAMPLE_SAC_OPTIONS}
+                  placeholder="Enter SAC codes..."
+                  id="sacCodes"
+                  aria-describedby="sacCodes-description"
+                  aria-invalid={!!form.formState.errors.businessCapabilities?.sacCodes}
+                />
+              </FormControl>
+              <FormDescription id="sacCodes-description">
+                Enter applicable SAC (Services Accounting Code) codes for services.
               </FormDescription>
               <FormMessage />
             </FormItem>
