@@ -88,12 +88,16 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
                   checked={field.value}
                   onCheckedChange={field.onChange}
                   id={field.name}
+                  aria-describedby={`${field.name}-description`}
                 />
               </FormControl>
               <div className="space-y-1 leading-none">
                 <FormLabel htmlFor={field.name} className="font-normal">
-                  Do you have a PAN (Permanent Account Number)?
+                  Do you have a PAN?
                 </FormLabel>
+                <FormDescription id={`${field.name}-description`}>
+                  Permanent Account Number
+                </FormDescription>
               </div>
             </FormItem>
           )}
@@ -109,12 +113,16 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
                   checked={field.value}
                   onCheckedChange={field.onChange}
                   id={field.name}
+                  aria-describedby={`${field.name}-description`}
                 />
               </FormControl>
               <div className="space-y-1 leading-none">
                 <FormLabel htmlFor={field.name} className="font-normal">
                   Do you have a GSTIN?
                 </FormLabel>
+                 <FormDescription id={`${field.name}-description`}>
+                  Goods and Services Tax Identification Number
+                </FormDescription>
               </div>
             </FormItem>
           )}
@@ -130,12 +138,16 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
                   checked={field.value}
                   onCheckedChange={field.onChange}
                   id={field.name}
+                  aria-describedby={`${field.name}-description`}
                 />
               </FormControl>
               <div className="space-y-1 leading-none">
                 <FormLabel htmlFor={field.name} className="font-normal">
                   Do you have an MSME/Udyam Registration?
                 </FormLabel>
+                 <FormDescription id={`${field.name}-description`}>
+                  Micro, Small and Medium Enterprises / Udyam Registration
+                </FormDescription>
               </div>
             </FormItem>
           )}
@@ -151,12 +163,16 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
                   checked={field.value}
                   onCheckedChange={field.onChange}
                   id={field.name}
+                  aria-describedby={`${field.name}-description`}
                 />
               </FormControl>
               <div className="space-y-1 leading-none">
                 <FormLabel htmlFor={field.name} className="font-normal">
                    Do you have an NSIC Registration?
                 </FormLabel>
+                <FormDescription id={`${field.name}-description`}>
+                  National Small Industries Corporation
+                </FormDescription>
               </div>
             </FormItem>
           )}
@@ -181,7 +197,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
             name="financialLegalInfo.netWorthCurrency"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Net Worth & Annual Turnover Currency</FormLabel>
+                <FormLabel>Net Worth &amp; Annual Turnover Currency</FormLabel>
                  <Select onValueChange={field.onChange} value={field.value || ''}>
                     <FormControl>
                     <SelectTrigger>
@@ -325,3 +341,4 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
     </Card>
   );
 };
+
