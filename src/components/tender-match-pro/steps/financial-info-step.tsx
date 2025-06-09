@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
 import { X, Landmark, Trash2, PlusCircle } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 interface FinancialLegalInfoStepProps {
   form: UseFormReturn<RegistrationFormData>;
@@ -19,21 +20,8 @@ interface FinancialLegalInfoStepProps {
 
 const CURRENCY_OPTIONS = ["USD", "INR", "EUR", "GBP", "JPY", "AUD", "CAD", "CHF", "CNY", "SGD", "AED"];
 
-const generateFinancialYearOptions = () => {
-  const currentCalendarYear = new Date().getFullYear();
-  const options = [];
-  // Generate years from the current financial year down to 20 years prior
-  for (let i = 0; i <= 20; i++) { // This loop will generate 21 financial years
-    const yearStart = currentCalendarYear - i;
-    const yearEnd = yearStart + 1;
-    options.push(`${yearStart}-${yearEnd.toString().slice(-2)}`);
-  }
-  return options; // The options are generated in newest-to-oldest order
-};
-
-
-const FINANCIAL_YEAR_OPTIONS = generateFinancialYearOptions();
-
+const START_YEAR_PREFIX = 2025; // The starting year of the financial year "2025-26"
+const MAX_YEARS_HISTORY = 20; // Go back 20 years from the start year, allowing 21 entries total.
 
 const FileInputControl: FC<{ field: any; placeholder: string }> = ({ field, placeholder }) => {
   const { name, value, onChange, ref } = field;
@@ -71,6 +59,7 @@ const FileInputControl: FC<{ field: any; placeholder: string }> = ({ field, plac
 
 export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }) => {
   const { control, watch, setValue } = form;
+  const { toast } = useToast();
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -82,6 +71,30 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
   const watchHasGstin = watch('financialLegalInfo.hasGstin');
   const watchHasMsmeUdyam = watch('financialLegalInfo.hasMsmeUdyam');
   const watchHasNsic = watch('financialLegalInfo.hasNsic');
+
+  const handleAddTurnoverYear = () => {
+    if (fields.length >= MAX_YEARS_HISTORY + 1) {
+      toast({
+        title: "Limit Reached",
+        description: `You can add turnover data for up to ${MAX_YEARS_HISTORY + 1} financial years.`,
+        variant: "default", // Or "destructive" if preferred
+      });
+      return;
+    }
+
+    let newFinancialYear;
+    if (fields.length === 0) {
+      newFinancialYear = `${START_YEAR_PREFIX}-${(START_YEAR_PREFIX + 1).toString().slice(-2)}`;
+    } else {
+      const lastEntryYear = fields[fields.length - 1].financialYear;
+      // Basic parsing, assuming "YYYY-YY" format from previous entries
+      const lastYearPrefix = parseInt(lastEntryYear.split('-')[0], 10);
+      const nextYearPrefixCandidate = lastYearPrefix - 1;
+      newFinancialYear = `${nextYearPrefixCandidate}-${(nextYearPrefixCandidate + 1).toString().slice(-2)}`;
+    }
+    
+    append({ financialYear: newFinancialYear, amount: '' });
+  };
   
   return (
     <Card className="w-full shadow-lg">
@@ -92,8 +105,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
         </CardTitle>
         <CardDescription>
           Provide your company's financial and legal details. 
-          For PAN, GSTIN, MSME/Udyam, and NSIC, check the box if your company possesses the item. 
-          Providing the specific number or file name is optional but recommended if possessed.
+          Checking the box indicates possession; providing the specific number or file name is optional but recommended if possessed.
           Net Worth and Annual Turnover details are required.
         </CardDescription>
       </CardHeader>
@@ -343,33 +355,19 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
           <h4 className="text-lg font-medium">Annual Turnover</h4>
           <FormDescription>
              At least one entry is required. Amounts will use the Net Worth currency selected above.
+             Financial years are added sequentially, starting from {`${START_YEAR_PREFIX}-${(START_YEAR_PREFIX + 1).toString().slice(-2)}`}.
            </FormDescription>
           {fields.map((item, index) => (
             <div key={item.id} className="p-4 border rounded-md space-y-4 relative">
               <FormLabel className="text-md font-semibold block mb-2">Turnover Entry #{index + 1}</FormLabel>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
-                <FormField
-                  control={control}
-                  name={`financialLegalInfo.annualTurnovers.${index}.financialYear`}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Financial Year</FormLabel>
-                       <Select onValueChange={field.onChange} value={field.value || ''}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select year" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {FINANCIAL_YEAR_OPTIONS.map(year => (
-                            <SelectItem key={year} value={year}>{year}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                <FormItem>
+                  <FormLabel htmlFor={`financialYear-${item.id}`}>Financial Year</FormLabel>
+                  <p id={`financialYear-${item.id}`} className="pt-2 text-sm font-medium">
+                    {item.financialYear}
+                  </p>
+                   {/* The financialYear value is registered with RHF through useFieldArray and append */}
+                </FormItem>
                 <FormField
                   control={control}
                   name={`financialLegalInfo.annualTurnovers.${index}.amount`}
@@ -401,12 +399,18 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
           <Button
             type="button"
             variant="default"
-            onClick={() => append({ financialYear: '', amount: '' })}
+            onClick={handleAddTurnoverYear}
             className="mt-2"
+            disabled={fields.length >= MAX_YEARS_HISTORY + 1}
           >
             <PlusCircle className="mr-2 h-4 w-4" />
             Add Turnover Year
           </Button>
+           {fields.length >= MAX_YEARS_HISTORY + 1 && (
+            <p className="text-sm text-muted-foreground">
+              Maximum {MAX_YEARS_HISTORY + 1} financial years can be added.
+            </p>
+          )}
         </div>
         
         <FormField
