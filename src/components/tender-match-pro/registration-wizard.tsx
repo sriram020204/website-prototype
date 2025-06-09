@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { 
@@ -37,7 +37,8 @@ const STEPS = [
   { id: 'reviewSubmit', title: 'Review & Submit', component: ReviewSubmitStep, schema: registrationSchema, fields: [] as const }, 
 ];
 
-const STORAGE_KEY = 'tenderMatchProRegistrationForm_v2';
+const FORM_DATA_STORAGE_KEY = 'tenderMatchProRegistrationForm_v2';
+const CURRENT_STEP_STORAGE_KEY = 'tenderMatchProRegistrationStep_v2';
 
 export function RegistrationWizard() {
   const [currentStep, setCurrentStep] = useState(0);
@@ -116,7 +117,24 @@ export function RegistrationWizard() {
     defaultValues: initialDefaultValues,
   });
 
-  useFormPersistence(methods, STORAGE_KEY, initialDefaultValues); 
+  useFormPersistence(methods, FORM_DATA_STORAGE_KEY, initialDefaultValues); 
+
+  // Load current step from localStorage on mount
+  useEffect(() => {
+    const savedStep = localStorage.getItem(CURRENT_STEP_STORAGE_KEY);
+    if (savedStep) {
+      const stepNumber = parseInt(savedStep, 10);
+      if (!isNaN(stepNumber) && stepNumber >= 0 && stepNumber < STEPS.length) {
+        setCurrentStep(stepNumber);
+      }
+    }
+  }, []);
+
+  // Save current step to localStorage when it changes
+  useEffect(() => {
+    localStorage.setItem(CURRENT_STEP_STORAGE_KEY, currentStep.toString());
+  }, [currentStep]);
+
 
   const handleNext = async () => {
     if (currentStep < STEPS.length - 1) { 
@@ -125,13 +143,11 @@ export function RegistrationWizard() {
       const isValid = await methods.trigger(currentStepFields.length > 0 ? currentStepFields as any : undefined);
 
       if (isValid) {
-        // Explicitly save current form data to localStorage before moving to the next step
         try {
           const currentValues = methods.getValues();
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(currentValues));
+          localStorage.setItem(FORM_DATA_STORAGE_KEY, JSON.stringify(currentValues));
         } catch (error) {
           console.error("Failed to save form data to localStorage on Next:", error);
-          // Optionally, inform the user that saving failed
           toast({
             title: "Save Error",
             description: "Could not save form progress. Please try again.",
@@ -160,7 +176,6 @@ export function RegistrationWizard() {
   const onSubmit = async (data: RegistrationFormData) => {
     setIsSubmitting(true);
     console.log("Form Submitted:", data);
-    // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1500)); 
     setIsSubmitting(false);
     toast({
@@ -169,6 +184,8 @@ export function RegistrationWizard() {
       className: "bg-green-500 text-white", 
     });
     // Clearing storage and resetting form is handled by useFormPersistence
+    // Also clear the persisted step
+    localStorage.removeItem(CURRENT_STEP_STORAGE_KEY);
     setCurrentStep(0); 
   };
 
