@@ -22,14 +22,14 @@ const CURRENCY_OPTIONS = ["USD", "INR", "EUR", "GBP", "JPY", "AUD", "CAD", "CHF"
 const generateFinancialYearOptions = () => {
   const currentYear = new Date().getFullYear();
   const options = [];
-  // Current financial year (e.g., if 2024, then 2024-25)
-  options.push(`${currentYear}-${(currentYear + 1).toString().slice(-2)}`);
-  // Previous 20 financial years
-  for (let i = 0; i < 20; i++) {
+  // Previous 20 financial years (generate in ascending order)
+  for (let i = 19; i >= 0; i--) { 
     const yearStart = currentYear - 1 - i;
     const yearEnd = currentYear - i;
     options.push(`${yearStart}-${yearEnd.toString().slice(-2)}`);
   }
+  // Current financial year (add at the end for ascending)
+  options.push(`${currentYear}-${(currentYear + 1).toString().slice(-2)}`);
   return options;
 };
 
@@ -125,7 +125,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
             name="financialLegalInfo.pan"
             render={({ field }) => (
               <FormItem className="pl-10"> 
-                <FormLabel>PAN Number (Optional)</FormLabel>
+                <FormLabel>PAN Number</FormLabel>
                 <FormControl>
                   <Input type="text" placeholder="Enter PAN" {...field} />
                 </FormControl>
@@ -166,7 +166,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
             name="financialLegalInfo.gstin"
             render={({ field }) => (
               <FormItem className="pl-10"> 
-                <FormLabel>GSTIN Number (Optional)</FormLabel>
+                <FormLabel>GSTIN Number</FormLabel>
                 <FormControl>
                   <Input type="text" placeholder="Enter GSTIN" {...field} />
                 </FormControl>
@@ -209,7 +209,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
               name="financialLegalInfo.msmeUdyamNumber"
               render={({ field }) => (
                 <FormItem> 
-                  <FormLabel>MSME/Udyam Number (Optional)</FormLabel>
+                  <FormLabel>MSME/Udyam Number</FormLabel>
                   <FormControl>
                     <Input type="text" placeholder="Enter MSME/Udyam registration number" {...field} />
                   </FormControl>
@@ -222,7 +222,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
               name="financialLegalInfo.msmeUdyamCertificate"
               render={({ field }) => (
                 <FormItem> 
-                  <FormLabel>MSME/Udyam Certificate File Name (Optional)</FormLabel>
+                  <FormLabel>MSME/Udyam Certificate File Name</FormLabel>
                   <FormControl>
                      <FileInputControl field={field} placeholder="MSME/Udyam Certificate file" />
                   </FormControl>
@@ -267,7 +267,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
               name="financialLegalInfo.nsicNumber"
               render={({ field }) => (
                 <FormItem> 
-                  <FormLabel>NSIC Number (Optional)</FormLabel>
+                  <FormLabel>NSIC Number</FormLabel>
                   <FormControl>
                     <Input type="text" placeholder="Enter NSIC registration number" {...field} />
                   </FormControl>
@@ -280,7 +280,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
               name="financialLegalInfo.nsicCertificate"
               render={({ field }) => (
                 <FormItem> 
-                  <FormLabel>NSIC Certificate File Name (Optional)</FormLabel>
+                  <FormLabel>NSIC Certificate File Name</FormLabel>
                   <FormControl>
                      <FileInputControl field={field} placeholder="NSIC Certificate file" />
                   </FormControl>
@@ -372,7 +372,6 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
                     </FormItem>
                   )}
                 />
-                {/* Currency dropdown per entry removed */}
               </div>
               <Button
                 type="button"
@@ -389,7 +388,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
           <Button
             type="button"
             variant="default"
-            onClick={() => append({ financialYear: '', amount: '' })} // Removed currency from append
+            onClick={() => append({ financialYear: '', amount: '' })}
             className="mt-2"
           >
             <PlusCircle className="mr-2 h-4 w-4" />
@@ -431,7 +430,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
             name="financialLegalInfo.blacklistedDetails"
             render={({ field }) => (
               <FormItem className="pl-10"> 
-                <FormLabel>Details of Blacklisting/Litigation (Optional)</FormLabel>
+                <FormLabel>Details of Blacklisting/Litigation</FormLabel>
                 <FormControl>
                   <Textarea rows={3} placeholder="Provide details if yes..." {...field} />
                 </FormControl>
@@ -444,3 +443,5 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
     </Card>
   );
 };
+
+    
