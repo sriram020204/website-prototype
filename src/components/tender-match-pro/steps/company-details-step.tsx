@@ -276,3 +276,4 @@ export const CompanyDetailsStep: FC<CompanyDetailsStepProps> = ({ form }) => {
   );
 };
 
+    
