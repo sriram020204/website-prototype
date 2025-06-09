@@ -5,17 +5,15 @@ import type { FC } from 'react';
 import type { UseFormReturn } from 'react-hook-form';
 import type { RegistrationFormData } from '@/lib/schemas/registration-schema';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Textarea } from '@/components/ui/textarea';
+import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Globe2, Wifi } from 'lucide-react';
-import { TagInput } from '@/components/ui/tag-input'; // Added TagInput
+import { TagInput } from '@/components/ui/tag-input';
 
 interface GeographicDigitalReachStepProps {
   form: UseFormReturn<RegistrationFormData>;
 }
 
-// Duplicating state lists here for now. Consider refactoring to a shared constants file later.
 const INDIAN_STATES_UTS = [
   "Andaman and Nicobar Islands", "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chandigarh",
   "Chhattisgarh", "Dadra & Nagar Haveli and Daman & Diu", "Delhi", "Goa", "Gujarat", "Haryana",
@@ -33,6 +31,34 @@ const US_STATES = [
   "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania",
   "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont",
   "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"
+].sort();
+
+const WORLD_COUNTRIES = [
+  "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", "Argentina", "Armenia",
+  "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium",
+  "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei",
+  "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada",
+  "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Congo, Democratic Republic of the",
+  "Congo, Republic of the", "Costa Rica", "Croatia", "Cuba", "Cyprus", "Czech Republic", "Denmark",
+  "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea",
+  "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Gambia", "Georgia", "Germany",
+  "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras",
+  "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Israel", "Italy", "Ivory Coast",
+  "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea, North", "Korea, South", "Kosovo",
+  "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein",
+  "Lithuania", "Luxembourg", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta",
+  "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Monaco", "Mongolia",
+  "Montenegro", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands",
+  "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan",
+  "Palau", "Palestine State", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland",
+  "Portugal", "Qatar", "Romania", "Russia", "Rwanda", "Saint Kitts and Nevis", "Saint Lucia",
+  "Saint Vincent and the Grenadines", "Samoa", "San Marino", "Sao Tome and Principe", "Saudi Arabia", "Senegal",
+  "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "Solomon Islands", "Somalia",
+  "South Africa", "South Sudan", "Spain", "Sri Lanka", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria",
+  "Taiwan", "Tajikistan", "Tanzania", "Thailand", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago",
+  "Tunisia", "Turkey", "Turkmenistan", "Tuvalu", "Uganda", "Ukraine", "United Arab Emirates",
+  "United Kingdom", "United States of America", "Uruguay", "Uzbekistan", "Vanuatu", "Vatican City", "Venezuela",
+  "Vietnam", "Yemen", "Zambia", "Zimbabwe"
 ].sort();
 
 
@@ -71,9 +97,9 @@ export const GeographicDigitalReachStep: FC<GeographicDigitalReachStepProps> = (
                   {...field}
                   options={operationalStateOptions}
                   placeholder={
-                    selectedCountry 
-                      ? operationalStateOptions.length > 0 
-                        ? "Select or type operational states..." 
+                    selectedCountry
+                      ? operationalStateOptions.length > 0
+                        ? "Select or type operational states..."
                         : "No predefined states for selected country. Type to add."
                       : "Select country in Company Details first..."
                   }
@@ -97,9 +123,18 @@ export const GeographicDigitalReachStep: FC<GeographicDigitalReachStepProps> = (
             <FormItem>
               <FormLabel>Countries Served</FormLabel>
               <FormControl>
-                <Textarea rows={2} placeholder="e.g., India, USA, UAE" {...field} />
+                <TagInput
+                  {...field}
+                  options={WORLD_COUNTRIES}
+                  placeholder="Select or type countries served..."
+                  id="countriesServed"
+                  aria-describedby="countriesServed-description"
+                  aria-invalid={!!form.formState.errors.geographicDigitalReach?.countriesServed}
+                />
               </FormControl>
-              <FormDescription>Enter countries separated by commas.</FormDescription>
+              <FormDescription id="countriesServed-description">
+                Select the countries your company serves from the list, or type to add custom ones.
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -173,9 +208,18 @@ export const GeographicDigitalReachStep: FC<GeographicDigitalReachStepProps> = (
             <FormItem>
               <FormLabel>Preferred Languages for Tenders</FormLabel>
               <FormControl>
-                <Textarea rows={2} placeholder="e.g., English, Hindi, Marathi" {...field} />
+                <TagInput
+                  {...field}
+                  options={["English", "Hindi", "Spanish", "French", "German", "Chinese", "Japanese", "Arabic", "Russian", "Portuguese", "Bengali", "Urdu", "Tamil", "Telugu", "Marathi", "Gujarati", "Kannada", "Malayalam", "Odia", "Punjabi", "Assamese"]}
+                  placeholder="Select or type preferred languages..."
+                  id="preferredTenderLanguages"
+                  aria-describedby="preferredTenderLanguages-description"
+                  aria-invalid={!!form.formState.errors.geographicDigitalReach?.preferredTenderLanguages}
+                />
               </FormControl>
-              <FormDescription>Enter languages separated by commas.</FormDescription>
+              <FormDescription id="preferredTenderLanguages-description">
+                Select preferred languages for tenders from the list, or type to add custom ones.
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -184,3 +228,6 @@ export const GeographicDigitalReachStep: FC<GeographicDigitalReachStepProps> = (
     </Card>
   );
 };
+
+
+    

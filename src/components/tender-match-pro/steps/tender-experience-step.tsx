@@ -2,7 +2,7 @@
 "use client";
 
 import type { FC } from 'react';
-import React, { useEffect } from 'react'; // Added useEffect
+import React, { useEffect } from 'react';
 import type { UseFormReturn } from 'react-hook-form';
 import type { RegistrationFormData } from '@/lib/schemas/registration-schema';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -18,39 +18,53 @@ interface TenderExperienceStepProps {
 }
 
 const TENDER_TYPE_OPTIONS = [
+  // Construction and Infrastructure
   "Civil Works Contracts", "Road Construction Contracts", "Bridge Construction Projects",
   "Building Construction Projects", "Electrical Infrastructure Works", "Water Supply and Sanitation Projects",
   "Rail Infrastructure Development Contracts", "Renovation and Restoration Works",
   "Urban Infrastructure Development Projects", "Landscaping and Horticultural Services",
+  // Supply and Procurement
   "Supply of Goods Contracts", "Supply of Equipment and Machinery", "Procurement of Medical Equipment",
   "Procurement of Laboratory Instruments", "Procurement of Office Furniture and Fixtures",
   "Procurement of IT Hardware and Accessories", "Supply of Vehicles and Automotive Components",
   "Supply of Electrical Goods and Components", "Procurement of Raw Materials", "Supply of Stationery and Office Supplies",
+  // General Services
   "Housekeeping and Cleaning Services", "Security and Guarding Services", "Catering and Food Supply Services",
   "Facility Management Services", "Operation and Maintenance Services", "Waste Management and Disposal Services",
   "Pest Control Services", "Event Management Services", "Manpower Supply and Staffing Services",
-  "Transport and Logistics Services", "Engineering Consultancy Services", "Architectural Design and Planning Services",
-  "Legal Consultancy Services", "Financial and Tax Advisory Services", "Environmental Consultancy Services",
-  "Project Management Consultancy Services", "Urban Planning and Development Consultancy", "Audit and Assurance Services",
-  "Technical Feasibility Study Services", "Social Impact Assessment Consultancy",
+  "Transport and Logistics Services",
+  // Consultancy Services
+  "Engineering Consultancy Services", "Architectural Design and Planning Services", "Legal Consultancy Services",
+  "Financial and Tax Advisory Services", "Environmental Consultancy Services", "Project Management Consultancy Services",
+  "Urban Planning and Development Consultancy", "Audit and Assurance Services", "Technical Feasibility Study Services",
+  "Social Impact Assessment Consultancy",
+  // Project-Based and Turnkey
   "Engineering, Procurement and Construction Contracts", "Turnkey Project Implementation Contracts",
   "Design, Build, Operate and Transfer Contracts", "Design and Build Infrastructure Projects",
   "Public-Private Partnership Infrastructure Projects", "Build-Operate-Transfer Project Contracts",
-  "Build-Own-Operate Infrastructure Models", "Software Development Projects",
-  "Website and Mobile Application Development", "System Integration and Implementation Services",
-  "Information Technology Infrastructure Setup", "Enterprise Resource Planning System Deployment",
-  "IT Support and Maintenance Services", "Cybersecurity Services and Solutions", "Data Center Design and Management",
+  "Build-Own-Operate Infrastructure Models",
+  // Information Technology and Digital
+  "Software Development Projects", "Website and Mobile Application Development",
+  "System Integration and Implementation Services", "Information Technology Infrastructure Setup",
+  "Enterprise Resource Planning System Deployment", "IT Support and Maintenance Services",
+  "Cybersecurity Services and Solutions", "Data Center Design and Management",
   "Cloud Infrastructure and Hosting Services", "Electronic Governance Solutions",
+  // Maintenance and Support
   "Annual Maintenance Contracts for Equipment", "Comprehensive Maintenance Contracts", "Preventive Maintenance Services",
-  "Maintenance of IT Systems and Networks", "Maintenance of Building Infrastructure", "Electrical and Mechanical Maintenance Services",
+  "Maintenance of IT Systems and Networks", "Maintenance of Building Infrastructure",
+  "Electrical and Mechanical Maintenance Services",
+  // Green and Sustainability-Focused
   "Renewable Energy System Installation (Solar, Wind, etc.)", "Solid Waste Management and Recycling Services",
   "Water Treatment Plant Construction and Operation", "Biomedical Waste Disposal Services",
-  "Energy Efficiency Improvement Projects", "Green Building Certification and Consultancy", "Statutory Audit Services",
-  "Internal Audit and Risk Assessment Services", "Financial Due Diligence Services",
-  "Insurance and Risk Management Services", "Bookkeeping and Accounting Services",
-  "Payroll Processing Services", "Vocational and Skill Development Training Programs",
-  "Educational Content and Curriculum Development", "Classroom Technology Deployment Projects",
-  "Training and Capacity Building Programs", "E-learning and Digital Education Solutions",
+  "Energy Efficiency Improvement Projects", "Green Building Certification and Consultancy",
+  // Financial and Administrative
+  "Statutory Audit Services", "Internal Audit and Risk Assessment Services", "Financial Due Diligence Services",
+  "Insurance and Risk Management Services", "Bookkeeping and Accounting Services", "Payroll Processing Services",
+  // Educational and Training
+  "Vocational and Skill Development Training Programs", "Educational Content and Curriculum Development",
+  "Classroom Technology Deployment Projects", "Training and Capacity Building Programs",
+  "E-learning and Digital Education Solutions",
+  // Research and Development
   "Scientific Research and Innovation Projects", "Product Development and Prototyping Services",
   "Laboratory Testing and Certification Services", "Academic Research Support Services", "Pilot Study and Field Testing Projects"
 ].filter((value, index, self) => self.indexOf(value) === index)
@@ -147,12 +161,12 @@ export const TenderExperienceStep: FC<TenderExperienceStepProps> = ({ form }) =>
                 {netWorthCurrency ? `, in ${netWorthCurrency}` : ', in your primary currency'}
               </FormLabel>
               <FormControl>
-                 <Input 
-                    type="number" 
-                    placeholder="e.g., 1000000" 
-                    {...field} 
-                    onChange={e => field.onChange(e.target.value === '' ? undefined : parseFloat(e.target.value))} 
-                    value={field.value ?? ''} 
+                 <Input
+                    type="number"
+                    placeholder="e.g., 1000000"
+                    {...field}
+                    onChange={e => field.onChange(e.target.value === '' ? undefined : parseFloat(e.target.value))}
+                    value={field.value ?? ''}
                   />
               </FormControl>
               <FormDescription>Required.</FormDescription>
@@ -187,3 +201,6 @@ export const TenderExperienceStep: FC<TenderExperienceStepProps> = ({ form }) =>
     </Card>
   );
 };
+
+
+    
