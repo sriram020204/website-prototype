@@ -37,7 +37,7 @@ const STEPS = [
   { id: 'reviewSubmit', title: 'Review & Submit', component: ReviewSubmitStep, schema: registrationSchema, fields: [] as const }, 
 ];
 
-const STORAGE_KEY = 'tenderMatchProRegistrationForm_v2'; // Changed key due to schema changes
+const STORAGE_KEY = 'tenderMatchProRegistrationForm_v2';
 
 export function RegistrationWizard() {
   const [currentStep, setCurrentStep] = useState(0);
@@ -69,7 +69,7 @@ export function RegistrationWizard() {
       pan: '',
       gstin: '',
       msmeUdyamNsicNumber: '',
-      msmeUdyamNsicCertificate: '', // File name
+      msmeUdyamNsicCertificate: '', 
       annualTurnoverFY1Amount: '',
       annualTurnoverFY1Currency: '',
       annualTurnoverFY2Amount: '',
@@ -84,8 +84,8 @@ export function RegistrationWizard() {
     tenderExperience: { 
       suppliedToGovtPsus: false,
       pastClients: '', 
-      purchaseOrders: '', // File names
-      performanceReports: '', // File names
+      purchaseOrders: '', 
+      performanceReports: '', 
       highestOrderValueFulfilled: undefined,
       tenderTypesHandled: ''
     },
@@ -98,14 +98,14 @@ export function RegistrationWizard() {
       preferredTenderLanguages: ''
     },
     declarationsUploads: {
-      panUpload: '', // File name
-      gstUpload: '', // File name
-      msmeCertUpload: '', // File name
-      isoCertUpload: '', // File name
-      bisCertUpload: '', // File name
+      panUpload: '', 
+      gstUpload: '', 
+      msmeCertUpload: '', 
+      isoCertUpload: '', 
+      bisCertUpload: '', 
       infoConfirmed: false,
       blacklistingDeclaration: false,
-      blacklistingDeclarationUpload: '' // File name
+      blacklistingDeclarationUpload: '' 
     },
   }), []);
 
@@ -116,7 +116,7 @@ export function RegistrationWizard() {
     defaultValues: initialDefaultValues,
   });
 
-  useFormPersistence(methods, STORAGE_KEY, initialDefaultValues); // Pass memoized initialDefaultValues
+  useFormPersistence(methods, STORAGE_KEY, initialDefaultValues); 
 
   const handleNext = async () => {
     if (currentStep < STEPS.length - 1) { 
@@ -125,6 +125,19 @@ export function RegistrationWizard() {
       const isValid = await methods.trigger(currentStepFields.length > 0 ? currentStepFields as any : undefined);
 
       if (isValid) {
+        // Explicitly save current form data to localStorage before moving to the next step
+        try {
+          const currentValues = methods.getValues();
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(currentValues));
+        } catch (error) {
+          console.error("Failed to save form data to localStorage on Next:", error);
+          // Optionally, inform the user that saving failed
+          toast({
+            title: "Save Error",
+            description: "Could not save form progress. Please try again.",
+            variant: "destructive",
+          });
+        }
         setCurrentStep(prev => prev + 1);
       } else {
         toast({
@@ -153,9 +166,9 @@ export function RegistrationWizard() {
     toast({
       title: "Profile Submitted!",
       description: "Your company profile has been successfully submitted.",
-      className: "bg-green-500 text-white", // Example custom styling for success
+      className: "bg-green-500 text-white", 
     });
-    // Clearing storage and resetting form is now handled by useFormPersistence
+    // Clearing storage and resetting form is handled by useFormPersistence
     setCurrentStep(0); 
   };
 
@@ -174,11 +187,10 @@ export function RegistrationWizard() {
           totalSteps={STEPS.length}
           onNext={handleNext}
           onPrevious={handlePrevious}
-          isNextDisabled={methods.formState.isSubmitting || currentStep === STEPS.length -1 && !methods.formState.isValid && methods.formState.isSubmitted } // Prevent next on review if form invalid and submitted once
+          isNextDisabled={methods.formState.isSubmitting || currentStep === STEPS.length -1 && !methods.formState.isValid && methods.formState.isSubmitted } 
           isSubmitting={isSubmitting}
         />
       </form>
     </FormProvider>
   );
 }
-
