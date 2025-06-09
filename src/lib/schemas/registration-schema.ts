@@ -40,8 +40,8 @@ export const businessCapabilitiesSchema = z.object({
 
 // Step 3: Financial & Legal Info
 const turnoverEntrySchema = z.object({
-  financialYear: z.string(), // Pre-filled or calculated
-  amount: z.string(), // Can be empty for optional years. Format validated in superRefine.
+  financialYear: z.string(), 
+  amount: z.string().optional().or(z.literal('')), // Amount is optional here, superRefine handles first year
 });
 
 export const financialLegalInfoSchema = z.object({
@@ -60,7 +60,7 @@ export const financialLegalInfoSchema = z.object({
           message: "Turnover amount for the latest financial year is required.",
           path: [0, 'amount'], 
         });
-      } else if (!/^\d+(\.\d{1,2})?$/.test(turnovers[0].amount)) {
+      } else if (turnovers[0]?.amount && !/^\d+(\.\d{1,2})?$/.test(turnovers[0].amount)) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: "Invalid amount format for the latest financial year. Must be a number.",
@@ -175,3 +175,4 @@ export const registrationSchema = z.object({
 
 export type RegistrationFormData = z.infer<typeof registrationSchema>;
 export type TurnoverEntry = z.infer<typeof turnoverEntrySchema>;
+
