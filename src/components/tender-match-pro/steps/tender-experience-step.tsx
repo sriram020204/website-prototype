@@ -16,6 +16,8 @@ interface TenderExperienceStepProps {
 }
 
 export const TenderExperienceStep: FC<TenderExperienceStepProps> = ({ form }) => {
+  const netWorthCurrency = form.watch('financialLegalInfo.netWorthCurrency');
+
   return (
     <Card className="w-full shadow-lg">
       <CardHeader>
@@ -93,7 +95,10 @@ export const TenderExperienceStep: FC<TenderExperienceStepProps> = ({ form }) =>
           name="tenderExperience.highestOrderValueFulfilled"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Highest Order Value Fulfilled (Optional, in your primary currency)</FormLabel>
+              <FormLabel>
+                Highest Order Value Fulfilled (Optional
+                {netWorthCurrency ? `, in ${netWorthCurrency}` : ', in your primary currency'})
+              </FormLabel>
               <FormControl>
                  <Input 
                     type="number" 
@@ -125,5 +130,3 @@ export const TenderExperienceStep: FC<TenderExperienceStepProps> = ({ form }) =>
     </Card>
   );
 };
-
-    

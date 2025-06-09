@@ -76,7 +76,7 @@ export function RegistrationWizard() {
       hasNsic: false,
       nsicNumber: '',
       nsicCertificate: '',
-      annualTurnovers: [], // Initialize as empty array
+      annualTurnovers: [], // Initialize as empty array, entries will be { financialYear: '', amount: '' }
       netWorthAmount: '',
       netWorthCurrency: '',
       isBlacklistedOrLitigation: false,

@@ -23,22 +23,21 @@ const formatDisplayData = (data: any, fieldName?: string): string => {
         'msmeUdyamNumber', 'msmeUdyamCertificate', // FinancialLegal (MSME/Udyam)
         'nsicNumber', 'nsicCertificate', // FinancialLegal (NSIC)
         'blacklistedDetails', // FinancialLegal
-        'netWorthAmount', // FinancialLegal (amounts)
+        'netWorthAmount', 'netWorthCurrency', // FinancialLegal (amounts & currency)
         'pastClients', 'purchaseOrders', 'performanceReports', 'tenderTypesHandled', // TenderExperience
         'panUpload', 'gstUpload', 'isoCertUpload', 'bisCertUpload', 'otherCertificatesUpload' // Declarations
     ];
-    // For individual fields within an annual turnover entry
-    if (fieldName && ['financialYear', 'amount', 'currency'].includes(fieldName) && data === '') return 'Not Provided';
+    
+    if (fieldName && ['financialYear', 'amount'].includes(fieldName) && data === '') return 'Not Provided';
     if (fieldName && optionalTextLikeFields.includes(fieldName)) return 'Not Provided';
     return 'N/A'; 
   }
-   if (Array.isArray(data) && fieldName === 'annualTurnovers') { // Special handling for annualTurnovers
-    if (data.length === 0) return 'No turnover entries provided.';
-    return data.map((entry: TurnoverEntry, index: number) => 
-      `Entry ${index + 1}: FY: ${formatDisplayData(entry.financialYear, 'financialYear')}, Amount: ${formatDisplayData(entry.amount, 'amount')} ${formatDisplayData(entry.currency, 'currency')}`
-    ).join('\n');
+  // General array handling (excluding annualTurnovers, which is handled specially in renderSectionData)
+  if (Array.isArray(data) && fieldName !== 'annualTurnovers') {
+    if (data.length === 0) return 'None';
+    return data.join(', ');
   }
-  if (typeof data === 'object' && data !== null) {
+  if (typeof data === 'object' && data !== null && !Array.isArray(data)) { // Check if not an array
     return Object.entries(data)
       .map(([key, value]) => `${key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}: ${formatDisplayData(value, key)}`)
       .join('; '); 
@@ -47,8 +46,8 @@ const formatDisplayData = (data: any, fieldName?: string): string => {
 };
 
 
-const renderSectionData = (title: string, data: Record<string, any> | undefined) => {
-  if (!data || Object.keys(data).length === 0) {
+const renderSectionData = (title: string, sectionData: Record<string, any> | undefined) => {
+  if (!sectionData || Object.keys(sectionData).length === 0) {
     return (
       <div className="mb-6">
         <h3 className="text-lg font-semibold text-primary mb-2">{title}</h3>
@@ -60,10 +59,12 @@ const renderSectionData = (title: string, data: Record<string, any> | undefined)
     <div className="mb-6">
       <h3 className="text-lg font-semibold text-primary mb-2">{title}</h3>
       <div className="p-4 bg-muted/50 rounded-md text-sm space-y-2">
-        {Object.entries(data).map(([key, value]) => {
+        {Object.entries(sectionData).map(([key, value]) => {
           const displayKey = key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
           
-          if (key === 'annualTurnovers' && Array.isArray(value)) {
+          if (key === 'annualTurnovers' && title === "Financial & Legal Information" && Array.isArray(value)) {
+            const netWorthCurrency = (sectionData as any).netWorthCurrency;
+            const currencySuffix = netWorthCurrency ? ` (in ${netWorthCurrency})` : '';
             return (
               <div key={key} className="space-y-1">
                 <span className="font-medium col-span-1 capitalize break-words">{displayKey}:</span>
@@ -71,7 +72,7 @@ const renderSectionData = (title: string, data: Record<string, any> | undefined)
                   <ul className="list-disc pl-5 space-y-0.5">
                     {value.map((entry: TurnoverEntry, index: number) => (
                       <li key={index} className="whitespace-pre-wrap break-words">
-                        {`FY: ${formatDisplayData(entry.financialYear, 'financialYear')}, Amount: ${formatDisplayData(entry.amount, 'amount')} ${formatDisplayData(entry.currency, 'currency')}`}
+                        {`FY: ${formatDisplayData(entry.financialYear, 'financialYear')}, Amount: ${formatDisplayData(entry.amount, 'amount')}${currencySuffix}`}
                       </li>
                     ))}
                   </ul>

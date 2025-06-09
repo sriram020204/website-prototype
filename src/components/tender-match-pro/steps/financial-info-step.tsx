@@ -292,12 +292,51 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
           </div>
         )}
         
+         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+           <FormField
+            control={control}
+            name="financialLegalInfo.netWorthAmount"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Net Worth (Optional)</FormLabel>
+                <FormControl>
+                  <Input type="text" placeholder="e.g., 1000000" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={control}
+            name="financialLegalInfo.netWorthCurrency"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Net Worth & Annual Turnover Currency (Optional)</FormLabel>
+                 <Select onValueChange={field.onChange} value={field.value || ''}>
+                    <FormControl>
+                    <SelectTrigger>
+                        <SelectValue placeholder="Select currency" />
+                    </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                    {CURRENCY_OPTIONS.map(currency => (
+                        <SelectItem key={currency} value={currency}>{currency}</SelectItem>
+                    ))}
+                    </SelectContent>
+                </Select>
+                <FormDescription>This currency will apply to Net Worth and all Annual Turnover entries.</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
         <div className="space-y-4">
           <h4 className="text-lg font-medium">Annual Turnover (Optional)</h4>
           {fields.map((item, index) => (
             <div key={item.id} className="p-4 border rounded-md space-y-4 relative">
               <FormLabel className="text-md font-semibold block mb-2">Turnover Entry #{index + 1}</FormLabel>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
                 <FormField
                   control={control}
                   name={`financialLegalInfo.annualTurnovers.${index}.financialYear`}
@@ -333,28 +372,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
                     </FormItem>
                   )}
                 />
-                <FormField
-                  control={control}
-                  name={`financialLegalInfo.annualTurnovers.${index}.currency`}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Currency</FormLabel>
-                      <Select onValueChange={field.onChange} value={field.value || ''}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select currency" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {CURRENCY_OPTIONS.map(currency => (
-                            <SelectItem key={currency} value={currency}>{currency}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                {/* Currency dropdown per entry removed */}
               </div>
               <Button
                 type="button"
@@ -371,54 +389,15 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
           <Button
             type="button"
             variant="default"
-            onClick={() => append({ financialYear: '', amount: '', currency: '' })}
+            onClick={() => append({ financialYear: '', amount: '' })} // Removed currency from append
             className="mt-2"
           >
             <PlusCircle className="mr-2 h-4 w-4" />
             Add Turnover Year
           </Button>
            <FormDescription>
-             You can add multiple financial year turnover entries. Please provide accurate figures.
+             You can add multiple financial year turnover entries. Amounts will use the Net Worth currency selected above.
            </FormDescription>
-        </div>
-
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-           <FormField
-            control={control}
-            name="financialLegalInfo.netWorthAmount"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Net Worth (Optional)</FormLabel>
-                <FormControl>
-                  <Input type="text" placeholder="e.g., 1000000" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={control}
-            name="financialLegalInfo.netWorthCurrency"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Net Worth Currency (Optional)</FormLabel>
-                 <Select onValueChange={field.onChange} value={field.value || ''}>
-                    <FormControl>
-                    <SelectTrigger>
-                        <SelectValue placeholder="Select currency" />
-                    </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                    {CURRENCY_OPTIONS.map(currency => (
-                        <SelectItem key={currency} value={currency}>{currency}</SelectItem>
-                    ))}
-                    </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
         </div>
         
         <FormField
