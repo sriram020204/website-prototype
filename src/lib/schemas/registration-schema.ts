@@ -122,8 +122,24 @@ export const geographicDigitalReachSchema = z.object({
   }
 });
 
+// Step 6: Terms & Conditions
+export const termsAndConditionsSchema = z.object({
+  acknowledgmentOfTenderMatching: z.boolean().refine(val => val === true, {
+    message: "You must acknowledge this term to proceed."
+  }),
+  accuracyOfSharedCompanyProfile: z.boolean().refine(val => val === true, {
+    message: "You must confirm the accuracy of your profile to proceed."
+  }),
+  noResponsibilityForTenderOutcomes: z.boolean().refine(val => val === true, {
+    message: "You must acknowledge this term to proceed."
+  }),
+  nonDisclosureAndLimitedUse: z.boolean().refine(val => val === true, {
+    message: "You must agree to the data usage terms to proceed."
+  }),
+});
 
-// Step 6: Declarations & Uploads
+
+// Step 7: Declarations
 export const declarationsUploadsSchema = z.object({
   infoConfirmed: z.boolean().refine(val => val === true, { message: "You must confirm the information is true." }),
 });
@@ -136,6 +152,7 @@ export const registrationSchema = z.object({
   financialLegalInfo: financialLegalInfoSchema,
   tenderExperience: tenderExperienceSchema,
   geographicDigitalReach: geographicDigitalReachSchema,
+  termsAndConditions: termsAndConditionsSchema,
   declarationsUploads: declarationsUploadsSchema,
 }).strict();
 

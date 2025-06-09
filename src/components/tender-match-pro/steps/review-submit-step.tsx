@@ -14,7 +14,7 @@ interface ReviewSubmitStepProps {
 }
 
 const formatDisplayData = (data: any, fieldName?: string, sectionData?: Record<string, any>): string => {
-  if (typeof data === 'boolean') return data ? 'Yes' : 'No';
+  if (typeof data === 'boolean') return data ? 'Agreed' : 'Not Agreed'; // Changed for T&C
   if (typeof data === 'number') return data.toString();
 
   if (data === null || data === undefined || data === '') {
@@ -45,11 +45,24 @@ const formatDisplayData = (data: any, fieldName?: string, sectionData?: Record<s
     return data.join(', ');
   }
   if (typeof data === 'object' && data !== null && !Array.isArray(data)) {
+    // For T&C, we want specific display for each key
+    if (title === "Terms & Conditions") {
+      // This case should be handled by specific logic in renderSectionData for T&C
+      // Default object stringification is not ideal here
+      return 'See individual terms below';
+    }
     return Object.entries(data)
       .map(([key, value]) => `${key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}: ${formatDisplayData(value, key, data as Record<string, any>)}`)
       .join('; ');
   }
   return String(data);
+};
+
+const T_AND_C_DISPLAY_LABELS: Record<keyof RegistrationFormData['termsAndConditions'], string> = {
+  acknowledgmentOfTenderMatching: "Acknowledgment of Tender Matching",
+  accuracyOfSharedCompanyProfile: "Accuracy of Shared Company Profile",
+  noResponsibilityForTenderOutcomes: "No Responsibility for Tender Outcomes",
+  nonDisclosureAndLimitedUse: "Non-Disclosure and Limited Use",
 };
 
 
@@ -68,15 +81,18 @@ const renderSectionData = (title: string, sectionData: Record<string, any> | und
       <h3 className="text-lg font-semibold text-primary mb-2">{title}</h3>
       <div className="p-4 bg-muted/50 rounded-md text-sm space-y-2">
         {Object.entries(sectionData).map(([key, value]) => {
-          const displayKey = key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+          let displayKey = key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
           let displayValue;
 
-          if (title === "Business Capabilities") {
+          if (title === "Terms & Conditions") {
+            displayKey = T_AND_C_DISPLAY_LABELS[key as keyof RegistrationFormData['termsAndConditions']] || displayKey;
+            displayValue = formatDisplayData(value); // Boolean will become "Agreed" / "Not Agreed"
+          } else if (title === "Business Capabilities") {
             if (key === 'hasNoCertifications') {
                return (
                 <div key={key} className="grid grid-cols-1 md:grid-cols-3 gap-1 md:gap-2 items-start">
                     <span className="font-medium col-span-1 capitalize break-words">Has No Certifications:</span>
-                    <span className="col-span-1 md:col-span-2 whitespace-pre-wrap break-words">{formatDisplayData(value)}</span>
+                    <span className="col-span-1 md:col-span-2 whitespace-pre-wrap break-words">{value ? 'Yes' : 'No'}</span>
                 </div>
                );
             }
@@ -86,11 +102,12 @@ const renderSectionData = (title: string, sectionData: Record<string, any> | und
                displayValue = formatDisplayData(value, key, sectionData);
             }
           } else if (title === "Financial & Legal Information") {
+            const booleanDisplay = (val: any) => val ? 'Yes' : 'No';
             if (key === 'hasPan') {
                 return (
                     <div key={key} className="grid grid-cols-1 md:grid-cols-3 gap-1 md:gap-2 items-start">
                         <span className="font-medium col-span-1 capitalize break-words">PAN Holder:</span>
-                        <span className="col-span-1 md:col-span-2 whitespace-pre-wrap break-words">{formatDisplayData(value)}</span>
+                        <span className="col-span-1 md:col-span-2 whitespace-pre-wrap break-words">{booleanDisplay(value)}</span>
                     </div>
                 );
             } else if (key === 'pan') {
@@ -99,7 +116,7 @@ const renderSectionData = (title: string, sectionData: Record<string, any> | und
                  return (
                     <div key={key} className="grid grid-cols-1 md:grid-cols-3 gap-1 md:gap-2 items-start">
                         <span className="font-medium col-span-1 capitalize break-words">GSTIN Holder:</span>
-                        <span className="col-span-1 md:col-span-2 whitespace-pre-wrap break-words">{formatDisplayData(value)}</span>
+                        <span className="col-span-1 md:col-span-2 whitespace-pre-wrap break-words">{booleanDisplay(value)}</span>
                     </div>
                 );
             } else if (key === 'gstin') {
@@ -108,7 +125,7 @@ const renderSectionData = (title: string, sectionData: Record<string, any> | und
                 return (
                     <div key={key} className="grid grid-cols-1 md:grid-cols-3 gap-1 md:gap-2 items-start">
                         <span className="font-medium col-span-1 capitalize break-words">MSME/Udyam Registered:</span>
-                        <span className="col-span-1 md:col-span-2 whitespace-pre-wrap break-words">{formatDisplayData(value)}</span>
+                        <span className="col-span-1 md:col-span-2 whitespace-pre-wrap break-words">{booleanDisplay(value)}</span>
                     </div>
                 );
             } else if (key === 'msmeUdyamNumber') {
@@ -119,7 +136,7 @@ const renderSectionData = (title: string, sectionData: Record<string, any> | und
                 return (
                     <div key={key} className="grid grid-cols-1 md:grid-cols-3 gap-1 md:gap-2 items-start">
                         <span className="font-medium col-span-1 capitalize break-words">NSIC Registered:</span>
-                        <span className="col-span-1 md:col-span-2 whitespace-pre-wrap break-words">{formatDisplayData(value)}</span>
+                        <span className="col-span-1 md:col-span-2 whitespace-pre-wrap break-words">{booleanDisplay(value)}</span>
                     </div>
                 );
             } else if (key === 'nsicNumber') {
@@ -130,7 +147,7 @@ const renderSectionData = (title: string, sectionData: Record<string, any> | und
                  return (
                     <div key={key} className="grid grid-cols-1 md:grid-cols-3 gap-1 md:gap-2 items-start">
                         <span className="font-medium col-span-1 capitalize break-words">Blacklisted or in Litigation:</span>
-                        <span className="col-span-1 md:col-span-2 whitespace-pre-wrap break-words">{formatDisplayData(value)}</span>
+                        <span className="col-span-1 md:col-span-2 whitespace-pre-wrap break-words">{booleanDisplay(value)}</span>
                     </div>
                 );
             } else if (key === 'blacklistedDetails') {
@@ -168,26 +185,36 @@ const renderSectionData = (title: string, sectionData: Record<string, any> | und
               displayValue = formatDisplayData(value, key, sectionData);
             }
           } else if (title === "Tender Experience") {
+            const booleanDisplay = (val: any) => val ? 'Yes' : 'No';
             if (key === 'hasPastClients') {
               return (
                 <div key={key} className="grid grid-cols-1 md:grid-cols-3 gap-1 md:gap-2 items-start">
                   <span className="font-medium col-span-1 capitalize break-words">Can List Past Clients:</span>
-                  <span className="col-span-1 md:col-span-2 whitespace-pre-wrap break-words">{formatDisplayData(value)}</span>
+                  <span className="col-span-1 md:col-span-2 whitespace-pre-wrap break-words">{booleanDisplay(value)}</span>
                 </div>
               );
             } else if (key === 'pastClients') {
               displayValue = sectionData.hasPastClients
                 ? (value ? formatDisplayData(value, key, sectionData) : "Details not provided")
                 : "Not Applicable (Indicated no past clients to list)";
-            } else {
+            } else if (key === 'suppliedToGovtPsus') {
+                 return (
+                    <div key={key} className="grid grid-cols-1 md:grid-cols-3 gap-1 md:gap-2 items-start">
+                        <span className="font-medium col-span-1 capitalize break-words">Supplied to Govt/PSUs:</span>
+                        <span className="col-span-1 md:col-span-2 whitespace-pre-wrap break-words">{booleanDisplay(value)}</span>
+                    </div>
+                 );
+            }
+            else {
               displayValue = formatDisplayData(value, key, sectionData);
             }
           } else if (title === "Geographic Reach & Digital Readiness") {
+            const booleanDisplay = (val: any) => val ? 'Yes' : 'No';
             if (key === 'operatesInMultipleStates') {
               return (
                 <div key={key} className="grid grid-cols-1 md:grid-cols-3 gap-1 md:gap-2 items-start">
                   <span className="font-medium col-span-1 capitalize break-words">Operates In/Exports To Multiple States:</span>
-                  <span className="col-span-1 md:col-span-2 whitespace-pre-wrap break-words">{formatDisplayData(value)}</span>
+                  <span className="col-span-1 md:col-span-2 whitespace-pre-wrap break-words">{booleanDisplay(value)}</span>
                 </div>
               );
             } else if (key === 'operationalStates') {
@@ -198,23 +225,36 @@ const renderSectionData = (title: string, sectionData: Record<string, any> | und
               return (
                 <div key={key} className="grid grid-cols-1 md:grid-cols-3 gap-1 md:gap-2 items-start">
                   <span className="font-medium col-span-1 capitalize break-words">Exports To Other Countries:</span>
-                  <span className="col-span-1 md:col-span-2 whitespace-pre-wrap break-words">{formatDisplayData(value)}</span>
+                  <span className="col-span-1 md:col-span-2 whitespace-pre-wrap break-words">{booleanDisplay(value)}</span>
                 </div>
               );
             } else if (key === 'countriesServed') {
               displayValue = sectionData.exportsToOtherCountries
                 ? (value ? formatDisplayData(value, key, sectionData) : "Details not provided")
                 : "Not Applicable (No export to other countries indicated)";
-            } else {
+            } else if (['hasImportLicense', 'hasExportLicense', 'registeredOnPortals', 'hasDigitalSignature'].includes(key)) {
+                return (
+                     <div key={key} className="grid grid-cols-1 md:grid-cols-3 gap-1 md:gap-2 items-start">
+                        <span className="font-medium col-span-1 capitalize break-words">{displayKey}:</span>
+                        <span className="col-span-1 md:col-span-2 whitespace-pre-wrap break-words">{booleanDisplay(value)}</span>
+                    </div>
+                );
+            }
+             else {
               displayValue = formatDisplayData(value, key, sectionData);
+            }
+          } else if (title === "Declarations") {
+            if (key === 'infoConfirmed') {
+                 displayKey = "Information Confirmed Accurate";
+                 displayValue = formatDisplayData(value); // Boolean will become "Agreed" / "Not Agreed"
             }
           }
           else {
             displayValue = formatDisplayData(value, key, sectionData);
           }
 
-          const handledFlags = ['hasPan', 'hasGstin', 'hasMsmeUdyam', 'hasNsic', 'isBlacklistedOrLitigation', 'hasNoCertifications', 'hasPastClients', 'operatesInMultipleStates', 'exportsToOtherCountries'];
-          if (handledFlags.includes(key)) {
+          const handledFlags = ['hasPan', 'hasGstin', 'hasMsmeUdyam', 'hasNsic', 'isBlacklistedOrLitigation', 'hasNoCertifications', 'hasPastClients', 'operatesInMultipleStates', 'exportsToOtherCountries', 'suppliedToGovtPsus', 'hasImportLicense', 'hasExportLicense', 'registeredOnPortals', 'hasDigitalSignature'];
+          if (title !== "Terms & Conditions" && title !== "Declarations" && handledFlags.includes(key)) {
             return null;
           }
 
@@ -254,6 +294,7 @@ export const ReviewSubmitStep: FC<ReviewSubmitStepProps> = ({ form }) => {
         {renderSectionData("Financial & Legal Information", formData.financialLegalInfo)}
         {renderSectionData("Tender Experience", formData.tenderExperience)}
         {renderSectionData("Geographic Reach & Digital Readiness", formData.geographicDigitalReach)}
+        {renderSectionData("Terms & Conditions", formData.termsAndConditions)}
         {renderSectionData("Declarations", formData.declarationsUploads)}
 
         <Separator className="my-8" />

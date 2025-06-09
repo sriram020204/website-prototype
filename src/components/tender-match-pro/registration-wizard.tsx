@@ -12,6 +12,7 @@ import {
   financialLegalInfoSchema,
   tenderExperienceSchema,
   geographicDigitalReachSchema,
+  termsAndConditionsSchema, // New import
   declarationsUploadsSchema
 } from '@/lib/schemas/registration-schema';
 import { useFormPersistence } from '@/hooks/use-form-persistence';
@@ -24,6 +25,7 @@ import { BusinessCapabilitiesStep } from './steps/business-capabilities-step';
 import { FinancialLegalInfoStep } from './steps/financial-info-step';
 import { TenderExperienceStep } from './steps/tender-experience-step';
 import { GeographicDigitalReachStep } from './steps/geographic-reach-step';
+import { TermsConditionsStep } from './steps/terms-conditions-step'; // New import
 import { DeclarationsUploadsStep } from './steps/declarations-uploads-step';
 import { ReviewSubmitStep } from './steps/review-submit-step';
 
@@ -33,6 +35,7 @@ const STEPS = [
   { id: 'financialLegalInfo', title: 'Financial & Legal Info', component: FinancialLegalInfoStep, schema: financialLegalInfoSchema, fields: ['financialLegalInfo'] as const },
   { id: 'tenderExperience', title: 'Tender Experience', component: TenderExperienceStep, schema: tenderExperienceSchema, fields: ['tenderExperience'] as const },
   { id: 'geographicDigitalReach', title: 'Geographic & Digital', component: GeographicDigitalReachStep, schema: geographicDigitalReachSchema, fields: ['geographicDigitalReach'] as const },
+  { id: 'termsAndConditions', title: 'Terms & Conditions', component: TermsConditionsStep, schema: termsAndConditionsSchema, fields: ['termsAndConditions'] as const }, // New step
   { id: 'declarationsUploads', title: 'Declarations', component: DeclarationsUploadsStep, schema: declarationsUploadsSchema, fields: ['declarationsUploads'] as const },
   { id: 'reviewSubmit', title: 'Review & Submit', component: ReviewSubmitStep, schema: registrationSchema, fields: [] as const },
 ];
@@ -99,6 +102,12 @@ export function RegistrationWizard() {
       hasDigitalSignature: false,
       preferredTenderLanguages: ''
     },
+    termsAndConditions: { // New default values
+      acknowledgmentOfTenderMatching: false,
+      accuracyOfSharedCompanyProfile: false,
+      noResponsibilityForTenderOutcomes: false,
+      nonDisclosureAndLimitedUse: false,
+    },
     declarationsUploads: {
       infoConfirmed: false,
     },
@@ -131,8 +140,14 @@ export function RegistrationWizard() {
   const handleNext = async () => {
     if (currentStep < STEPS.length - 1) {
       const currentStepFields = STEPS[currentStep].fields as (keyof RegistrationFormData)[];
+      
+      // For nested objects like 'termsAndConditions', RHF trigger works better with the top-level key
+      const fieldsToValidate: (keyof RegistrationFormData)[] | (Path<RegistrationFormData>)[] = 
+        STEPS[currentStep].id === 'termsAndConditions' ? ['termsAndConditions'] :
+        (currentStepFields.length > 0 ? currentStepFields as any : undefined);
 
-      const isValid = await methods.trigger(currentStepFields.length > 0 ? currentStepFields as any : undefined);
+
+      const isValid = await methods.trigger(fieldsToValidate as any);
 
       if (isValid) {
         try {
