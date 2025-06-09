@@ -5,7 +5,6 @@ import * as React from "react";
 import { X, ChevronsUpDown } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
-// Button component is no longer directly used in PopoverTrigger
 import {
   Command,
   CommandEmpty,
@@ -20,10 +19,10 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { buttonVariants } from "@/components/ui/button"; // Import buttonVariants
+import { buttonVariants } from "@/components/ui/button";
 
 interface TagInputProps {
-  value: string; // Comma-separated string of tags
+  value: string;
   onChange: (value: string) => void;
   options: string[];
   placeholder?: string;
@@ -32,7 +31,7 @@ interface TagInputProps {
   "aria-invalid"?: boolean;
   disabled?: boolean;
   className?: string;
-  onTagAdd?: (tag: string) => void; // New prop
+  onTagAdd?: (tag: string) => void;
 }
 
 export const TagInput: React.FC<TagInputProps> = ({
@@ -50,7 +49,6 @@ export const TagInput: React.FC<TagInputProps> = ({
   const [open, setOpen] = React.useState(false);
   const [searchQuery, setSearchQuery] = React.useState("");
   const triggerRef = React.useRef<HTMLButtonElement>(null);
-
 
   const selectedTags = React.useMemo(() => {
     return value ? value.split(",").map(tag => tag.trim()).filter(tag => tag.length > 0) : [];
@@ -80,7 +78,7 @@ export const TagInput: React.FC<TagInputProps> = ({
     const newSelectedTags = selectedTags.filter(tag => tag !== tagToRemove);
     onChange(newSelectedTags.join(", "));
   };
-  
+
   const handleKeyDownRemove = (e: React.KeyboardEvent<HTMLSpanElement>, tagToRemove: string) => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
@@ -103,15 +101,20 @@ export const TagInput: React.FC<TagInputProps> = ({
     const trimmedSearch = searchQuery.trim();
     if (!trimmedSearch) return false;
     const isAlreadySelected = selectedTags.some(tag => tag.toLowerCase() === trimmedSearch.toLowerCase());
-    const isExistingOption = options.some(opt => opt.toLowerCase() === trimmedSearch.toLowerCase());
-    return !isAlreadySelected && !isExistingOption;
+    // Check if the trimmed search query exists in the original options (case-insensitive)
+    const isExistingOriginalOption = options.some(opt => opt.toLowerCase() === trimmedSearch.toLowerCase());
+    // It should show create if it's not selected AND it's not an existing original option (even if filtered out)
+    // OR if it's not selected AND it is an existing original option BUT it's not in `availableOptions` (meaning it was already selected, which is contradictory, so this part handles more general "is it creatable")
+    return !isAlreadySelected && !isExistingOriginalOption;
   }, [searchQuery, selectedTags, options]);
+
 
   return (
     <div className={cn("w-full", className)}>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger
           ref={triggerRef}
+          asChild={false} 
           role="combobox"
           aria-expanded={open}
           aria-controls="tag-input-combobox"
@@ -119,13 +122,14 @@ export const TagInput: React.FC<TagInputProps> = ({
           data-disabled={disabled ? "" : undefined}
           disabled={disabled}
           className={cn(
-            buttonVariants({ variant: "outline" }), // Use variants for styling
+            buttonVariants({ variant: "outline" }),
             "w-full justify-between h-auto min-h-10 py-2 px-3 text-left font-normal hover:bg-background disabled:opacity-50 disabled:cursor-not-allowed"
           )}
           id={id}
           aria-describedby={ariaDescribedBy}
           aria-invalid={ariaInvalid}
-          type="button" // Explicitly set type
+          type="button"
+          onClick={() => !disabled && setOpen(true)}
         >
           {selectedTags.length > 0 ? (
             <div className="flex flex-wrap gap-1">
@@ -145,8 +149,8 @@ export const TagInput: React.FC<TagInputProps> = ({
                     )}
                     onClick={(e) => {
                       if (disabled) return;
-                      e.preventDefault(); // Prevent popover from closing due to button click
-                      e.stopPropagation(); // Prevent popover from closing due to button click
+                      e.preventDefault();
+                      e.stopPropagation();
                       handleRemove(tag);
                     }}
                     onKeyDown={disabled ? undefined : (e) => handleKeyDownRemove(e, tag)}
@@ -163,8 +167,8 @@ export const TagInput: React.FC<TagInputProps> = ({
           )}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </PopoverTrigger>
-        <PopoverContent 
-            className="w-[--radix-popover-trigger-width] p-0" 
+        <PopoverContent
+            className="w-[--radix-popover-trigger-width] p-0"
             align="start"
             style={{ width: triggerRef.current?.offsetWidth ? `${triggerRef.current.offsetWidth}px` : 'auto' }}
         >
@@ -196,6 +200,7 @@ export const TagInput: React.FC<TagInputProps> = ({
                     value={searchQuery.trim()}
                     onSelect={() => handleSelect(searchQuery.trim())}
                     disabled={disabled}
+                    className="bg-accent text-accent-foreground hover:bg-accent/90 aria-selected:bg-accent aria-selected:text-accent-foreground"
                   >
                     Add "{searchQuery.trim()}"
                   </CommandItem>
