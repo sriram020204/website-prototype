@@ -2,7 +2,7 @@
 "use client";
 
 import type { FC } from 'react';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useFieldArray, type UseFormReturn } from 'react-hook-form';
 import type { RegistrationFormData } from '@/lib/schemas/registration-schema';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -21,8 +21,7 @@ interface FinancialLegalInfoStepProps {
 
 const CURRENCY_OPTIONS = ["USD", "INR", "EUR", "GBP", "JPY", "AUD", "CAD", "CHF", "CNY", "SGD", "AED"];
 
-const MAX_YEARS_HISTORY = 20; 
-const FIXED_START_YEAR_PREFIX = 2025; // Ensure this is the definitive start year
+const MAX_YEARS_HISTORY = 20; // e.g., 20 years back from current, so 21 total options including current FY
 
 const FileInputControl: FC<{ field: any; placeholder: string }> = ({ field, placeholder }) => {
   const { name, value, onChange, ref } = field;
@@ -61,6 +60,23 @@ const FileInputControl: FC<{ field: any; placeholder: string }> = ({ field, plac
 export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }) => {
   const { control, watch, setValue } = form;
   const { toast } = useToast();
+  const [financialYearOptions, setFinancialYearOptions] = useState<{label: string, value: string}[]>([]);
+
+  useEffect(() => {
+    const generateFinancialYearOptions = () => {
+      const currentYear = new Date().getFullYear();
+      const options = [];
+      for (let i = 0; i <= MAX_YEARS_HISTORY; i++) {
+        const startYear = currentYear - i;
+        const endYearShort = (startYear + 1).toString().slice(-2);
+        const yearString = `${startYear}-${endYearShort}`;
+        options.push({ label: yearString, value: yearString });
+      }
+      return options;
+    };
+    setFinancialYearOptions(generateFinancialYearOptions());
+  }, []);
+
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -82,24 +98,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
       });
       return;
     }
-
-    let newFinancialYear;
-    if (fields.length === 0) {
-      // Logic for the very first entry
-      const fromYear = FIXED_START_YEAR_PREFIX;
-      const toYearPart = (fromYear - 1).toString().slice(-2); // e.g., 2025 -> "24"
-      newFinancialYear = `${fromYear}-${toYearPart}`; // e.g., "2025-24"
-    } else {
-      // Logic for subsequent entries
-      const lastEntryYearString = fields[fields.length - 1].financialYear;
-      const lastFromYear = parseInt(lastEntryYearString.split('-')[0], 10);
-      
-      const newFromYear = lastFromYear - 1; 
-      const newToYearPart = (newFromYear - 1).toString().slice(-2); 
-      newFinancialYear = `${newFromYear}-${newToYearPart}`; 
-    }
-    
-    append({ financialYear: newFinancialYear, amount: '' });
+    append({ financialYear: '', amount: '' });
   };
   
   return (
@@ -126,9 +125,6 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
                   checked={field.value}
                   onCheckedChange={(checked) => {
                     field.onChange(checked);
-                    if (!checked) {
-                      setValue('financialLegalInfo.pan', '', { shouldValidate: true });
-                    }
                   }}
                   id={field.name}
                 />
@@ -168,9 +164,6 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
                   checked={field.value}
                   onCheckedChange={(checked) => {
                     field.onChange(checked);
-                    if (!checked) {
-                      setValue('financialLegalInfo.gstin', '', { shouldValidate: true });
-                    }
                   }}
                   id={field.name}
                 />
@@ -210,10 +203,6 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
                   checked={field.value}
                   onCheckedChange={(checked) => {
                     field.onChange(checked);
-                    if (!checked) {
-                      setValue('financialLegalInfo.msmeUdyamNumber', '', { shouldValidate: true });
-                      setValue('financialLegalInfo.msmeUdyamCertificate', '', { shouldValidate: true });
-                    }
                   }}
                   id={field.name}
                 />
@@ -269,10 +258,6 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
                   checked={field.value}
                   onCheckedChange={(checked) => {
                     field.onChange(checked);
-                    if (!checked) {
-                      setValue('financialLegalInfo.nsicNumber', '', { shouldValidate: true });
-                      setValue('financialLegalInfo.nsicCertificate', '', { shouldValidate: true });
-                    }
                   }}
                   id={field.name}
                 />
@@ -360,19 +345,37 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
         <div className="space-y-4">
           <h4 className="text-lg font-medium">Annual Turnover</h4>
           <FormDescription>
-             At least one entry is required. Amounts will use the Net Worth currency selected above.
-             The first financial year added will be {`${FIXED_START_YEAR_PREFIX}-${(FIXED_START_YEAR_PREFIX - 1).toString().slice(-2)}`}, and subsequent years will decrement (e.g., {`${FIXED_START_YEAR_PREFIX-1}-${((FIXED_START_YEAR_PREFIX - 1) - 1).toString().slice(-2)}`}).
+             At least one entry is required. Please select the financial year from the dropdown and enter the amount.
+             Amounts will use the Net Worth currency selected above.
            </FormDescription>
           {fields.map((item, index) => (
             <div key={item.id} className="p-4 border rounded-md space-y-4 relative">
               <FormLabel className="text-md font-semibold block mb-2">Turnover Entry #{index + 1}</FormLabel>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
-                <FormItem>
-                  <FormLabel htmlFor={`financialYear-${item.id}`}>Financial Year</FormLabel>
-                  <p id={`financialYear-${item.id}`} className="pt-2 text-sm font-medium">
-                    {item.financialYear}
-                  </p>
-                </FormItem>
+                <FormField
+                  control={control}
+                  name={`financialLegalInfo.annualTurnovers.${index}.financialYear`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Financial Year</FormLabel>
+                       <Select onValueChange={field.onChange} value={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select financial year" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {financialYearOptions.map(option => (
+                            <SelectItem key={option.value} value={option.value}>
+                              {option.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
                 <FormField
                   control={control}
                   name={`financialLegalInfo.annualTurnovers.${index}.amount`}
@@ -387,7 +390,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
                   )}
                 />
               </div>
-              {fields.length > 1 && ( 
+              {fields.length > 0 && ( // Show remove button for all items if there is at least one
                 <Button
                   type="button"
                   variant="destructive"
