@@ -54,6 +54,14 @@ export const financialLegalInfoSchema = z.object({
   netWorthCurrency: z.string().min(1, { message: "Net worth currency is required." }),
   isBlacklistedOrLitigation: z.boolean().default(false),
   blacklistedDetails: z.string().optional().or(z.literal('')),
+}).superRefine((data, ctx) => {
+  if (data.isBlacklistedOrLitigation && (!data.blacklistedDetails || data.blacklistedDetails.trim() === "")) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: "Details of blacklisting/litigation are required if 'Yes' is selected.",
+      path: ['blacklistedDetails'],
+    });
+  }
 });
 
 
@@ -138,3 +146,4 @@ export const registrationSchema = z.object({
 
 export type RegistrationFormData = z.infer<typeof registrationSchema>;
 export type TurnoverEntry = z.infer<typeof turnoverEntrySchema>;
+

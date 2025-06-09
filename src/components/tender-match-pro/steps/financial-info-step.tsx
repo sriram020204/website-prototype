@@ -331,7 +331,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
                 <FormControl>
                   <Textarea rows={3} placeholder="Provide details" {...field} />
                 </FormControl>
-                <FormDescription>Optional.</FormDescription>
+                <FormDescription>Required if 'Yes' is selected above.</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
