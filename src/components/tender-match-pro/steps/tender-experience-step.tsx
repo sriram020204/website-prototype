@@ -30,7 +30,7 @@ export const TenderExperienceStep: FC<TenderExperienceStepProps> = ({ form }) =>
           control={form.control}
           name="tenderExperience.suppliedToGovtPsus"
           render={({ field }) => (
-            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow-sm">
+            <FormItem className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4 shadow-sm">
               <FormControl>
                 <Checkbox
                   checked={field.value}
@@ -39,7 +39,7 @@ export const TenderExperienceStep: FC<TenderExperienceStepProps> = ({ form }) =>
                 />
               </FormControl>
               <div className="space-y-1 leading-none">
-                <FormLabel htmlFor={field.name} className="text-base font-normal">
+                <FormLabel htmlFor={field.name} className="font-normal">
                   Supplied to Government/PSUs?
                 </FormLabel>
               </div>
@@ -125,3 +125,5 @@ export const TenderExperienceStep: FC<TenderExperienceStepProps> = ({ form }) =>
     </Card>
   );
 };
+
+    

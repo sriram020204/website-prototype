@@ -118,7 +118,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
           control={form.control}
           name="financialLegalInfo.hasPan"
           render={({ field }) => (
-            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow-sm">
+            <FormItem className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4 shadow-sm">
               <FormControl>
                 <Checkbox
                   checked={field.value}
@@ -132,7 +132,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
                 />
               </FormControl>
               <div className="space-y-1 leading-none">
-                <FormLabel htmlFor={field.name} className="text-base font-normal">
+                <FormLabel htmlFor={field.name} className="font-normal">
                   Do you have a PAN (Permanent Account Number)?
                 </FormLabel>
               </div>
@@ -144,7 +144,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
             control={form.control}
             name="financialLegalInfo.pan"
             render={({ field }) => (
-              <FormItem className="pl-7">
+              <FormItem className="pl-10"> {/* Adjusted padding for alignment with checkbox */}
                 <FormLabel>PAN Number (Optional)</FormLabel>
                 <FormControl>
                   <Input type="text" placeholder="Enter PAN" {...field} />
@@ -159,7 +159,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
           control={form.control}
           name="financialLegalInfo.hasGstin"
           render={({ field }) => (
-             <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow-sm">
+             <FormItem className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4 shadow-sm">
               <FormControl>
                 <Checkbox
                   checked={field.value}
@@ -173,7 +173,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
                 />
               </FormControl>
               <div className="space-y-1 leading-none">
-                <FormLabel htmlFor={field.name} className="text-base font-normal">
+                <FormLabel htmlFor={field.name} className="font-normal">
                   Do you have a GSTIN?
                 </FormLabel>
               </div>
@@ -185,7 +185,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
             control={form.control}
             name="financialLegalInfo.gstin"
             render={({ field }) => (
-              <FormItem className="pl-7">
+              <FormItem className="pl-10"> {/* Adjusted padding */}
                 <FormLabel>GSTIN Number (Optional)</FormLabel>
                 <FormControl>
                   <Input type="text" placeholder="Enter GSTIN" {...field} />
@@ -200,7 +200,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
           control={form.control}
           name="financialLegalInfo.hasMsmeUdyam"
           render={({ field }) => (
-            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow-sm">
+            <FormItem className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4 shadow-sm">
               <FormControl>
                 <Checkbox
                   checked={field.value}
@@ -215,7 +215,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
                 />
               </FormControl>
               <div className="space-y-1 leading-none">
-                <FormLabel htmlFor={field.name} className="text-base font-normal">
+                <FormLabel htmlFor={field.name} className="font-normal">
                   Do you have an MSME/Udyam Registration?
                 </FormLabel>
               </div>
@@ -228,7 +228,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
               control={form.control}
               name="financialLegalInfo.msmeUdyamNumber"
               render={({ field }) => (
-                <FormItem className="pl-7">
+                <FormItem className="pl-10"> {/* Adjusted padding */}
                   <FormLabel>MSME/Udyam Number (Optional)</FormLabel>
                   <FormControl>
                     <Input type="text" placeholder="Enter MSME/Udyam registration number" {...field} />
@@ -241,7 +241,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
               control={form.control}
               name="financialLegalInfo.msmeUdyamCertificate"
               render={({ field }) => (
-                <FormItem className="pl-7">
+                <FormItem className="pl-10"> {/* Adjusted padding */}
                   <FormLabel>MSME/Udyam Certificate File Name (Optional)</FormLabel>
                   <FormControl>
                      <FileInputControl field={field} placeholder="MSME/Udyam Certificate file" />
@@ -258,7 +258,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
           control={form.control}
           name="financialLegalInfo.hasNsic"
           render={({ field }) => (
-             <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow-sm">
+             <FormItem className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4 shadow-sm">
               <FormControl>
                 <Checkbox
                   checked={field.value}
@@ -273,7 +273,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
                 />
               </FormControl>
               <div className="space-y-1 leading-none">
-                <FormLabel htmlFor={field.name} className="text-base font-normal">
+                <FormLabel htmlFor={field.name} className="font-normal">
                    Do you have an NSIC Registration?
                 </FormLabel>
               </div>
@@ -286,7 +286,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
               control={form.control}
               name="financialLegalInfo.nsicNumber"
               render={({ field }) => (
-                <FormItem className="pl-7">
+                <FormItem className="pl-10"> {/* Adjusted padding */}
                   <FormLabel>NSIC Number (Optional)</FormLabel>
                   <FormControl>
                     <Input type="text" placeholder="Enter NSIC registration number" {...field} />
@@ -299,7 +299,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
               control={form.control}
               name="financialLegalInfo.nsicCertificate"
               render={({ field }) => (
-                <FormItem className="pl-7">
+                <FormItem className="pl-10"> {/* Adjusted padding */}
                   <FormLabel>NSIC Certificate File Name (Optional)</FormLabel>
                   <FormControl>
                      <FileInputControl field={field} placeholder="NSIC Certificate file" />
@@ -361,7 +361,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
           control={form.control}
           name="financialLegalInfo.isBlacklistedOrLitigation"
           render={({ field }) => (
-            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow-sm">
+            <FormItem className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4 shadow-sm">
               <FormControl>
                 <Checkbox
                   checked={field.value}
@@ -370,7 +370,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
                 />
               </FormControl>
               <div className="space-y-1 leading-none">
-                <FormLabel htmlFor={field.name} className="text-base font-normal">
+                <FormLabel htmlFor={field.name} className="font-normal">
                   Is the company blacklisted or in litigation?
                 </FormLabel>
               </div>
@@ -382,7 +382,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
             control={form.control}
             name="financialLegalInfo.blacklistedDetails"
             render={({ field }) => (
-              <FormItem className="pl-7">
+              <FormItem className="pl-10"> {/* Adjusted padding */}
                 <FormLabel>Details of Blacklisting/Litigation (Optional)</FormLabel>
                 <FormControl>
                   <Textarea rows={3} placeholder="Provide details if yes..." {...field} />
@@ -396,3 +396,5 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
     </Card>
   );
 };
+
+    

@@ -60,7 +60,7 @@ export const GeographicDigitalReachStep: FC<GeographicDigitalReachStepProps> = (
           control={form.control}
           name="geographicDigitalReach.hasImportExportLicense"
           render={({ field }) => (
-            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow-sm">
+            <FormItem className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4 shadow-sm">
               <FormControl>
                 <Checkbox
                   checked={field.value}
@@ -69,7 +69,7 @@ export const GeographicDigitalReachStep: FC<GeographicDigitalReachStepProps> = (
                 />
               </FormControl>
               <div className="space-y-1 leading-none">
-                <FormLabel htmlFor={field.name} className="text-base font-normal">
+                <FormLabel htmlFor={field.name} className="font-normal">
                   Have Import/Export License?
                 </FormLabel>
               </div>
@@ -82,7 +82,7 @@ export const GeographicDigitalReachStep: FC<GeographicDigitalReachStepProps> = (
           control={form.control}
           name="geographicDigitalReach.registeredOnPortals"
           render={({ field }) => (
-            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow-sm">
+            <FormItem className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4 shadow-sm">
               <FormControl>
                 <Checkbox
                   checked={field.value}
@@ -91,7 +91,7 @@ export const GeographicDigitalReachStep: FC<GeographicDigitalReachStepProps> = (
                 />
               </FormControl>
               <div className="space-y-1 leading-none">
-                <FormLabel htmlFor={field.name} className="text-base font-normal">
+                <FormLabel htmlFor={field.name} className="font-normal">
                   Registered on GeM / CPPP / State Portals?
                 </FormLabel>
               </div>
@@ -102,7 +102,7 @@ export const GeographicDigitalReachStep: FC<GeographicDigitalReachStepProps> = (
           control={form.control}
           name="geographicDigitalReach.hasDigitalSignature"
           render={({ field }) => (
-            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow-sm">
+            <FormItem className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4 shadow-sm">
               <FormControl>
                 <Checkbox
                   checked={field.value}
@@ -111,7 +111,7 @@ export const GeographicDigitalReachStep: FC<GeographicDigitalReachStepProps> = (
                 />
               </FormControl>
               <div className="space-y-1 leading-none">
-                <FormLabel htmlFor={field.name} className="text-base font-normal">
+                <FormLabel htmlFor={field.name} className="font-normal">
                   Have Digital Signature Certificate (DSC)?
                 </FormLabel>
               </div>
@@ -136,3 +136,5 @@ export const GeographicDigitalReachStep: FC<GeographicDigitalReachStepProps> = (
     </Card>
   );
 };
+
+    
