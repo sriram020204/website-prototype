@@ -40,7 +40,7 @@ export const businessCapabilitiesSchema = z.object({
 
 // Step 3: Financial & Legal Info
 const turnoverEntrySchema = z.object({
-  financialYear: z.string().min(4, { message: "Financial year is required." }), // e.g. "2024-25"
+  financialYear: z.string().min(4, { message: "Financial year is required." }), 
   amount: z.string().regex(/^\d+(\.\d{1,2})?$/, { message: "Invalid amount format." }).min(1, {message: "Amount is required."}),
 });
 
@@ -82,8 +82,6 @@ export const tenderExperienceSchema = z.object({
   suppliedToGovtPsus: z.boolean().default(false),
   hasPastClients: z.boolean().default(false),
   pastClients: z.string().optional().or(z.literal('')),
-  // purchaseOrders: z.string().min(1, {message: "Purchase order file names are required."}).describe("Names of PO files, comma-separated"),
-  // performanceReports: z.string().min(1, {message: "Performance report file names are required."}).describe("Names of report files, comma-separated"),
   highestOrderValueFulfilled: z.coerce.number().min(0, {message: "Highest order value fulfilled is required (can be 0)."}),
   tenderTypesHandled: z.string().min(3, { message: "Tender types handled are required." }),
 }).superRefine((data, ctx) => {
@@ -98,13 +96,31 @@ export const tenderExperienceSchema = z.object({
 
 // Step 5: Geographic Reach & Digital Readiness
 export const geographicDigitalReachSchema = z.object({
-  operationalStates: z.string().min(2, { message: "Enter operational states, comma-separated." }),
-  countriesServed: z.string().min(2, { message: "Enter countries served, comma-separated." }),
+  operatesInMultipleStates: z.boolean().default(false),
+  operationalStates: z.string().optional().or(z.literal('')),
+  exportsToOtherCountries: z.boolean().default(false),
+  countriesServed: z.string().optional().or(z.literal('')),
   hasImportExportLicense: z.boolean().default(false), 
   registeredOnPortals: z.boolean().default(false), 
   hasDigitalSignature: z.boolean().default(false), 
   preferredTenderLanguages: z.string().min(2, { message: "Enter preferred languages, comma-separated." }),
+}).superRefine((data, ctx) => {
+  if (data.operatesInMultipleStates && (!data.operationalStates || data.operationalStates.trim().length < 2)) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: "Operational states are required if you operate in multiple states (minimum 2 characters).",
+      path: ['operationalStates'],
+    });
+  }
+  if (data.exportsToOtherCountries && (!data.countriesServed || data.countriesServed.trim().length < 2)) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: "Countries served are required if you export to other countries (minimum 2 characters).",
+      path: ['countriesServed'],
+    });
+  }
 });
+
 
 // Step 6: Declarations & Uploads
 export const declarationsUploadsSchema = z.object({

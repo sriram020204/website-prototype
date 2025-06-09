@@ -24,13 +24,17 @@ const formatDisplayData = (data: any, fieldName?: string, sectionData?: Record<s
      if (fieldName === 'technicalCapabilities' && sectionData && (sectionData as RegistrationFormData['businessCapabilities']).technicalCapabilities === '') {
         return 'Not Provided';
      }
-     // For conditional fields that are now truly optional for data entry
      const financialFields = ['pan', 'gstin', 'msmeUdyamNumber', 'msmeUdyamCertificate', 'nsicNumber', 'nsicCertificate', 'blacklistedDetails'];
      if (financialFields.includes(fieldName || '')) {
          return 'Details not provided'; 
      }
-     // For pastClients when hasPastClients is true but pastClients is empty
      if (fieldName === 'pastClients' && sectionData && (sectionData as RegistrationFormData['tenderExperience']).hasPastClients && (sectionData as RegistrationFormData['tenderExperience']).pastClients === '') {
+        return 'Details not provided';
+     }
+     if (fieldName === 'operationalStates' && sectionData && (sectionData as RegistrationFormData['geographicDigitalReach']).operatesInMultipleStates && (sectionData as RegistrationFormData['geographicDigitalReach']).operationalStates === '') {
+        return 'Details not provided';
+     }
+     if (fieldName === 'countriesServed' && sectionData && (sectionData as RegistrationFormData['geographicDigitalReach']).exportsToOtherCountries && (sectionData as RegistrationFormData['geographicDigitalReach']).countriesServed === '') {
         return 'Details not provided';
      }
     return 'N/A (Data Missing)'; 
@@ -137,7 +141,6 @@ const renderSectionData = (title: string, sectionData: Record<string, any> | und
                 
                 const sortedTurnovers = [...value].sort((a, b) => {
                   if (a.financialYear && b.financialYear) {
-                    // Assuming format YYYY-YY or YYYY-YYYY, sort by the first year part
                     const yearA = parseInt(a.financialYear.substring(0,4), 10);
                     const yearB = parseInt(b.financialYear.substring(0,4), 10);
                     return yearA - yearB;
@@ -179,18 +182,42 @@ const renderSectionData = (title: string, sectionData: Record<string, any> | und
             } else {
               displayValue = formatDisplayData(value, key, sectionData);
             }
+          } else if (title === "Geographic Reach & Digital Readiness") {
+            if (key === 'operatesInMultipleStates') {
+              return (
+                <div key={key} className="grid grid-cols-1 md:grid-cols-3 gap-1 md:gap-2 items-start">
+                  <span className="font-medium col-span-1 capitalize break-words">Operates In/Exports To Multiple States:</span>
+                  <span className="col-span-1 md:col-span-2 whitespace-pre-wrap break-words">{formatDisplayData(value)}</span>
+                </div>
+              );
+            } else if (key === 'operationalStates') {
+              displayValue = sectionData.operatesInMultipleStates 
+                ? (value ? formatDisplayData(value, key, sectionData) : "Details not provided") 
+                : "Not Applicable (Single state or no export to other states indicated)";
+            } else if (key === 'exportsToOtherCountries') {
+              return (
+                <div key={key} className="grid grid-cols-1 md:grid-cols-3 gap-1 md:gap-2 items-start">
+                  <span className="font-medium col-span-1 capitalize break-words">Exports To Other Countries:</span>
+                  <span className="col-span-1 md:col-span-2 whitespace-pre-wrap break-words">{formatDisplayData(value)}</span>
+                </div>
+              );
+            } else if (key === 'countriesServed') {
+              displayValue = sectionData.exportsToOtherCountries 
+                ? (value ? formatDisplayData(value, key, sectionData) : "Details not provided") 
+                : "Not Applicable (No export to other countries indicated)";
+            } else {
+              displayValue = formatDisplayData(value, key, sectionData);
+            }
           }
           else {
             displayValue = formatDisplayData(value, key, sectionData);
           }
           
-          // Skip rendering for the handled boolean flags themselves
-          const handledFlags = ['hasPan', 'hasGstin', 'hasMsmeUdyam', 'hasNsic', 'isBlacklistedOrLitigation', 'hasNoCertifications', 'hasPastClients'];
+          const handledFlags = ['hasPan', 'hasGstin', 'hasMsmeUdyam', 'hasNsic', 'isBlacklistedOrLitigation', 'hasNoCertifications', 'hasPastClients', 'operatesInMultipleStates', 'exportsToOtherCountries'];
           if (handledFlags.includes(key)) {
             return null;
           }
 
-          // Skip rendering for annualTurnovers as it's handled with custom layout
           if (key === 'annualTurnovers') return null;
 
 

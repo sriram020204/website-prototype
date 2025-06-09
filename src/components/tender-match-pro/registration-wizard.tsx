@@ -85,13 +85,13 @@ export function RegistrationWizard() {
       suppliedToGovtPsus: false,
       hasPastClients: false,
       pastClients: '', 
-      // purchaseOrders: '', 
-      // performanceReports: '', 
       highestOrderValueFulfilled: undefined,
       tenderTypesHandled: ''
     },
     geographicDigitalReach: {
+      operatesInMultipleStates: false,
       operationalStates: '',
+      exportsToOtherCountries: false,
       countriesServed: '',
       hasImportExportLicense: false,
       registeredOnPortals: false,

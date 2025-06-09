@@ -2,6 +2,7 @@
 "use client";
 
 import type { FC } from 'react';
+import React, { useEffect } from 'react';
 import type { UseFormReturn } from 'react-hook-form';
 import type { RegistrationFormData } from '@/lib/schemas/registration-schema';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -33,43 +34,53 @@ const US_STATES = [
   "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"
 ].sort();
 
-const USER_PROVIDED_COUNTRIES = [
+const WORLD_COUNTRIES = [
   "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", "Argentina", "Armenia",
-  "Australia", "Austria", "Austrian Empire", "Azerbaijan", "Baden", "Bahamas, The", "Bahrain", "Bangladesh",
-  "Barbados", "Bavaria", "Belarus", "Belgium", "Belize", "Benin", "Bolivia", "Bosnia and Herzegovina",
-  "Botswana", "Brazil", "Brunei", "Brunswick and Lüneburg", "Bulgaria", "Burkina Faso", "Burma",
-  "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Cayman Islands, The", "Central African Republic",
-  "Central American Federation", "Chad", "Chile", "China", "Colombia", "Comoros", "Congo Free State, The",
-  "Cook Islands", "Costa Rica", "Cote d’Ivoire", "Croatia", "Cuba", "Cyprus", "Czechia", "Czechoslovakia",
-  "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic",
-  "Duchy of Parma, The", "East Germany", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea",
-  "Estonia", "Eswatini", "Ethiopia", "Federal Government of Germany (1848-49)", "Fiji", "Finland", "France",
-  "Gabon", "Gambia, The", "Georgia", "Germany", "Ghana", "Grand Duchy of Tuscany, The", "Greece", "Grenada",
-  "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Hanover", "Hanseatic Republics", "Hawaii",
-  "Hesse", "Holy See", "Honduras", "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland",
-  "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kingdom of Serbia/Yugoslavia",
-  "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho", "Lew Chew",
+  "Australia", "Austria", "Azerbaijan", "Bahamas, The", "Bahrain", "Bangladesh", "Barbados", "Belarus",
+  "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil",
+  "Brunei", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada",
+  "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Congo, Democratic Republic of the",
+  "Congo, Republic of the", "Cook Islands", "Costa Rica", "Cote d'Ivoire", "Croatia", "Cuba", "Cyprus",
+  "Czechia", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador",
+  "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon",
+  "Gambia, The", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau",
+  "Guyana", "Haiti", "Holy See", "Honduras", "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq",
+  "Ireland", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati",
+  "Korea, North", "Korea, South", "Kosovo", "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho",
   "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "Madagascar", "Malawi", "Malaysia",
-  "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mecklenburg-Schwerin",
-  "Mecklenburg-Strelitz", "Mexico", "Micronesia", "Moldova", "Monaco", "Mongolia", "Montenegro", "Morocco",
-  "Mozambique", "Namibia", "Nassau", "Nauru", "Nepal", "Netherlands, The", "New Zealand", "Nicaragua", "Niger",
-  "Nigeria", "Niue", "North German Confederation", "North German Union", "North Macedonia", "Norway",
-  "Oldenburg", "Oman", "Orange Free State", "Pakistan", "Palau", "Panama", "Papal States", "Papua New Guinea",
-  "Paraguay", "Peru", "Philippines", "Piedmont-Sardinia", "Poland", "Portugal", "Qatar", "Republic of Genoa",
-  "Republic of Korea", "Republic of the Congo", "Romania", "Russia", "Rwanda", "Saint Kitts and Nevis",
-  "Saint Lucia", "Saint Vincent and the Grenadines", "Samoa", "San Marino", "Sao Tome and Principe",
-  "Saudi Arabia", "Schaumburg-Lippe", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore",
-  "Slovakia", "Slovenia", "Solomon Islands, The", "Somalia", "South Africa", "South Sudan", "Spain",
-  "Sri Lanka", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "Tajikistan", "Tanzania", "Texas",
-  "Thailand", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkey", "Turkmenistan",
-  "Tuvalu", "Two Sicilies", "Uganda", "Ukraine", "Union of Soviet Socialist Republics",
-  "United Arab Emirates, The", "United Kingdom, The", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela",
-  "Vietnam", "Württemberg", "Yemen", "Zambia", "Zimbabwe"
+  "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia",
+  "Moldova", "Monaco", "Mongolia", "Montenegro", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru",
+  "Nepal", "Netherlands, The", "New Zealand", "Nicaragua", "Niger", "Nigeria", "Niue", "North Macedonia",
+  "Norway", "Oman", "Pakistan", "Palau", "Palestine State", "Panama", "Papua New Guinea", "Paraguay",
+  "Peru", "Philippines", "Poland", "Portugal", "Qatar", "Romania", "Russia", "Rwanda",
+  "Saint Kitts and Nevis", "Saint Lucia", "Saint Vincent and the Grenadines", "Samoa", "San Marino",
+  "Sao Tome and Principe", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore",
+  "Slovakia", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka",
+  "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "Taiwan", "Tajikistan", "Tanzania", "Thailand",
+  "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkey", "Turkmenistan", "Tuvalu",
+  "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan",
+  "Vanuatu", "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe"
 ].sort();
 
 
 export const GeographicDigitalReachStep: FC<GeographicDigitalReachStepProps> = ({ form }) => {
-  const selectedCountry = form.watch('companyDetails.country');
+  const { control, watch, setValue } = form;
+  const selectedCountry = watch('companyDetails.country');
+  const watchOperatesInMultipleStates = watch('geographicDigitalReach.operatesInMultipleStates');
+  const watchExportsToOtherCountries = watch('geographicDigitalReach.exportsToOtherCountries');
+
+  useEffect(() => {
+    if (!watchOperatesInMultipleStates) {
+      setValue('geographicDigitalReach.operationalStates', '', { shouldValidate: true, shouldDirty: true });
+    }
+  }, [watchOperatesInMultipleStates, setValue]);
+
+  useEffect(() => {
+    if (!watchExportsToOtherCountries) {
+      setValue('geographicDigitalReach.countriesServed', '', { shouldValidate: true, shouldDirty: true });
+    }
+  }, [watchExportsToOtherCountries, setValue]);
+
 
   const getStatesForCountry = (countryCode: string | undefined): string[] => {
     if (countryCode === "IN") return INDIAN_STATES_UTS;
@@ -92,65 +103,114 @@ export const GeographicDigitalReachStep: FC<GeographicDigitalReachStepProps> = (
       </CardHeader>
       <CardContent className="space-y-6">
         <h3 className="text-lg font-semibold text-primary mt-4">Geographic Reach</h3>
+        
         <FormField
-          control={form.control}
-          name="geographicDigitalReach.operationalStates"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Operational States</FormLabel>
-              <FormControl>
-                <TagInput
-                  {...field}
-                  options={operationalStateOptions}
-                  placeholder={
-                    selectedCountry
-                      ? operationalStateOptions.length > 0
-                        ? "Select or type operational states..."
-                        : "No predefined states for selected country. Type to add."
-                      : "Select country in Company Details first..."
-                  }
-                  id="operationalStates"
-                  aria-describedby="operationalStates-description"
-                  disabled={!selectedCountry && operationalStateOptions.length === 0}
-                  aria-invalid={!!form.formState.errors.geographicDigitalReach?.operationalStates}
-                />
-              </FormControl>
-              <FormDescription id="operationalStates-description">
-                Select from the list based on the country chosen in 'Company Details', or type to add custom states.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="geographicDigitalReach.countriesServed"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Countries Served</FormLabel>
-              <FormControl>
-                <TagInput
-                  {...field}
-                  options={USER_PROVIDED_COUNTRIES}
-                  placeholder="Select countries served..."
-                  id="countriesServed"
-                  aria-describedby="countriesServed-description"
-                  aria-invalid={!!form.formState.errors.geographicDigitalReach?.countriesServed}
-                  allowCreate={false} // Disable adding new countries
-                />
-              </FormControl>
-              <FormDescription id="countriesServed-description">
-                Select the countries your company serves from the provided list.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="geographicDigitalReach.hasImportExportLicense"
+          control={control}
+          name="geographicDigitalReach.operatesInMultipleStates"
           render={({ field }) => (
             <FormItem className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4 shadow-sm">
+              <FormControl>
+                <Checkbox
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                  id={field.name}
+                />
+              </FormControl>
+              <div className="space-y-1 leading-none">
+                <FormLabel htmlFor={field.name} className="font-normal">
+                  Do you operate in or export to multiple states within your primary country of operation?
+                </FormLabel>
+              </div>
+            </FormItem>
+          )}
+        />
+
+        {watchOperatesInMultipleStates && (
+          <FormField
+            control={control}
+            name="geographicDigitalReach.operationalStates"
+            render={({ field }) => (
+              <FormItem className="pl-10">
+                <FormLabel>List the states you operate in/export to:</FormLabel>
+                <FormControl>
+                  <TagInput
+                    {...field}
+                    options={operationalStateOptions}
+                    placeholder={
+                      selectedCountry
+                        ? operationalStateOptions.length > 0
+                          ? "Select or type operational states..."
+                          : "No predefined states for selected country. Type to add."
+                        : "Select country in Company Details first..."
+                    }
+                    id="operationalStates"
+                    aria-describedby="operationalStates-description"
+                    disabled={!selectedCountry && operationalStateOptions.length === 0}
+                    aria-invalid={!!form.formState.errors.geographicDigitalReach?.operationalStates}
+                  />
+                </FormControl>
+                <FormDescription id="operationalStates-description">
+                  Required if checked above. Select from the list based on the country chosen in 'Company Details', or type to add custom states.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
+
+        <FormField
+          control={control}
+          name="geographicDigitalReach.exportsToOtherCountries"
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4 shadow-sm mt-4">
+              <FormControl>
+                <Checkbox
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                  id={field.name}
+                />
+              </FormControl>
+              <div className="space-y-1 leading-none">
+                <FormLabel htmlFor={field.name} className="font-normal">
+                   Do you export to other countries (outside your primary country of operation)?
+                </FormLabel>
+              </div>
+            </FormItem>
+          )}
+        />
+        
+        {watchExportsToOtherCountries && (
+          <FormField
+            control={control}
+            name="geographicDigitalReach.countriesServed"
+            render={({ field }) => (
+              <FormItem className="pl-10">
+                <FormLabel>List the countries you export to:</FormLabel>
+                <FormControl>
+                  <TagInput
+                    {...field}
+                    options={WORLD_COUNTRIES}
+                    placeholder="Select countries served..."
+                    id="countriesServed"
+                    aria-describedby="countriesServed-description"
+                    aria-invalid={!!form.formState.errors.geographicDigitalReach?.countriesServed}
+                    allowCreate={false} 
+                  />
+                </FormControl>
+                <FormDescription id="countriesServed-description">
+                  Required if checked above. Select the countries your company serves from the provided list.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
+
+        <FormField
+          control={control}
+          name="geographicDigitalReach.hasImportExportLicense"
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4 shadow-sm mt-4">
               <FormControl>
                 <Checkbox
                   checked={field.value}
@@ -169,7 +229,7 @@ export const GeographicDigitalReachStep: FC<GeographicDigitalReachStepProps> = (
 
         <h3 className="text-lg font-semibold text-primary mt-8">Digital Readiness</h3>
         <FormField
-          control={form.control}
+          control={control}
           name="geographicDigitalReach.registeredOnPortals"
           render={({ field }) => (
             <FormItem className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4 shadow-sm">
@@ -189,7 +249,7 @@ export const GeographicDigitalReachStep: FC<GeographicDigitalReachStepProps> = (
           )}
         />
         <FormField
-          control={form.control}
+          control={control}
           name="geographicDigitalReach.hasDigitalSignature"
           render={({ field }) => (
             <FormItem className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4 shadow-sm">
@@ -209,7 +269,7 @@ export const GeographicDigitalReachStep: FC<GeographicDigitalReachStepProps> = (
           )}
         />
         <FormField
-          control={form.control}
+          control={control}
           name="geographicDigitalReach.preferredTenderLanguages"
           render={({ field }) => (
             <FormItem>
