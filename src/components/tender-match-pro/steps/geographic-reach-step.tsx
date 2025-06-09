@@ -33,32 +33,38 @@ const US_STATES = [
   "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"
 ].sort();
 
-const WORLD_COUNTRIES = [
+const USER_PROVIDED_COUNTRIES = [
   "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", "Argentina", "Armenia",
-  "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium",
-  "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei",
-  "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada",
-  "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Congo, Democratic Republic of the",
-  "Congo, Republic of the", "Costa Rica", "Croatia", "Cuba", "Cyprus", "Czech Republic", "Denmark",
-  "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea",
-  "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Gambia", "Georgia", "Germany",
-  "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras",
-  "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Israel", "Italy", "Ivory Coast",
-  "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea, North", "Korea, South", "Kosovo",
-  "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein",
-  "Lithuania", "Luxembourg", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta",
-  "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Monaco", "Mongolia",
-  "Montenegro", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands",
-  "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan",
-  "Palau", "Palestine State", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland",
-  "Portugal", "Qatar", "Romania", "Russia", "Rwanda", "Saint Kitts and Nevis", "Saint Lucia",
-  "Saint Vincent and the Grenadines", "Samoa", "San Marino", "Sao Tome and Principe", "Saudi Arabia", "Senegal",
-  "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "Solomon Islands", "Somalia",
-  "South Africa", "South Sudan", "Spain", "Sri Lanka", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria",
-  "Taiwan", "Tajikistan", "Tanzania", "Thailand", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago",
-  "Tunisia", "Turkey", "Turkmenistan", "Tuvalu", "Uganda", "Ukraine", "United Arab Emirates",
-  "United Kingdom", "United States of America", "Uruguay", "Uzbekistan", "Vanuatu", "Vatican City", "Venezuela",
-  "Vietnam", "Yemen", "Zambia", "Zimbabwe"
+  "Australia", "Austria", "Austrian Empire", "Azerbaijan", "Baden", "Bahamas, The", "Bahrain", "Bangladesh",
+  "Barbados", "Bavaria", "Belarus", "Belgium", "Belize", "Benin", "Bolivia", "Bosnia and Herzegovina",
+  "Botswana", "Brazil", "Brunei", "Brunswick and Lüneburg", "Bulgaria", "Burkina Faso", "Burma",
+  "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Cayman Islands, The", "Central African Republic",
+  "Central American Federation", "Chad", "Chile", "China", "Colombia", "Comoros", "Congo Free State, The",
+  "Cook Islands", "Costa Rica", "Cote d’Ivoire", "Croatia", "Cuba", "Cyprus", "Czechia", "Czechoslovakia",
+  "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic",
+  "Duchy of Parma, The", "East Germany", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea",
+  "Estonia", "Eswatini", "Ethiopia", "Federal Government of Germany (1848-49)", "Fiji", "Finland", "France",
+  "Gabon", "Gambia, The", "Georgia", "Germany", "Ghana", "Grand Duchy of Tuscany, The", "Greece", "Grenada",
+  "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Hanover", "Hanseatic Republics", "Hawaii",
+  "Hesse", "Holy See", "Honduras", "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland",
+  "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kingdom of Serbia/Yugoslavia",
+  "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho", "Lew Chew",
+  "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "Madagascar", "Malawi", "Malaysia",
+  "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mecklenburg-Schwerin",
+  "Mecklenburg-Strelitz", "Mexico", "Micronesia", "Moldova", "Monaco", "Mongolia", "Montenegro", "Morocco",
+  "Mozambique", "Namibia", "Nassau", "Nauru", "Nepal", "Netherlands, The", "New Zealand", "Nicaragua", "Niger",
+  "Nigeria", "Niue", "North German Confederation", "North German Union", "North Macedonia", "Norway",
+  "Oldenburg", "Oman", "Orange Free State", "Pakistan", "Palau", "Panama", "Papal States", "Papua New Guinea",
+  "Paraguay", "Peru", "Philippines", "Piedmont-Sardinia", "Poland", "Portugal", "Qatar", "Republic of Genoa",
+  "Republic of Korea", "Republic of the Congo", "Romania", "Russia", "Rwanda", "Saint Kitts and Nevis",
+  "Saint Lucia", "Saint Vincent and the Grenadines", "Samoa", "San Marino", "Sao Tome and Principe",
+  "Saudi Arabia", "Schaumburg-Lippe", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore",
+  "Slovakia", "Slovenia", "Solomon Islands, The", "Somalia", "South Africa", "South Sudan", "Spain",
+  "Sri Lanka", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "Tajikistan", "Tanzania", "Texas",
+  "Thailand", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkey", "Turkmenistan",
+  "Tuvalu", "Two Sicilies", "Uganda", "Ukraine", "Union of Soviet Socialist Republics",
+  "United Arab Emirates, The", "United Kingdom, The", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela",
+  "Vietnam", "Württemberg", "Yemen", "Zambia", "Zimbabwe"
 ].sort();
 
 
@@ -125,15 +131,16 @@ export const GeographicDigitalReachStep: FC<GeographicDigitalReachStepProps> = (
               <FormControl>
                 <TagInput
                   {...field}
-                  options={WORLD_COUNTRIES}
-                  placeholder="Select or type countries served..."
+                  options={USER_PROVIDED_COUNTRIES}
+                  placeholder="Select countries served..."
                   id="countriesServed"
                   aria-describedby="countriesServed-description"
                   aria-invalid={!!form.formState.errors.geographicDigitalReach?.countriesServed}
+                  allowCreate={false} // Disable adding new countries
                 />
               </FormControl>
               <FormDescription id="countriesServed-description">
-                Select the countries your company serves from the list, or type to add custom ones.
+                Select the countries your company serves from the provided list.
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -228,6 +235,3 @@ export const GeographicDigitalReachStep: FC<GeographicDigitalReachStepProps> = (
     </Card>
   );
 };
-
-
-    

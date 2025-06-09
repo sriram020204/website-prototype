@@ -32,6 +32,7 @@ interface TagInputProps {
   disabled?: boolean;
   className?: string;
   onTagAdd?: (tag: string) => void;
+  allowCreate?: boolean; // New prop
 }
 
 export const TagInput: React.FC<TagInputProps> = ({
@@ -45,6 +46,7 @@ export const TagInput: React.FC<TagInputProps> = ({
   disabled,
   className,
   onTagAdd,
+  allowCreate = true, // Default to true
 }) => {
   const [open, setOpen] = React.useState(false);
   const [searchQuery, setSearchQuery] = React.useState("");
@@ -98,12 +100,13 @@ export const TagInput: React.FC<TagInputProps> = ({
   }, [availableOptions, searchQuery]);
 
   const showCreateOption = React.useMemo(() => {
+    if (!allowCreate) return false; // Check allowCreate prop
     const trimmedSearch = searchQuery.trim();
     if (!trimmedSearch) return false;
     const isAlreadySelected = selectedTags.some(tag => tag.toLowerCase() === trimmedSearch.toLowerCase());
     const isExistingOriginalOption = options.some(opt => opt.toLowerCase() === trimmedSearch.toLowerCase());
     return !isAlreadySelected && !isExistingOriginalOption;
-  }, [searchQuery, selectedTags, options]);
+  }, [searchQuery, selectedTags, options, allowCreate]); // Add allowCreate to dependencies
 
 
   return (
@@ -181,7 +184,6 @@ export const TagInput: React.FC<TagInputProps> = ({
                   if (trimmedSearch) {
                     const isAlreadySelected = selectedTags.some(tag => tag.toLowerCase() === trimmedSearch.toLowerCase());
                     if (isAlreadySelected) {
-                      // If already selected, close popover. CMDK might do this by default if no other action.
                        e.preventDefault();
                        setOpen(false);
                       return;
@@ -196,11 +198,10 @@ export const TagInput: React.FC<TagInputProps> = ({
                       handleSelect(availableOptionMatch);
                     } else {
                       const isExistingInOriginalOptions = options.some(opt => opt.toLowerCase() === trimmedSearch.toLowerCase());
-                      if (!isExistingInOriginalOptions) {
+                      if (allowCreate && !isExistingInOriginalOptions) { // Check allowCreate here
                         e.preventDefault();
                         handleSelect(trimmedSearch);
                       }
-                      // Otherwise, let CMDK handle Enter (e.g. select highlighted item)
                     }
                   }
                 }
@@ -208,7 +209,7 @@ export const TagInput: React.FC<TagInputProps> = ({
             />
             <CommandList>
               <CommandEmpty>
-                {searchQuery.trim() && !showCreateOption ? "No matching items found." : "Type to search or add new."}
+                {searchQuery.trim() && !showCreateOption ? "No matching items found." : (allowCreate ? "Type to search or add new." : "Type to search.")}
               </CommandEmpty>
               <CommandGroup>
                 {filteredOptions.map(option => (
