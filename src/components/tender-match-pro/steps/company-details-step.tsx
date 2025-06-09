@@ -213,6 +213,7 @@ export const CompanyDetailsStep: FC<CompanyDetailsStepProps> = ({ form }) => {
                     captionLayout="dropdown-buttons"
                     fromYear={1800}
                     toYear={new Date().getFullYear()}
+                    weekStartsOn={1} // Set week to start on Monday
                   />
                 </PopoverContent>
               </Popover>
