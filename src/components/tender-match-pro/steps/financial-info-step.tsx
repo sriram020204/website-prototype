@@ -27,7 +27,7 @@ const FileInputControl: FC<{ field: any; placeholder: string }> = ({ field, plac
         type="file"
         id={name}
         onChange={(e) => onChange(e.target.files?.[0]?.name || '')}
-        className="w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20"
+        className="w-full text-sm file:mr-4 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20"
         ref={ref}
         aria-label={placeholder}
       />
