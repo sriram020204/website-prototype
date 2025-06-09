@@ -5,14 +5,25 @@ import type { FC } from 'react';
 import type { UseFormReturn } from 'react-hook-form';
 import type { RegistrationFormData } from '@/lib/schemas/registration-schema';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from '@/components/ui/form';
+import { FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from '@/components/ui/form';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
+import { TagInput } from '@/components/ui/tag-input'; // Import the new TagInput
 import { Zap } from 'lucide-react';
 
 interface BusinessCapabilitiesStepProps {
   form: UseFormReturn<RegistrationFormData>;
 }
+
+const BUSINESS_ROLE_OPTIONS = [
+  "Manufacturer", "Distributor", "Retailer", "Franchise", "Subscription",
+  "Freemium", "Advertising", "Marketplace", "On-Demand", "Brokerage",
+  "Product-as-a-Service", "Dropshipping", "Aggregator", "Pay-Per-Use",
+  "Crowdsourcing", "Licensing", "Consulting", "E-commerce",
+  "Dealer", "Trader", "OEM", "Service Provider", "EPC Contractor"
+].filter((value, index, self) => self.indexOf(value) === index) // Remove duplicates
+ .sort(); // Sort alphabetically
+
 
 export const BusinessCapabilitiesStep: FC<BusinessCapabilitiesStepProps> = ({ form }) => {
   return (
@@ -32,9 +43,18 @@ export const BusinessCapabilitiesStep: FC<BusinessCapabilitiesStepProps> = ({ fo
             <FormItem>
               <FormLabel>Business Role(s)</FormLabel>
               <FormControl>
-                <Textarea rows={2} placeholder="e.g., Manufacturer, Distributor, Retailer, E-commerce" {...field} />
+                <TagInput
+                  {...field}
+                  options={BUSINESS_ROLE_OPTIONS}
+                  placeholder="Select or type business roles..."
+                  id="businessRoles"
+                  aria-describedby="businessRoles-description"
+                  aria-invalid={!!form.formState.errors.businessCapabilities?.businessRoles}
+                />
               </FormControl>
-              <FormDescription>Enter your company's business roles (e.g., Manufacturer, Distributor, E-commerce, Subscription, Consulting, Marketplace) separated by commas.</FormDescription>
+              <FormDescription id="businessRoles-description">
+                Select your company's business roles. Type to search.
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -46,9 +66,9 @@ export const BusinessCapabilitiesStep: FC<BusinessCapabilitiesStepProps> = ({ fo
             <FormItem>
               <FormLabel>Industry Sectors</FormLabel>
               <FormControl>
-                <Textarea rows={2} placeholder="e.g., Healthcare, Construction, IT" {...field} />
+                <Textarea rows={2} placeholder="e.g., Healthcare, Construction, IT (comma-separated)" {...field} />
               </FormControl>
-              <FormDescription>Enter sectors separated by commas.</FormDescription>
+              <FormDescription>Enter sectors separated by commas. You can use the TagInput for roles as an example for future enhancements here.</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -60,7 +80,7 @@ export const BusinessCapabilitiesStep: FC<BusinessCapabilitiesStepProps> = ({ fo
             <FormItem>
               <FormLabel>Product & Service Keywords</FormLabel>
               <FormControl>
-                <Textarea rows={3} placeholder="e.g., Software development, CNC machines, Office supplies" {...field} />
+                <Textarea rows={3} placeholder="e.g., Software development, CNC machines, Office supplies (comma-separated)" {...field} />
               </FormControl>
               <FormDescription>Enter keywords separated by commas.</FormDescription>
               <FormMessage />
@@ -74,7 +94,7 @@ export const BusinessCapabilitiesStep: FC<BusinessCapabilitiesStepProps> = ({ fo
             <FormItem>
               <FormLabel>HSN/SAC Codes (Optional)</FormLabel>
               <FormControl>
-                <Textarea rows={2} placeholder="e.g., 8471, 998313" {...field} />
+                <Textarea rows={2} placeholder="e.g., 8471, 998313 (comma-separated)" {...field} />
               </FormControl>
               <FormDescription>Enter codes separated by commas.</FormDescription>
               <FormMessage />
@@ -129,7 +149,7 @@ export const BusinessCapabilitiesStep: FC<BusinessCapabilitiesStepProps> = ({ fo
             <FormItem>
               <FormLabel>Certifications (Optional)</FormLabel>
               <FormControl>
-                <Textarea rows={2} placeholder="e.g., ISO 9001, BIS, DGMS (enter names)" {...field} />
+                <Textarea rows={2} placeholder="e.g., ISO 9001, BIS, DGMS (enter names, comma-separated)" {...field} />
               </FormControl>
               <FormDescription>Enter certification names separated by commas. Upload actual files in the final step.</FormDescription>
               <FormMessage />
