@@ -229,7 +229,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
                         Financial Year: {item.financialYear}
                         {index === 0 && <span className="text-destructive">*</span>}
                     </FormLabel>
-                    {index >= MIN_DISPLAY_YEARS && ( 
+                    {index >= MIN_DISPLAY_YEARS && index === fields.length - 1 && ( 
                         <Button
                         type="button"
                         variant="ghost"
