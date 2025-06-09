@@ -25,7 +25,7 @@ const formatDisplayData = (data: any, fieldName?: string): string => {
         'blacklistedDetails', // FinancialLegal
         'annualTurnoverFY1Amount', 'annualTurnoverFY2Amount', 'annualTurnoverFY3Amount', 'netWorthAmount', // FinancialLegal (amounts)
         'pastClients', 'purchaseOrders', 'performanceReports', 'tenderTypesHandled', // TenderExperience
-        'panUpload', 'gstUpload', 'isoCertUpload', 'bisCertUpload', 'blacklistingDeclarationUpload', 'otherCertificatesUpload' // Declarations
+        'panUpload', 'gstUpload', 'isoCertUpload', 'bisCertUpload', 'otherCertificatesUpload' // Declarations
     ];
     if (fieldName && optionalTextLikeFields.includes(fieldName)) return 'Not Provided';
     return 'N/A'; 

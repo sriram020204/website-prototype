@@ -155,42 +155,6 @@ export const DeclarationsUploadsStep: FC<DeclarationsUploadsStepProps> = ({ form
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="declarationsUploads.blacklistingDeclaration"
-          render={({ field }) => (
-            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow">
-              <FormControl>
-                <Checkbox
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                  id={field.name}
-                />
-              </FormControl>
-              <div className="space-y-1 leading-none">
-                <FormLabel htmlFor={field.name}>
-                  I declare that the company is not currently blacklisted by any government/PSU/major private entity. (Check if true)
-                </FormLabel>
-                 <FormDescription>If your company has faced blacklisting that has since been lifted, or if there are specific circumstances you wish to clarify, please provide details in the 'Blacklisting Declaration Upload' field or the blacklisting details field in the Financial & Legal Info step.</FormDescription>
-                <FormMessage />
-              </div>
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="declarationsUploads.blacklistingDeclarationUpload"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Blacklisting Declaration Document (Optional)</FormLabel>
-              <FormControl>
-                <FileInputControl field={field} placeholder="Blacklisting declaration file" />
-              </FormControl>
-              <FormDescription>Select if you need to provide a document with additional context to the blacklisting declaration.</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
       </CardContent>
     </Card>
   );
