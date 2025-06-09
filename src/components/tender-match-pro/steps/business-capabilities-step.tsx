@@ -32,9 +32,9 @@ export const BusinessCapabilitiesStep: FC<BusinessCapabilitiesStepProps> = ({ fo
             <FormItem>
               <FormLabel>Business Role(s)</FormLabel>
               <FormControl>
-                <Textarea rows={2} placeholder="e.g., Manufacturer, Dealer, Trader, Service Provider" {...field} />
+                <Textarea rows={2} placeholder="e.g., Manufacturer, Distributor, Retailer, E-commerce" {...field} />
               </FormControl>
-              <FormDescription>Enter roles separated by commas.</FormDescription>
+              <FormDescription>Enter your company's business roles (e.g., Manufacturer, Distributor, E-commerce, Subscription, Consulting, Marketplace) separated by commas.</FormDescription>
               <FormMessage />
             </FormItem>
           )}
