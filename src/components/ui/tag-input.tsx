@@ -52,9 +52,12 @@ export const TagInput: React.FC<TagInputProps> = ({
   }, [value]);
 
   const handleSelect = (currentValue: string) => {
+    const trimmedValue = currentValue.trim();
+    if (!trimmedValue) return;
+
     const newSelectedTags = [...selectedTags];
-    if (!newSelectedTags.includes(currentValue)) {
-      newSelectedTags.push(currentValue);
+    if (!newSelectedTags.some(tag => tag.toLowerCase() === trimmedValue.toLowerCase())) {
+      newSelectedTags.push(trimmedValue);
     }
     onChange(newSelectedTags.join(", "));
     setOpen(false);
@@ -67,8 +70,23 @@ export const TagInput: React.FC<TagInputProps> = ({
   };
 
   const availableOptions = React.useMemo(() => {
-    return options.filter(option => !selectedTags.includes(option));
+    return options.filter(option => !selectedTags.some(tag => tag.toLowerCase() === option.toLowerCase()));
   }, [options, selectedTags]);
+
+  const filteredOptions = React.useMemo(() => {
+    if (!searchQuery.trim()) return availableOptions;
+    return availableOptions.filter(option =>
+      option.toLowerCase().includes(searchQuery.trim().toLowerCase())
+    );
+  }, [availableOptions, searchQuery]);
+
+  const showCreateOption = React.useMemo(() => {
+    const trimmedSearch = searchQuery.trim();
+    if (!trimmedSearch) return false;
+    const isAlreadySelected = selectedTags.some(tag => tag.toLowerCase() === trimmedSearch.toLowerCase());
+    const isExistingOption = options.some(opt => opt.toLowerCase() === trimmedSearch.toLowerCase());
+    return !isAlreadySelected && !isExistingOption;
+  }, [searchQuery, selectedTags, options]);
 
   return (
     <div className={cn("w-full", className)}>
@@ -116,28 +134,38 @@ export const TagInput: React.FC<TagInputProps> = ({
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
-          <Command shouldFilter={false}>
+          <Command shouldFilter={false}> {/* We handle filtering and "create" option manually */}
             <CommandInput
-              placeholder="Search items..."
+              placeholder="Search or type to add..."
               value={searchQuery}
               onValueChange={setSearchQuery}
               disabled={disabled}
             />
             <CommandList>
-              <CommandEmpty>No items found.</CommandEmpty>
+              <CommandEmpty>
+                {searchQuery.trim() && !showCreateOption ? "No matching items found." : "Type to search or add new."}
+              </CommandEmpty>
               <CommandGroup>
-                {availableOptions
-                  .filter(option => option.toLowerCase().includes(searchQuery.toLowerCase()))
-                  .map(option => (
+                {filteredOptions.map(option => (
                   <CommandItem
                     key={option}
                     value={option}
-                    onSelect={handleSelect}
+                    onSelect={() => handleSelect(option)}
                     disabled={disabled}
                   >
                     {option}
                   </CommandItem>
                 ))}
+                {showCreateOption && searchQuery.trim() && (
+                  <CommandItem
+                    key={`create-${searchQuery.trim()}`}
+                    value={searchQuery.trim()}
+                    onSelect={() => handleSelect(searchQuery.trim())}
+                    disabled={disabled}
+                  >
+                    Add "{searchQuery.trim()}"
+                  </CommandItem>
+                )}
               </CommandGroup>
             </CommandList>
           </Command>
