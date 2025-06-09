@@ -6,9 +6,8 @@ import type { UseFormReturn } from 'react-hook-form';
 import type { RegistrationFormData } from '@/lib/schemas/registration-schema';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from '@/components/ui/form';
-import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
-import { TagInput } from '@/components/ui/tag-input'; // Import the new TagInput
+import { TagInput } from '@/components/ui/tag-input';
 import { Zap } from 'lucide-react';
 
 interface BusinessCapabilitiesStepProps {
@@ -21,8 +20,31 @@ const BUSINESS_ROLE_OPTIONS = [
   "Product-as-a-Service", "Dropshipping", "Aggregator", "Pay-Per-Use",
   "Crowdsourcing", "Licensing", "Consulting", "E-commerce",
   "Dealer", "Trader", "OEM", "Service Provider", "EPC Contractor"
-].filter((value, index, self) => self.indexOf(value) === index) // Remove duplicates
- .sort(); // Sort alphabetically
+].filter((value, index, self) => self.indexOf(value) === index)
+ .sort();
+
+const INDUSTRY_SECTOR_OPTIONS = [
+  "Technology", "Healthcare", "Finance", "Manufacturing", "Education", "Retail",
+  "Construction", "Agriculture", "Energy", "Transportation", "Hospitality",
+  "Media", "Telecommunications", "Pharmaceutical", "Automotive", "Aerospace",
+  "Real Estate", "Consulting", "Government", "Non-Profit"
+].sort();
+
+const EXAMPLE_KEYWORD_OPTIONS = [
+  "Software Development", "Cloud Services", "Data Analytics", "Project Management",
+  "Supply Chain Management", "Office Supplies", "CNC Machining", "Consulting Services",
+  "Digital Marketing", "Logistics", "Hardware Manufacturing", "AI Solutions"
+].sort();
+
+const EXAMPLE_HSN_SAC_OPTIONS = [
+  "8471", "998313", "4901", "7308", "9954", "8517", "6203", "9018"
+].sort();
+
+const CERTIFICATION_OPTIONS = [
+  "ISO 9001", "ISO 14001", "ISO 27001", "BIS Certified", "CE Marking",
+  "RoHS Compliant", "DGMS Approved", "Organic Certified", "GMP Certified",
+  "OHSAS 18001", "FSSAI License"
+].sort();
 
 
 export const BusinessCapabilitiesStep: FC<BusinessCapabilitiesStepProps> = ({ form }) => {
@@ -53,7 +75,7 @@ export const BusinessCapabilitiesStep: FC<BusinessCapabilitiesStepProps> = ({ fo
                 />
               </FormControl>
               <FormDescription id="businessRoles-description">
-                Select your company's business roles. Type to search.
+                Select your company's business roles. You can type to search or add.
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -66,9 +88,18 @@ export const BusinessCapabilitiesStep: FC<BusinessCapabilitiesStepProps> = ({ fo
             <FormItem>
               <FormLabel>Industry Sectors</FormLabel>
               <FormControl>
-                <Textarea rows={2} placeholder="e.g., Healthcare, Construction, IT (comma-separated)" {...field} />
+                <TagInput
+                  {...field}
+                  options={INDUSTRY_SECTOR_OPTIONS}
+                  placeholder="Select or type industry sectors..."
+                  id="industrySectors"
+                  aria-describedby="industrySectors-description"
+                  aria-invalid={!!form.formState.errors.businessCapabilities?.industrySectors}
+                />
               </FormControl>
-              <FormDescription>Enter sectors separated by commas. You can use the TagInput for roles as an example for future enhancements here.</FormDescription>
+              <FormDescription id="industrySectors-description">
+                Enter the primary industry sectors your company operates in.
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -80,9 +111,18 @@ export const BusinessCapabilitiesStep: FC<BusinessCapabilitiesStepProps> = ({ fo
             <FormItem>
               <FormLabel>Product & Service Keywords</FormLabel>
               <FormControl>
-                <Textarea rows={3} placeholder="e.g., Software development, CNC machines, Office supplies (comma-separated)" {...field} />
+                <TagInput
+                  {...field}
+                  options={EXAMPLE_KEYWORD_OPTIONS}
+                  placeholder="Enter product/service keywords..."
+                  id="productServiceKeywords"
+                  aria-describedby="productServiceKeywords-description"
+                  aria-invalid={!!form.formState.errors.businessCapabilities?.productServiceKeywords}
+                />
               </FormControl>
-              <FormDescription>Enter keywords separated by commas.</FormDescription>
+              <FormDescription id="productServiceKeywords-description">
+                Enter relevant keywords for your products or services. You can type to add custom keywords.
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -94,9 +134,18 @@ export const BusinessCapabilitiesStep: FC<BusinessCapabilitiesStepProps> = ({ fo
             <FormItem>
               <FormLabel>HSN/SAC Codes (Optional)</FormLabel>
               <FormControl>
-                <Textarea rows={2} placeholder="e.g., 8471, 998313 (comma-separated)" {...field} />
+                <TagInput
+                  {...field}
+                  options={EXAMPLE_HSN_SAC_OPTIONS}
+                  placeholder="Enter HSN/SAC codes..."
+                  id="hsnSacCodes"
+                  aria-describedby="hsnSacCodes-description"
+                  aria-invalid={!!form.formState.errors.businessCapabilities?.hsnSacCodes}
+                />
               </FormControl>
-              <FormDescription>Enter codes separated by commas.</FormDescription>
+              <FormDescription id="hsnSacCodes-description">
+                Enter applicable HSN (for goods) or SAC (for services) codes.
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -108,8 +157,13 @@ export const BusinessCapabilitiesStep: FC<BusinessCapabilitiesStepProps> = ({ fo
             <FormItem>
               <FormLabel>Technical Capabilities</FormLabel>
               <FormControl>
-                <Textarea rows={3} placeholder="Describe your technical expertise, equipment, or methodologies..." {...field} />
+                <Input 
+                  type="text"
+                  placeholder="Describe your technical expertise, equipment, or methodologies..." 
+                  {...field} 
+                 />
               </FormControl>
+              <FormDescription>This field uses a standard text input. For multi-tag input, consider TagInput.</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -149,9 +203,18 @@ export const BusinessCapabilitiesStep: FC<BusinessCapabilitiesStepProps> = ({ fo
             <FormItem>
               <FormLabel>Certifications (Optional)</FormLabel>
               <FormControl>
-                <Textarea rows={2} placeholder="e.g., ISO 9001, BIS, DGMS (enter names, comma-separated)" {...field} />
+                 <TagInput
+                  {...field}
+                  options={CERTIFICATION_OPTIONS}
+                  placeholder="Enter certification names..."
+                  id="certifications"
+                  aria-describedby="certifications-description"
+                  aria-invalid={!!form.formState.errors.businessCapabilities?.certifications}
+                />
               </FormControl>
-              <FormDescription>Enter certification names separated by commas. Upload actual files in the final step.</FormDescription>
+              <FormDescription id="certifications-description">
+                Enter certification names. Upload actual files in the 'Declarations & Uploads' step.
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -160,3 +223,5 @@ export const BusinessCapabilitiesStep: FC<BusinessCapabilitiesStepProps> = ({ fo
     </Card>
   );
 };
+
+    
