@@ -72,6 +72,7 @@ export const declarationsUploadsSchema = z.object({
   msmeCertUpload: z.string().describe("Name of MSME certificate file (if applicable)").optional().or(z.literal('')),
   isoCertUpload: z.string().describe("Name of ISO certificate file (if applicable)").optional().or(z.literal('')),
   bisCertUpload: z.string().describe("Name of BIS certificate file (if applicable)").optional().or(z.literal('')),
+  otherCertificatesUpload: z.string().describe("File names for other certifications listed previously (comma-separated)").optional().or(z.literal('')),
   infoConfirmed: z.boolean().refine(val => val === true, { message: "You must confirm the information is true." }),
   blacklistingDeclaration: z.boolean().default(false),
   blacklistingDeclarationUpload: z.string().describe("Name of blacklisting declaration file (if applicable)").optional().or(z.literal('')),
@@ -89,3 +90,4 @@ export const registrationSchema = z.object({
 }).strict();
 
 export type RegistrationFormData = z.infer<typeof registrationSchema>;
+

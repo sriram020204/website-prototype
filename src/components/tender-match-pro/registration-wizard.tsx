@@ -106,6 +106,7 @@ export function RegistrationWizard() {
       msmeCertUpload: '', 
       isoCertUpload: '', 
       bisCertUpload: '', 
+      otherCertificatesUpload: '',
       infoConfirmed: false,
       blacklistingDeclaration: false,
       blacklistingDeclarationUpload: '' 
@@ -209,3 +210,4 @@ export function RegistrationWizard() {
     </FormProvider>
   );
 }
+

@@ -18,11 +18,11 @@ const formatDisplayData = (data: any, fieldName?: string): string => {
   if (typeof data === 'number') return data.toString();
   if (data === null || data === undefined || data === '') {
     const optionalTextLikeFields = [
-        'hsnCodes', 'sacCodes', 'certifications', // BusinessCapabilities (hsnSacCodes replaced)
+        'hsnCodes', 'sacCodes', 'certifications', // BusinessCapabilities
         'msmeUdyamNsicNumber', 'msmeUdyamNsicCertificate', 'blacklistedDetails', // FinancialLegal
         'annualTurnoverFY1Amount', 'annualTurnoverFY2Amount', 'annualTurnoverFY3Amount', 'netWorthAmount', // FinancialLegal (amounts)
         'pastClients', 'purchaseOrders', 'performanceReports', 'tenderTypesHandled', // TenderExperience
-        'panUpload', 'gstUpload', 'msmeCertUpload', 'isoCertUpload', 'bisCertUpload', 'blacklistingDeclarationUpload' // Declarations
+        'panUpload', 'gstUpload', 'msmeCertUpload', 'isoCertUpload', 'bisCertUpload', 'blacklistingDeclarationUpload', 'otherCertificatesUpload' // Declarations
     ];
     if (fieldName && optionalTextLikeFields.includes(fieldName)) return 'Not Provided';
     return 'N/A'; 
@@ -93,3 +93,4 @@ export const ReviewSubmitStep: FC<ReviewSubmitStepProps> = ({ form }) => {
     </Card>
   );
 };
+

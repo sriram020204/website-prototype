@@ -95,6 +95,20 @@ export const DeclarationsUploadsStep: FC<DeclarationsUploadsStepProps> = ({ form
             </FormItem>
           )}
         />
+        <FormField
+          control={form.control}
+          name="declarationsUploads.otherCertificatesUpload"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Other Listed Certificates (File Names - Optional)</FormLabel>
+              <FormControl>
+                <Input type="text" placeholder="e.g., fssai_license.pdf, organic_cert.jpg" {...field} />
+              </FormControl>
+              <FormDescription>For certifications listed in Business Capabilities not covered above (e.g., FSSAI). Enter multiple file names separated by commas if needed.</FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
         <h3 className="text-lg font-semibold text-primary mt-6">Declarations</h3>
         <FormField
@@ -156,3 +170,4 @@ export const DeclarationsUploadsStep: FC<DeclarationsUploadsStepProps> = ({ form
     </Card>
   );
 };
+
