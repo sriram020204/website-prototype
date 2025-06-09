@@ -32,14 +32,16 @@ const FileInputControl: FC<{ field: any; placeholder: string }> = ({ field, plac
         aria-label={placeholder}
       />
       {value && (
-        <div className="mt-2 text-sm flex items-center">
-          <span className="text-muted-foreground mr-2">Selected:</span>
-          <span className="break-all">{value}</span>
+         <div className="mt-2 text-sm flex items-center justify-between">
+          <div className="flex items-center min-w-0"> {/* min-w-0 allows truncate to work in flex child */}
+            <span className="text-muted-foreground mr-2 shrink-0">Selected:</span>
+            <span className="truncate break-all" title={value}>{value}</span>
+          </div>
           <Button
             type="button"
             variant="ghost"
             size="sm"
-            className="ml-2 px-1.5 py-0.5 h-auto"
+            className="ml-2 px-1.5 py-0.5 h-auto shrink-0"
             onClick={() => onChange('')}
             aria-label={`Clear ${placeholder}`}
           >
@@ -237,7 +239,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
                   <FormControl>
                      <FileInputControl field={field} placeholder="MSME/Udyam/NSIC Certificate file" />
                   </FormControl>
-                  <FormDescription>Select your MSME/Udyam/NSIC certificate file. Only the file name is recorded.</FormDescription>
+                  <FormDescription>Select your MSME/Udyam/NSIC certificate file. Use this field to add the file name; only the file name is recorded.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
