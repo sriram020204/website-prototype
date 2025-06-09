@@ -43,14 +43,18 @@ const STEPS = [
 const FORM_DATA_STORAGE_KEY = 'tenderMatchProRegistrationForm_v2';
 const CURRENT_STEP_STORAGE_KEY = 'tenderMatchProRegistrationStep_v2';
 
-const generateInitialTurnovers = () => {
+// Helper to generate a financial year string like "YYYY-YY"
+const getFinancialYearString = (startYear: number): string => {
+  const endYearShort = (startYear + 1).toString().slice(-2);
+  return `${startYear}-${endYearShort}`;
+};
+
+const generateInitialTurnovers = (count: number = 10) => {
   const currentYear = new Date().getFullYear();
   const turnovers = [];
-  for (let i = 0; i < 10; i++) { // Last 10 years
+  for (let i = 0; i < count; i++) { 
     const startYear = currentYear - i;
-    const endYearShort = (startYear + 1).toString().slice(-2);
-    const yearString = `${startYear}-${endYearShort}`;
-    turnovers.push({ financialYear: yearString, amount: '' });
+    turnovers.push({ financialYear: getFinancialYearString(startYear), amount: '' });
   }
   return turnovers;
 };
@@ -85,7 +89,7 @@ export function RegistrationWizard() {
       hasGstin: false,
       hasMsmeUdyam: false,
       hasNsic: false,
-      annualTurnovers: generateInitialTurnovers(),
+      annualTurnovers: generateInitialTurnovers(10), // Initialize with 10 years
       netWorthAmount: '',
       netWorthCurrency: '',
       isBlacklistedOrLitigation: false,
@@ -123,7 +127,7 @@ export function RegistrationWizard() {
 
   const methods = useForm<RegistrationFormData>({
     resolver: zodResolver(registrationSchema),
-    mode: 'onChange', // Changed to 'onChange' for more responsive validation
+    mode: 'onChange', 
     defaultValues: initialDefaultValues,
   });
 
@@ -197,14 +201,13 @@ export function RegistrationWizard() {
     toast({
       title: "Profile Submitted!",
       description: "Your company profile has been successfully submitted.",
-      className: "bg-green-500 text-white", // Example of custom styling for success
+      className: "bg-green-500 text-white", 
     });
     
-    // Clear form data from localStorage and reset form
     localStorage.removeItem(FORM_DATA_STORAGE_KEY);
     localStorage.removeItem(CURRENT_STEP_STORAGE_KEY);
     methods.reset(initialDefaultValues); 
-    setCurrentStep(0); // Go back to the first step
+    setCurrentStep(0); 
   };
 
   const CurrentStepComponent = STEPS[currentStep].component;

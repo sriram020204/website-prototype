@@ -40,8 +40,8 @@ export const businessCapabilitiesSchema = z.object({
 
 // Step 3: Financial & Legal Info
 const turnoverEntrySchema = z.object({
-  financialYear: z.string(), // Pre-filled, read-only in UI
-  amount: z.string(), // Can be empty for years 2-10. Format validated in superRefine.
+  financialYear: z.string(), // Pre-filled or calculated
+  amount: z.string(), // Can be empty for optional years. Format validated in superRefine.
 });
 
 export const financialLegalInfoSchema = z.object({
@@ -50,14 +50,15 @@ export const financialLegalInfoSchema = z.object({
   hasMsmeUdyam: z.boolean().default(false),
   hasNsic: z.boolean().default(false),
   annualTurnovers: z.array(turnoverEntrySchema)
-    .length(10, { message: "Turnover data for 10 financial years is expected." })
+    .min(10, { message: "Turnover data for at least 10 financial years is expected." })
+    .max(15, { message: "Turnover data cannot exceed 15 financial years." })
     .superRefine((turnovers, ctx) => {
       // Validate the latest year (first item in the array)
       if (!turnovers[0]?.amount || turnovers[0].amount.trim() === "") {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: "Turnover amount for the latest financial year is required.",
-          path: [0, 'amount'], // Path to the amount of the first entry
+          path: [0, 'amount'], 
         });
       } else if (!/^\d+(\.\d{1,2})?$/.test(turnovers[0].amount)) {
         ctx.addIssue({
@@ -67,7 +68,7 @@ export const financialLegalInfoSchema = z.object({
         });
       }
 
-      // Validate other years (items 1 to 9 in the array) if amount is provided
+      // Validate other years (items 1 up to turnovers.length -1) if amount is provided
       for (let i = 1; i < turnovers.length; i++) {
         if (turnovers[i]?.amount && turnovers[i].amount.trim() !== "" && !/^\d+(\.\d{1,2})?$/.test(turnovers[i].amount)) {
           ctx.addIssue({

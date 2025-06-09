@@ -138,12 +138,11 @@ const renderSectionData = (title: string, sectionData: Record<string, any> | und
                 const netWorthCurrency = (sectionData as any).netWorthCurrency;
                 const currencySuffix = netWorthCurrency ? ` (in ${netWorthCurrency})` : '';
 
-                // The annualTurnovers array is already sorted latest first from initial values
                 const sortedTurnovers = value as TurnoverEntry[];
 
                 return (
                   <div key={key} className="space-y-1">
-                    <span className="font-medium col-span-1 capitalize break-words">{displayKey} (Last 10 Years):</span>
+                    <span className="font-medium col-span-1 capitalize break-words">{displayKey} (Up to last {sortedTurnovers.length} years):</span>
                     {sortedTurnovers.length > 0 ? (
                       <ul className="list-disc pl-5 space-y-0.5">
                         {sortedTurnovers.map((entry: TurnoverEntry, index: number) => {
@@ -151,15 +150,14 @@ const renderSectionData = (title: string, sectionData: Record<string, any> | und
                            ? formatDisplayData(entry.amount, 'amount', entry)
                            : (index === 0 ? "Required (Data Missing)" : "Not Provided"); 
                           return (
-                            <li key={index} className="whitespace-pre-wrap break-words">
+                            <li key={`${entry.financialYear}-${index}`} className="whitespace-pre-wrap break-words">
                               {`FY: ${formatDisplayData(entry.financialYear, 'financialYear', entry)}, Amount: ${displayAmount}${currencySuffix}`}
                             </li>
                           );
                         })}
                       </ul>
                     ) : (
-                      // This case should not happen as annualTurnovers is initialized with 10 entries
-                      <span className="col-span-1 md:col-span-2 whitespace-pre-wrap break-words"> Annual turnover data structure error.</span>
+                      <span className="col-span-1 md:col-span-2 whitespace-pre-wrap break-words"> No annual turnover data provided or structure error.</span>
                     )}
                   </div>
                 );
@@ -235,7 +233,6 @@ const renderSectionData = (title: string, sectionData: Record<string, any> | und
             displayValue = formatDisplayData(value, key, sectionData);
           }
 
-          // Filter out internal boolean flags from direct display, as they are handled by conditional text or separate divs
           const handledFlags = ['hasPan', 'hasGstin', 'hasMsmeUdyam', 'hasNsic', 'isBlacklistedOrLitigation', 'hasNoCertifications', 'hasPastClients', 'operatesInMultipleStates', 'exportsToOtherCountries', 'suppliedToGovtPsus', 'hasImportLicense', 'hasExportLicense', 'registeredOnPortals', 'hasDigitalSignature'];
           if (title !== "Terms & Conditions" && title !== "Declarations" && handledFlags.includes(key)) {
             return null; 
