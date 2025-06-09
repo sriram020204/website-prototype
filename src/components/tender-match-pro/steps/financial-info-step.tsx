@@ -201,7 +201,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
                   <FormControl>
                     <Input type="text" placeholder="Enter certificate file name" {...field} />
                   </FormControl>
-                  <FormDescription>Enter file name. Actual file uploads are handled separately.</FormDescription>
+                  <FormDescription>Use this field to add the file name of your MSME/Udyam/NSIC certificate. Actual file uploads are handled separately.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -290,3 +290,4 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
     </Card>
   );
 };
+
