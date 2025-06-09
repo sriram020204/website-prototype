@@ -26,8 +26,11 @@ export const businessCapabilitiesSchema = z.object({
 
 // Step 3: Financial & Legal Info
 export const financialLegalInfoSchema = z.object({
-  pan: z.string().regex(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, { message: "Invalid PAN format." }),
+  hasPan: z.boolean().default(false),
+  pan: z.string().regex(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, { message: "Invalid PAN format." }).optional().or(z.literal('')),
+  hasGstin: z.boolean().default(false),
   gstin: z.string().regex(/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/, { message: "Invalid GSTIN format." }).optional().or(z.literal('')),
+  hasMsmeUdyamNsic: z.boolean().default(false),
   msmeUdyamNsicNumber: z.string().optional().or(z.literal('')),
   msmeUdyamNsicCertificate: z.string().describe("Name or path of MSME/Udyam/NSIC certificate file").optional().or(z.literal('')),
   annualTurnoverFY1Amount: z.string().regex(/^\d+(\.\d{1,2})?$/, { message: "Invalid amount format." }).optional().or(z.literal('')),

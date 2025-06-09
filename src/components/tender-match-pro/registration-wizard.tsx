@@ -66,8 +66,11 @@ export function RegistrationWizard() {
       certifications: '' 
     },
     financialLegalInfo: {
+      hasPan: false,
       pan: '',
+      hasGstin: false,
       gstin: '',
+      hasMsmeUdyamNsic: false,
       msmeUdyamNsicNumber: '',
       msmeUdyamNsicCertificate: '', 
       annualTurnoverFY1Amount: '',

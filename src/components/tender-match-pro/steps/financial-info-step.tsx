@@ -20,6 +20,10 @@ const CURRENCY_OPTIONS = ["USD", "INR"];
 
 export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }) => {
   const watchIsBlacklisted = form.watch('financialLegalInfo.isBlacklistedOrLitigation');
+  const watchHasPan = form.watch('financialLegalInfo.hasPan');
+  const watchHasGstin = form.watch('financialLegalInfo.hasGstin');
+  const watchHasMsme = form.watch('financialLegalInfo.hasMsmeUdyamNsic');
+
 
   const renderTurnoverFields = (fyLabel: string, amountFieldName: keyof RegistrationFormData['financialLegalInfo'], currencyFieldName: keyof RegistrationFormData['financialLegalInfo'] ) => (
     <div className="space-y-2 p-3 border rounded-md">
@@ -76,56 +80,134 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
       <CardContent className="space-y-6">
         <FormField
           control={form.control}
-          name="financialLegalInfo.pan"
+          name="financialLegalInfo.hasPan"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>PAN (Permanent Account Number)</FormLabel>
+            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4 shadow-sm">
+              <div className="space-y-0.5">
+                <FormLabel className="text-base">Do you have a PAN (Permanent Account Number)?</FormLabel>
+              </div>
               <FormControl>
-                <Input type="text" placeholder="Enter PAN" {...field} />
+                <Switch
+                  checked={field.value}
+                  onCheckedChange={(checked) => {
+                    field.onChange(checked);
+                    if (!checked) {
+                      form.setValue('financialLegalInfo.pan', '', { shouldValidate: true });
+                    }
+                  }}
+                />
               </FormControl>
-              <FormMessage />
             </FormItem>
           )}
         />
+        {watchHasPan && (
+          <FormField
+            control={form.control}
+            name="financialLegalInfo.pan"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>PAN Number (Optional)</FormLabel>
+                <FormControl>
+                  <Input type="text" placeholder="Enter PAN" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
+
         <FormField
           control={form.control}
-          name="financialLegalInfo.gstin"
+          name="financialLegalInfo.hasGstin"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>GSTIN (Optional)</FormLabel>
+            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4 shadow-sm">
+              <div className="space-y-0.5">
+                <FormLabel className="text-base">Do you have a GSTIN?</FormLabel>
+              </div>
               <FormControl>
-                <Input type="text" placeholder="Enter GSTIN" {...field} />
+                <Switch
+                  checked={field.value}
+                  onCheckedChange={(checked) => {
+                    field.onChange(checked);
+                    if (!checked) {
+                      form.setValue('financialLegalInfo.gstin', '', { shouldValidate: true });
+                    }
+                  }}
+                />
               </FormControl>
-              <FormMessage />
             </FormItem>
           )}
         />
+        {watchHasGstin && (
+          <FormField
+            control={form.control}
+            name="financialLegalInfo.gstin"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>GSTIN Number (Optional)</FormLabel>
+                <FormControl>
+                  <Input type="text" placeholder="Enter GSTIN" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
+        
         <FormField
           control={form.control}
-          name="financialLegalInfo.msmeUdyamNsicNumber"
+          name="financialLegalInfo.hasMsmeUdyamNsic"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>MSME/Udyam/NSIC Number (Optional)</FormLabel>
+            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4 shadow-sm">
+              <div className="space-y-0.5">
+                <FormLabel className="text-base">Do you have an MSME/Udyam/NSIC Registration?</FormLabel>
+              </div>
               <FormControl>
-                <Input type="text" placeholder="Enter registration number" {...field} />
+                <Switch
+                  checked={field.value}
+                  onCheckedChange={(checked) => {
+                    field.onChange(checked);
+                    if (!checked) {
+                      form.setValue('financialLegalInfo.msmeUdyamNsicNumber', '', { shouldValidate: true });
+                      form.setValue('financialLegalInfo.msmeUdyamNsicCertificate', '', { shouldValidate: true });
+                    }
+                  }}
+                />
               </FormControl>
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="financialLegalInfo.msmeUdyamNsicCertificate"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>MSME/Udyam/NSIC Certificate (Optional)</FormLabel>
-              <FormControl>
-                <Input type="text" placeholder="Enter certificate file name" {...field} />
-              </FormControl>
-              <FormDescription>Enter file name. Upload actual file in the final step.</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {watchHasMsme && (
+          <>
+            <FormField
+              control={form.control}
+              name="financialLegalInfo.msmeUdyamNsicNumber"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>MSME/Udyam/NSIC Number (Optional)</FormLabel>
+                  <FormControl>
+                    <Input type="text" placeholder="Enter registration number" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="financialLegalInfo.msmeUdyamNsicCertificate"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>MSME/Udyam/NSIC Certificate File Name (Optional)</FormLabel>
+                  <FormControl>
+                    <Input type="text" placeholder="Enter certificate file name" {...field} />
+                  </FormControl>
+                  <FormDescription>Enter file name. Actual file uploads are handled separately.</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </>
+        )}
         
         <div className="space-y-4">
           <h4 className="text-lg font-medium">Annual Turnover for Last 3 Financial Years (Optional)</h4>
