@@ -20,16 +20,17 @@ interface FinancialLegalInfoStepProps {
 const CURRENCY_OPTIONS = ["USD", "INR", "EUR", "GBP", "JPY", "AUD", "CAD", "CHF", "CNY", "SGD", "AED"];
 
 const generateFinancialYearOptions = () => {
-  const currentYear = new Date().getFullYear();
+  const currentCalendarYear = new Date().getFullYear();
   const options = [];
-  // Generate years from (currentYear - 20) up to currentYear
-  for (let i = 0; i <= 20; i++) { 
-    const yearStart = currentYear - 20 + i;
+  // Generate years from the current financial year down to 20 years prior
+  for (let i = 0; i <= 20; i++) { // This loop will generate 21 financial years
+    const yearStart = currentCalendarYear - i;
     const yearEnd = yearStart + 1;
     options.push(`${yearStart}-${yearEnd.toString().slice(-2)}`);
   }
-  return options; 
+  return options; // The options are generated in newest-to-oldest order
 };
+
 
 const FINANCIAL_YEAR_OPTIONS = generateFinancialYearOptions();
 
