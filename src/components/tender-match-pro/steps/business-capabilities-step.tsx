@@ -2,6 +2,7 @@
 "use client";
 
 import type { FC } from 'react';
+import React from 'react'; // Import React for useState and useEffect
 import type { UseFormReturn } from 'react-hook-form';
 import type { RegistrationFormData } from '@/lib/schemas/registration-schema';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -37,11 +38,11 @@ const EXAMPLE_KEYWORD_OPTIONS = [
 ].sort();
 
 const EXAMPLE_HSN_OPTIONS = [
-  "8471", "4901", "7308", "8517", "6203", "9018" // Example HSN codes for goods
+  "8471", "4901", "7308", "8517", "6203", "9018" 
 ].sort();
 
 const EXAMPLE_SAC_OPTIONS = [
-  "998313", "9954", "998311", "998314", "998315" // Example SAC codes for services
+  "998313", "9954", "998311", "998314", "998315" 
 ].sort();
 
 
@@ -81,8 +82,54 @@ const CERTIFICATION_OPTIONS = [
     .sort() 
 ];
 
+const MAX_RECENT_ENTRIES = 5;
+const RECENT_HSN_KEY = 'tenderMatchPro_recentHsnCodes_v1';
+const RECENT_SAC_KEY = 'tenderMatchPro_recentSacCodes_v1';
+
+const getRecentEntries = (key: string): string[] => {
+  if (typeof window === 'undefined') return [];
+  const stored = localStorage.getItem(key);
+  try {
+    const parsed = stored ? JSON.parse(stored) : [];
+    return Array.isArray(parsed) ? parsed.filter(item => typeof item === 'string') : [];
+  } catch (e) {
+    return [];
+  }
+};
+
+const addRecentEntry = (key: string, entry: string) => {
+  if (typeof window === 'undefined' || !entry) return;
+  let recents = getRecentEntries(key);
+  recents = recents.filter(r => r.toLowerCase() !== entry.toLowerCase());
+  recents.unshift(entry);
+  localStorage.setItem(key, JSON.stringify(recents.slice(0, MAX_RECENT_ENTRIES)));
+};
+
 
 export const BusinessCapabilitiesStep: FC<BusinessCapabilitiesStepProps> = ({ form }) => {
+  const [hsnSuggestions, setHsnSuggestions] = React.useState<string[]>(EXAMPLE_HSN_OPTIONS);
+  const [sacSuggestions, setSacSuggestions] = React.useState<string[]>(EXAMPLE_SAC_OPTIONS);
+
+  React.useEffect(() => {
+    const recentHsn = getRecentEntries(RECENT_HSN_KEY);
+    setHsnSuggestions([...new Set([...recentHsn, ...EXAMPLE_HSN_OPTIONS])]);
+
+    const recentSac = getRecentEntries(RECENT_SAC_KEY);
+    setSacSuggestions([...new Set([...recentSac, ...EXAMPLE_SAC_OPTIONS])]);
+  }, []);
+
+  const handleHsnTagAdd = (tag: string) => {
+    addRecentEntry(RECENT_HSN_KEY, tag);
+    const updatedRecentHsn = getRecentEntries(RECENT_HSN_KEY);
+    setHsnSuggestions([...new Set([...updatedRecentHsn, ...EXAMPLE_HSN_OPTIONS])]);
+  };
+
+  const handleSacTagAdd = (tag: string) => {
+    addRecentEntry(RECENT_SAC_KEY, tag);
+    const updatedRecentSac = getRecentEntries(RECENT_SAC_KEY);
+    setSacSuggestions([...new Set([...updatedRecentSac, ...EXAMPLE_SAC_OPTIONS])]);
+  };
+
   return (
     <Card className="w-full shadow-lg">
       <CardHeader>
@@ -171,7 +218,8 @@ export const BusinessCapabilitiesStep: FC<BusinessCapabilitiesStepProps> = ({ fo
               <FormControl>
                 <TagInput
                   {...field}
-                  options={EXAMPLE_HSN_OPTIONS}
+                  options={hsnSuggestions}
+                  onTagAdd={handleHsnTagAdd}
                   placeholder="Enter HSN codes..."
                   id="hsnCodes"
                   aria-describedby="hsnCodes-description"
@@ -179,7 +227,7 @@ export const BusinessCapabilitiesStep: FC<BusinessCapabilitiesStepProps> = ({ fo
                 />
               </FormControl>
               <FormDescription id="hsnCodes-description">
-                Enter applicable HSN (Harmonized System of Nomenclature) codes for goods.
+                Enter applicable HSN (Harmonized System of Nomenclature) codes for goods. Recently used codes will appear as suggestions.
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -194,7 +242,8 @@ export const BusinessCapabilitiesStep: FC<BusinessCapabilitiesStepProps> = ({ fo
               <FormControl>
                 <TagInput
                   {...field}
-                  options={EXAMPLE_SAC_OPTIONS}
+                  options={sacSuggestions}
+                  onTagAdd={handleSacTagAdd}
                   placeholder="Enter SAC codes..."
                   id="sacCodes"
                   aria-describedby="sacCodes-description"
@@ -202,7 +251,7 @@ export const BusinessCapabilitiesStep: FC<BusinessCapabilitiesStepProps> = ({ fo
                 />
               </FormControl>
               <FormDescription id="sacCodes-description">
-                Enter applicable SAC (Services Accounting Code) codes for services.
+                Enter applicable SAC (Services Accounting Code) codes for services. Recently used codes will appear as suggestions.
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -221,7 +270,7 @@ export const BusinessCapabilitiesStep: FC<BusinessCapabilitiesStepProps> = ({ fo
                   {...field} 
                  />
               </FormControl>
-              <FormDescription>This field uses a standard text input. For multi-tag input, consider TagInput.</FormDescription>
+              <FormDescription>This field uses a standard text input.</FormDescription>
               <FormMessage />
             </FormItem>
           )}
