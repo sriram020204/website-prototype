@@ -67,7 +67,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
   useEffect(() => {
     const currentYear = new Date().getFullYear();
     setDynamicStartYearPrefix(currentYear);
-    setCurrentFinancialYearDisplay(`${currentYear}-${(currentYear + 1).toString().slice(-2)}`);
+    setCurrentFinancialYearDisplay(`${currentYear}-${(currentYear + 1).toString()}`);
   }, []);
 
 
@@ -103,12 +103,12 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
 
     let newFinancialYear;
     if (fields.length === 0) {
-      newFinancialYear = `${dynamicStartYearPrefix}-${(dynamicStartYearPrefix + 1).toString().slice(-2)}`;
+      newFinancialYear = `${dynamicStartYearPrefix}-${(dynamicStartYearPrefix + 1).toString()}`;
     } else {
       const lastEntryYear = fields[fields.length - 1].financialYear;
       const lastYearPrefix = parseInt(lastEntryYear.split('-')[0], 10);
       const nextYearPrefixCandidate = lastYearPrefix - 1;
-      newFinancialYear = `${nextYearPrefixCandidate}-${(nextYearPrefixCandidate + 1).toString().slice(-2)}`;
+      newFinancialYear = `${nextYearPrefixCandidate}-${(nextYearPrefixCandidate + 1).toString()}`;
     }
     
     append({ financialYear: newFinancialYear, amount: '' });
