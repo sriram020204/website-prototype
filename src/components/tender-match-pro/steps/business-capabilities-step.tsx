@@ -2,14 +2,14 @@
 "use client";
 
 import type { FC } from 'react';
-import React, { useEffect } from 'react'; // Added useEffect
+import React, { useEffect } from 'react';
 import type { UseFormReturn } from 'react-hook-form';
 import type { RegistrationFormData } from '@/lib/schemas/registration-schema';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { TagInput } from '@/components/ui/tag-input';
-import { Checkbox } from '@/components/ui/checkbox'; // Added Checkbox
+import { Checkbox } from '@/components/ui/checkbox';
 import { Zap } from 'lucide-react';
 
 interface BusinessCapabilitiesStepProps {
@@ -92,7 +92,7 @@ export const BusinessCapabilitiesStep: FC<BusinessCapabilitiesStepProps> = ({ fo
           <Zap className="mr-2 h-6 w-6 text-primary" />
           Business Capabilities
         </CardTitle>
-        <CardDescription>Describe your company's roles, sectors, products, and capacities. All fields are required unless explicitly stated otherwise.</CardDescription>
+        <CardDescription>Describe your company's roles, sectors, products, and capacities.</CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         <FormField
@@ -169,7 +169,7 @@ export const BusinessCapabilitiesStep: FC<BusinessCapabilitiesStepProps> = ({ fo
           name="businessCapabilities.technicalCapabilities"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Technical Capabilities</FormLabel>
+              <FormLabel>Technical Capabilities (Optional)</FormLabel>
               <FormControl>
                 <Input 
                   type="text"
@@ -192,7 +192,6 @@ export const BusinessCapabilitiesStep: FC<BusinessCapabilitiesStepProps> = ({ fo
                   checked={field.value}
                   onCheckedChange={(checked) => {
                     field.onChange(checked);
-                    // Effect hook will handle clearing certifications
                   }}
                   id={field.name}
                 />

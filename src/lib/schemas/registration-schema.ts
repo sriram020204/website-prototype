@@ -18,8 +18,8 @@ export const businessCapabilitiesSchema = z.object({
   businessRoles: z.string().min(3, { message: "Please enter at least one business role." }),
   industrySectors: z.string().min(3, { message: "Please enter at least one industry sector." }),
   productServiceKeywords: z.string().min(3, { message: "Please enter product/service keywords." }),
-  technicalCapabilities: z.string().min(10, { message: "Technical capabilities must be at least 10 characters." }),
-  certifications: z.string().optional(), // Made optional here, enforced by superRefine
+  technicalCapabilities: z.string().optional().or(z.literal('')),
+  certifications: z.string().optional(),
   hasNoCertifications: z.boolean().default(false),
 }).superRefine((data, ctx) => {
   if (!data.hasNoCertifications && (!data.certifications || data.certifications.trim() === "")) {
