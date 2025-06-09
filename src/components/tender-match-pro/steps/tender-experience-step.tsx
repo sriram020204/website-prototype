@@ -64,7 +64,7 @@ export const TenderExperienceStep: FC<TenderExperienceStepProps> = ({ form }) =>
             <FormItem>
               <FormLabel>Purchase Orders (Optional)</FormLabel>
               <FormControl>
-                <Input placeholder="e.g., PO_Ref_123.pdf, ClientX_Order.docx" {...field} />
+                <Input type="text" placeholder="e.g., PO_Ref_123.pdf, ClientX_Order.docx" {...field} />
               </FormControl>
               <FormDescription>Enter file names separated by commas. Upload actual files in the final step.</FormDescription>
               <FormMessage />
@@ -78,7 +78,7 @@ export const TenderExperienceStep: FC<TenderExperienceStepProps> = ({ form }) =>
             <FormItem>
               <FormLabel>Performance Reports (Optional)</FormLabel>
               <FormControl>
-                <Input placeholder="e.g., Q1_Report.pdf, ProjectAlpha_Completion.doc" {...field} />
+                <Input type="text" placeholder="e.g., Q1_Report.pdf, ProjectAlpha_Completion.doc" {...field} />
               </FormControl>
               <FormDescription>Enter file names separated by commas. Upload actual files in the final step.</FormDescription>
               <FormMessage />

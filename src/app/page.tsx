@@ -1,8 +1,18 @@
+
+"use client"; // Add "use client" if not already present for useState/useEffect
+
 import { RegistrationWizard } from "@/components/tender-match-pro/registration-wizard";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import Image from 'next/image';
+import { useState, useEffect } from 'react'; // Import useState and useEffect
 
 export default function TenderMatchProPage() {
+  const [currentYear, setCurrentYear] = useState<number | null>(null);
+
+  useEffect(() => {
+    setCurrentYear(new Date().getFullYear());
+  }, []);
+
   return (
     <main className="min-h-screen flex flex-col items-center justify-center p-4 sm:p-8 bg-gradient-to-br from-background to-secondary">
       <div className="w-full max-w-4xl space-y-8">
@@ -46,7 +56,7 @@ export default function TenderMatchProPage() {
         </Card>
         
         <footer className="text-center text-sm text-muted-foreground mt-12">
-          &copy; {new Date().getFullYear()} TenderMatch Pro. All rights reserved.
+          &copy; {currentYear || new Date().getFullYear()} TenderMatch Pro. All rights reserved. {/* Display currentYear or fallback during SSR/initial load */}
           <div className="mt-2">
             <Image src="https://placehold.co/150x50.png?text=PoweredByAI" alt="Powered by AI" width={150} height={50} data-ai-hint="logo ai" className="mx-auto opacity-75" />
           </div>

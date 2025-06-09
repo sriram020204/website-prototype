@@ -102,7 +102,7 @@ export const BusinessCapabilitiesStep: FC<BusinessCapabilitiesStepProps> = ({ fo
               <FormItem>
                 <FormLabel>Monthly Capacity Value (Optional)</FormLabel>
                 <FormControl>
-                  <Input type="number" placeholder="e.g., 1000" {...field} onChange={e => field.onChange(parseFloat(e.target.value) || undefined)} value={field.value ?? ''} />
+                  <Input type="number" placeholder="e.g., 1000" {...field} onChange={e => field.onChange(e.target.value === '' ? undefined : parseFloat(e.target.value))} value={field.value ?? ''} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -115,7 +115,7 @@ export const BusinessCapabilitiesStep: FC<BusinessCapabilitiesStepProps> = ({ fo
               <FormItem>
                 <FormLabel>Monthly Capacity Unit (Optional)</FormLabel>
                 <FormControl>
-                  <Input placeholder="e.g., Units, Tons, Projects" {...field} />
+                  <Input type="text" placeholder="e.g., Units, Tons, Projects" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

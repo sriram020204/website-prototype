@@ -81,7 +81,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
             <FormItem>
               <FormLabel>PAN (Permanent Account Number)</FormLabel>
               <FormControl>
-                <Input placeholder="Enter PAN" {...field} />
+                <Input type="text" placeholder="Enter PAN" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -94,7 +94,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
             <FormItem>
               <FormLabel>GSTIN (Optional)</FormLabel>
               <FormControl>
-                <Input placeholder="Enter GSTIN" {...field} />
+                <Input type="text" placeholder="Enter GSTIN" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -107,7 +107,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
             <FormItem>
               <FormLabel>MSME/Udyam/NSIC Number (Optional)</FormLabel>
               <FormControl>
-                <Input placeholder="Enter registration number" {...field} />
+                <Input type="text" placeholder="Enter registration number" {...field} />
               </FormControl>
             </FormItem>
           )}
@@ -119,7 +119,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
             <FormItem>
               <FormLabel>MSME/Udyam/NSIC Certificate (Optional)</FormLabel>
               <FormControl>
-                <Input placeholder="Enter certificate file name" {...field} />
+                <Input type="text" placeholder="Enter certificate file name" {...field} />
               </FormControl>
               <FormDescription>Enter file name. Upload actual file in the final step.</FormDescription>
               <FormMessage />

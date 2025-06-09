@@ -35,7 +35,7 @@ export const DeclarationsUploadsStep: FC<DeclarationsUploadsStepProps> = ({ form
             <FormItem>
               <FormLabel>PAN Card (File Name)</FormLabel>
               <FormControl>
-                <Input placeholder="e.g., pan_card.pdf" {...field} />
+                <Input type="text" placeholder="e.g., pan_card.pdf" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -48,7 +48,7 @@ export const DeclarationsUploadsStep: FC<DeclarationsUploadsStepProps> = ({ form
             <FormItem>
               <FormLabel>GST Certificate (File Name - Optional)</FormLabel>
               <FormControl>
-                <Input placeholder="e.g., gst_certificate.pdf" {...field} />
+                <Input type="text" placeholder="e.g., gst_certificate.pdf" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -61,7 +61,7 @@ export const DeclarationsUploadsStep: FC<DeclarationsUploadsStepProps> = ({ form
             <FormItem>
               <FormLabel>MSME Certificate (File Name - Optional)</FormLabel>
               <FormControl>
-                <Input placeholder="e.g., msme_cert.pdf" {...field} />
+                <Input type="text" placeholder="e.g., msme_cert.pdf" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -74,7 +74,7 @@ export const DeclarationsUploadsStep: FC<DeclarationsUploadsStepProps> = ({ form
             <FormItem>
               <FormLabel>ISO Certificate(s) (File Names - Optional)</FormLabel>
               <FormControl>
-                <Input placeholder="e.g., iso_9001.pdf, iso_14001.jpg" {...field} />
+                <Input type="text" placeholder="e.g., iso_9001.pdf, iso_14001.jpg" {...field} />
               </FormControl>
               <FormDescription>Enter multiple file names separated by commas if needed.</FormDescription>
               <FormMessage />
@@ -88,7 +88,7 @@ export const DeclarationsUploadsStep: FC<DeclarationsUploadsStepProps> = ({ form
             <FormItem>
               <FormLabel>BIS Certificate(s) (File Names - Optional)</FormLabel>
               <FormControl>
-                <Input placeholder="e.g., bis_cert_productA.pdf" {...field} />
+                <Input type="text" placeholder="e.g., bis_cert_productA.pdf" {...field} />
               </FormControl>
                <FormDescription>Enter multiple file names separated by commas if needed.</FormDescription>
               <FormMessage />
@@ -145,7 +145,7 @@ export const DeclarationsUploadsStep: FC<DeclarationsUploadsStepProps> = ({ form
             <FormItem>
               <FormLabel>Blacklisting Declaration Document (File Name - Optional)</FormLabel>
               <FormControl>
-                <Input placeholder="e.g., clarification_letter.pdf" {...field} />
+                <Input type="text" placeholder="e.g., clarification_letter.pdf" {...field} />
               </FormControl>
               <FormDescription>Upload if you need to provide additional context to the blacklisting declaration.</FormDescription>
               <FormMessage />

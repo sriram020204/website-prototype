@@ -46,7 +46,7 @@ export const CompanyDetailsStep: FC<CompanyDetailsStepProps> = ({ form }) => {
             <FormItem>
               <FormLabel>Company Name</FormLabel>
               <FormControl>
-                <Input placeholder="e.g., Acme Innovations Inc." {...field} />
+                <Input type="text" placeholder="e.g., Acme Innovations Inc." {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -81,7 +81,7 @@ export const CompanyDetailsStep: FC<CompanyDetailsStepProps> = ({ form }) => {
             <FormItem>
               <FormLabel>Year of Establishment</FormLabel>
               <FormControl>
-                <Input type="number" placeholder="e.g., 2005" {...field} onChange={e => field.onChange(parseInt(e.target.value,10) || undefined)} value={field.value ?? ''} />
+                <Input type="number" placeholder="e.g., 2005" {...field} onChange={e => field.onChange(e.target.value === '' ? undefined : parseInt(e.target.value,10))} value={field.value ?? ''} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -145,7 +145,7 @@ export const CompanyDetailsStep: FC<CompanyDetailsStepProps> = ({ form }) => {
             <FormItem>
               <FormLabel>City</FormLabel>
               <FormControl>
-                <Input placeholder="e.g., Mumbai" {...field} />
+                <Input type="text" placeholder="e.g., Mumbai" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
