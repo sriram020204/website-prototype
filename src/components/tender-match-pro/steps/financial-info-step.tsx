@@ -5,18 +5,51 @@ import type { FC } from 'react';
 import type { UseFormReturn } from 'react-hook-form';
 import type { RegistrationFormData } from '@/lib/schemas/registration-schema';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from '@/components/ui/form';
+import { FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
-import { Landmark } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { X, Landmark } from 'lucide-react';
 
 interface FinancialLegalInfoStepProps {
   form: UseFormReturn<RegistrationFormData>;
 }
 
 const CURRENCY_OPTIONS = ["USD", "INR"];
+
+const FileInputControl: FC<{ field: any; placeholder: string }> = ({ field, placeholder }) => {
+  const { name, value, onChange, ref } = field;
+  return (
+    <>
+      <Input
+        type="file"
+        id={name}
+        onChange={(e) => onChange(e.target.files?.[0]?.name || '')}
+        className="block w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20"
+        ref={ref}
+        aria-label={placeholder}
+      />
+      {value && (
+        <div className="mt-2 text-sm flex items-center">
+          <span className="text-muted-foreground mr-2">Selected:</span>
+          <span className="break-all">{value}</span>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            className="ml-2 px-1.5 py-0.5 h-auto"
+            onClick={() => onChange('')}
+            aria-label={`Clear ${placeholder}`}
+          >
+            <X className="h-3 w-3 mr-1" /> Clear
+          </Button>
+        </div>
+      )}
+    </>
+  );
+};
 
 export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }) => {
   const watchIsBlacklisted = form.watch('financialLegalInfo.isBlacklistedOrLitigation');
@@ -75,7 +108,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
           <Landmark className="mr-2 h-6 w-6 text-primary" />
           Financial & Legal Information
         </CardTitle>
-        <CardDescription>Provide your company's financial and legal details.</CardDescription>
+        <CardDescription>Provide your company's financial and legal details. For documents, you'll select the file but only its name is recorded here.</CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         <FormField
@@ -84,10 +117,11 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
           render={({ field }) => (
             <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4 shadow-sm">
               <div className="space-y-0.5">
-                <FormLabel className="text-base">Do you have a PAN (Permanent Account Number)?</FormLabel>
+                <FormLabel htmlFor={field.name} className="text-base">Do you have a PAN (Permanent Account Number)?</FormLabel>
               </div>
               <FormControl>
                 <Switch
+                  id={field.name}
                   checked={field.value}
                   onCheckedChange={(checked) => {
                     field.onChange(checked);
@@ -122,10 +156,11 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
           render={({ field }) => (
             <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4 shadow-sm">
               <div className="space-y-0.5">
-                <FormLabel className="text-base">Do you have a GSTIN?</FormLabel>
+                <FormLabel htmlFor={field.name} className="text-base">Do you have a GSTIN?</FormLabel>
               </div>
               <FormControl>
                 <Switch
+                  id={field.name}
                   checked={field.value}
                   onCheckedChange={(checked) => {
                     field.onChange(checked);
@@ -160,10 +195,11 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
           render={({ field }) => (
             <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4 shadow-sm">
               <div className="space-y-0.5">
-                <FormLabel className="text-base">Do you have an MSME/Udyam/NSIC Registration?</FormLabel>
+                <FormLabel htmlFor={field.name} className="text-base">Do you have an MSME/Udyam/NSIC Registration?</FormLabel>
               </div>
               <FormControl>
                 <Switch
+                  id={field.name}
                   checked={field.value}
                   onCheckedChange={(checked) => {
                     field.onChange(checked);
@@ -197,11 +233,11 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
               name="financialLegalInfo.msmeUdyamNsicCertificate"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>MSME/Udyam/NSIC Certificate File Name (Optional)</FormLabel>
+                  <FormLabel>MSME/Udyam/NSIC Certificate (Optional)</FormLabel>
                   <FormControl>
-                    <Input type="text" placeholder="Enter certificate file name" {...field} />
+                     <FileInputControl field={field} placeholder="MSME/Udyam/NSIC Certificate file" />
                   </FormControl>
-                  <FormDescription>Use this field to add the file name of your MSME/Udyam/NSIC certificate. Actual file uploads are handled separately.</FormDescription>
+                  <FormDescription>Select your MSME/Udyam/NSIC certificate file. Only the file name is recorded.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -260,10 +296,11 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
           render={({ field }) => (
             <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4 shadow-sm">
               <div className="space-y-0.5">
-                <FormLabel className="text-base">Is the company blacklisted or in litigation?</FormLabel>
+                <FormLabel htmlFor={field.name} className="text-base">Is the company blacklisted or in litigation?</FormLabel>
               </div>
               <FormControl>
                 <Switch
+                  id={field.name}
                   checked={field.value}
                   onCheckedChange={field.onChange}
                 />
@@ -290,4 +327,3 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
     </Card>
   );
 };
-

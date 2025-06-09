@@ -5,14 +5,48 @@ import type { FC } from 'react';
 import type { UseFormReturn } from 'react-hook-form';
 import type { RegistrationFormData } from '@/lib/schemas/registration-schema';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from '@/components/ui/form';
+import { FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
-import { ClipboardList } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { X, ClipboardList } from 'lucide-react';
 
 interface DeclarationsUploadsStepProps {
   form: UseFormReturn<RegistrationFormData>;
 }
+
+const FileInputControl: FC<{ field: any; placeholder: string }> = ({ field, placeholder }) => {
+  const { name, value, onChange, ref } = field;
+  return (
+    <>
+      <Input
+        type="file"
+        id={name}
+        onChange={(e) => onChange(e.target.files?.[0]?.name || '')}
+        className="block w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20"
+        ref={ref}
+        aria-label={placeholder}
+      />
+      {value && (
+        <div className="mt-2 text-sm flex items-center">
+          <span className="text-muted-foreground mr-2">Selected:</span>
+          <span className="break-all">{value}</span>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            className="ml-2 px-1.5 py-0.5 h-auto"
+            onClick={() => onChange('')}
+            aria-label={`Clear ${placeholder}`}
+          >
+            <X className="h-3 w-3 mr-1" /> Clear
+          </Button>
+        </div>
+      )}
+    </>
+  );
+};
+
 
 export const DeclarationsUploadsStep: FC<DeclarationsUploadsStepProps> = ({ form }) => {
   return (
@@ -22,20 +56,20 @@ export const DeclarationsUploadsStep: FC<DeclarationsUploadsStepProps> = ({ form
           <ClipboardList className="mr-2 h-6 w-6 text-primary" />
           Declarations & Uploads
         </CardTitle>
-        <CardDescription>Provide necessary document names and confirm declarations.</CardDescription>
+        <CardDescription>Select document files and confirm declarations. File contents are not uploaded in this step, only their names are recorded.</CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
-        <h3 className="text-lg font-semibold text-primary">Document Uploads (Enter File Names)</h3>
-        <FormDescription>Please enter the file names for the documents you will provide. Actual file uploads are typically handled separately.</FormDescription>
+        <h3 className="text-lg font-semibold text-primary">Document Uploads (Select Files)</h3>
+        <FormDescription>Please select the relevant document files. Only the file name will be recorded.</FormDescription>
         
         <FormField
           control={form.control}
           name="declarationsUploads.panUpload"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>PAN Card (File Name)</FormLabel>
+              <FormLabel>PAN Card</FormLabel>
               <FormControl>
-                <Input type="text" placeholder="e.g., pan_card.pdf" {...field} />
+                <FileInputControl field={field} placeholder="PAN Card file" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -46,9 +80,9 @@ export const DeclarationsUploadsStep: FC<DeclarationsUploadsStepProps> = ({ form
           name="declarationsUploads.gstUpload"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>GST Certificate (File Name - Optional)</FormLabel>
+              <FormLabel>GST Certificate (Optional)</FormLabel>
               <FormControl>
-                <Input type="text" placeholder="e.g., gst_certificate.pdf" {...field} />
+                <FileInputControl field={field} placeholder="GST Certificate file" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -59,9 +93,9 @@ export const DeclarationsUploadsStep: FC<DeclarationsUploadsStepProps> = ({ form
           name="declarationsUploads.msmeCertUpload"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>MSME Certificate (File Name - Optional)</FormLabel>
+              <FormLabel>MSME Certificate (Optional)</FormLabel>
               <FormControl>
-                <Input type="text" placeholder="e.g., msme_cert.pdf" {...field} />
+                <FileInputControl field={field} placeholder="MSME Certificate file" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -72,11 +106,11 @@ export const DeclarationsUploadsStep: FC<DeclarationsUploadsStepProps> = ({ form
           name="declarationsUploads.isoCertUpload"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>ISO Certificate(s) (File Names - Optional)</FormLabel>
+              <FormLabel>ISO Certificate(s) (Optional)</FormLabel>
               <FormControl>
-                <Input type="text" placeholder="e.g., iso_9001.pdf, iso_14001.jpg" {...field} />
+                <FileInputControl field={field} placeholder="ISO Certificate file(s)" />
               </FormControl>
-              <FormDescription>Enter multiple file names separated by commas if needed.</FormDescription>
+              <FormDescription>If multiple, please select one or provide a combined document. Alternatively, list additional file names if a multi-file upload component were available.</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -86,11 +120,11 @@ export const DeclarationsUploadsStep: FC<DeclarationsUploadsStepProps> = ({ form
           name="declarationsUploads.bisCertUpload"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>BIS Certificate(s) (File Names - Optional)</FormLabel>
+              <FormLabel>BIS Certificate(s) (Optional)</FormLabel>
               <FormControl>
-                <Input type="text" placeholder="e.g., bis_cert_productA.pdf" {...field} />
+                <FileInputControl field={field} placeholder="BIS Certificate file(s)" />
               </FormControl>
-               <FormDescription>Enter multiple file names separated by commas if needed.</FormDescription>
+               <FormDescription>If multiple, select one or a combined document.</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -100,11 +134,11 @@ export const DeclarationsUploadsStep: FC<DeclarationsUploadsStepProps> = ({ form
           name="declarationsUploads.otherCertificatesUpload"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Other Listed Certificates (File Names - Optional)</FormLabel>
+              <FormLabel>Other Listed Certificates (Optional)</FormLabel>
               <FormControl>
-                <Input type="text" placeholder="e.g., fssai_license.pdf, organic_cert.jpg" {...field} />
+                <FileInputControl field={field} placeholder="Other certificate file(s)" />
               </FormControl>
-              <FormDescription>For certifications listed in Business Capabilities not covered above (e.g., FSSAI). Enter multiple file names separated by commas if needed.</FormDescription>
+              <FormDescription>For certifications listed in Business Capabilities not covered above (e.g., FSSAI). If multiple, select one or a combined document.</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -120,10 +154,11 @@ export const DeclarationsUploadsStep: FC<DeclarationsUploadsStepProps> = ({ form
                 <Checkbox
                   checked={field.value}
                   onCheckedChange={field.onChange}
+                  id={field.name}
                 />
               </FormControl>
               <div className="space-y-1 leading-none">
-                <FormLabel>
+                <FormLabel htmlFor={field.name}>
                   I confirm that the above information is true to the best of my knowledge and belief.
                 </FormLabel>
                 <FormMessage />
@@ -140,10 +175,11 @@ export const DeclarationsUploadsStep: FC<DeclarationsUploadsStepProps> = ({ form
                 <Checkbox
                   checked={field.value}
                   onCheckedChange={field.onChange}
+                  id={field.name}
                 />
               </FormControl>
               <div className="space-y-1 leading-none">
-                <FormLabel>
+                <FormLabel htmlFor={field.name}>
                   I declare that the company is not currently blacklisted by any government/PSU/major private entity. (Check if true)
                 </FormLabel>
                  <FormDescription>If your company has faced blacklisting that has since been lifted, or if there are specific circumstances you wish to clarify, please provide details in the 'Blacklisting Declaration Upload' field or the blacklisting details field in the Financial & Legal Info step.</FormDescription>
@@ -157,11 +193,11 @@ export const DeclarationsUploadsStep: FC<DeclarationsUploadsStepProps> = ({ form
           name="declarationsUploads.blacklistingDeclarationUpload"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Blacklisting Declaration Document (File Name - Optional)</FormLabel>
+              <FormLabel>Blacklisting Declaration Document (Optional)</FormLabel>
               <FormControl>
-                <Input type="text" placeholder="e.g., clarification_letter.pdf" {...field} />
+                <FileInputControl field={field} placeholder="Blacklisting declaration file" />
               </FormControl>
-              <FormDescription>Upload if you need to provide additional context to the blacklisting declaration.</FormDescription>
+              <FormDescription>Select if you need to provide a document with additional context to the blacklisting declaration.</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -170,4 +206,3 @@ export const DeclarationsUploadsStep: FC<DeclarationsUploadsStepProps> = ({ form
     </Card>
   );
 };
-
