@@ -101,10 +101,7 @@ export const TagInput: React.FC<TagInputProps> = ({
     const trimmedSearch = searchQuery.trim();
     if (!trimmedSearch) return false;
     const isAlreadySelected = selectedTags.some(tag => tag.toLowerCase() === trimmedSearch.toLowerCase());
-    // Check if the trimmed search query exists in the original options (case-insensitive)
     const isExistingOriginalOption = options.some(opt => opt.toLowerCase() === trimmedSearch.toLowerCase());
-    // It should show create if it's not selected AND it's not an existing original option (even if filtered out)
-    // OR if it's not selected AND it is an existing original option BUT it's not in `availableOptions` (meaning it was already selected, which is contradictory, so this part handles more general "is it creatable")
     return !isAlreadySelected && !isExistingOriginalOption;
   }, [searchQuery, selectedTags, options]);
 
@@ -178,6 +175,36 @@ export const TagInput: React.FC<TagInputProps> = ({
               value={searchQuery}
               onValueChange={setSearchQuery}
               disabled={disabled}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && !e.nativeEvent.isComposing) { 
+                  const trimmedSearch = searchQuery.trim();
+                  if (trimmedSearch) {
+                    const isAlreadySelected = selectedTags.some(tag => tag.toLowerCase() === trimmedSearch.toLowerCase());
+                    if (isAlreadySelected) {
+                      // If already selected, close popover. CMDK might do this by default if no other action.
+                       e.preventDefault();
+                       setOpen(false);
+                      return;
+                    }
+              
+                    const availableOptionMatch = availableOptions.find(
+                      opt => opt.toLowerCase() === trimmedSearch.toLowerCase()
+                    );
+              
+                    if (availableOptionMatch) {
+                      e.preventDefault();
+                      handleSelect(availableOptionMatch);
+                    } else {
+                      const isExistingInOriginalOptions = options.some(opt => opt.toLowerCase() === trimmedSearch.toLowerCase());
+                      if (!isExistingInOriginalOptions) {
+                        e.preventDefault();
+                        handleSelect(trimmedSearch);
+                      }
+                      // Otherwise, let CMDK handle Enter (e.g. select highlighted item)
+                    }
+                  }
+                }
+              }}
             />
             <CommandList>
               <CommandEmpty>
