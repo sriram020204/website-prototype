@@ -62,11 +62,9 @@ export const financialLegalInfoSchema = z.object({
 
   hasMsmeUdyam: z.boolean().default(false),
   msmeUdyamNumber: z.string().optional().or(z.literal('')),
-  msmeUdyamCertificate: z.string().describe("Name of MSME/Udyam certificate file").optional().or(z.literal('')),
 
   hasNsic: z.boolean().default(false),
   nsicNumber: z.string().optional().or(z.literal('')),
-  nsicCertificate: z.string().describe("Name of NSIC certificate file").optional().or(z.literal('')),
 
   annualTurnovers: z.array(turnoverEntrySchema).min(1, { message: "At least one annual turnover entry is required." }),
 

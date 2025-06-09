@@ -2,7 +2,7 @@
 "use client";
 
 import type { FC } from 'react';
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useFieldArray, type UseFormReturn } from 'react-hook-form';
 import type { RegistrationFormData } from '@/lib/schemas/registration-schema';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -12,7 +12,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
-import { X, Landmark, Trash2, PlusCircle } from 'lucide-react';
+import { Landmark, Trash2, PlusCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface FinancialLegalInfoStepProps {
@@ -21,41 +21,7 @@ interface FinancialLegalInfoStepProps {
 
 const CURRENCY_OPTIONS = ["USD", "INR", "EUR", "GBP", "JPY", "AUD", "CAD", "CHF", "CNY", "SGD", "AED"];
 
-const MAX_YEARS_HISTORY = 20; // e.g., 20 years back from current, so 21 total options including current FY
-
-const FileInputControl: FC<{ field: any; placeholder: string }> = ({ field, placeholder }) => {
-  const { name, value, onChange, ref } = field;
-  return (
-    <>
-      <Input
-        type="file"
-        id={name}
-        onChange={(e) => onChange(e.target.files?.[0]?.name || '')}
-        className="w-full text-sm file:mr-4 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20"
-        ref={ref}
-        aria-label={placeholder}
-      />
-      {value && (
-         <div className="mt-2 text-sm flex items-center justify-between">
-          <div className="flex items-center min-w-0"> 
-            <span className="text-muted-foreground mr-2 shrink-0">Selected:</span>
-            <span className="truncate break-all" title={value}>{value}</span>
-          </div>
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            className="ml-2 px-1.5 py-0.5 h-auto shrink-0"
-            onClick={() => onChange('')}
-            aria-label={`Clear ${placeholder}`}
-          >
-            <X className="h-3 w-3 mr-1" /> Clear
-          </Button>
-        </div>
-      )}
-    </>
-  );
-};
+const MAX_YEARS_HISTORY = 20; 
 
 export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }) => {
   const { control, watch, setValue } = form;
@@ -66,6 +32,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
     const generateFinancialYearOptions = () => {
       const currentYear = new Date().getFullYear();
       const options = [];
+      // Create options like "2024-25", "2023-24", etc.
       for (let i = 0; i <= MAX_YEARS_HISTORY; i++) {
         const startYear = currentYear - i;
         const endYearShort = (startYear + 1).toString().slice(-2);
@@ -110,7 +77,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
         </CardTitle>
         <CardDescription>
           Provide your company's financial and legal details. 
-          Checking a box indicates possession; providing the specific number or file name is optional.
+          Checking a box indicates possession; providing the specific number is optional.
           Net Worth and at least one Annual Turnover entry are required.
         </CardDescription>
       </CardHeader>
@@ -231,20 +198,6 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
                 </FormItem>
               )}
             />
-            <FormField
-              control={control}
-              name="financialLegalInfo.msmeUdyamCertificate"
-              render={({ field }) => (
-                <FormItem> 
-                  <FormLabel>MSME/Udyam Certificate File Name</FormLabel>
-                  <FormControl>
-                     <FileInputControl field={field} placeholder="MSME/Udyam Certificate file" />
-                  </FormControl>
-                  <FormDescription>Optional.</FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
           </div>
         )}
 
@@ -280,20 +233,6 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
                   <FormLabel>NSIC Number</FormLabel>
                   <FormControl>
                     <Input type="text" placeholder="Enter NSIC registration number" {...field} />
-                  </FormControl>
-                  <FormDescription>Optional.</FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={control}
-              name="financialLegalInfo.nsicCertificate"
-              render={({ field }) => (
-                <FormItem> 
-                  <FormLabel>NSIC Certificate File Name</FormLabel>
-                  <FormControl>
-                     <FileInputControl field={field} placeholder="NSIC Certificate file" />
                   </FormControl>
                   <FormDescription>Optional.</FormDescription>
                   <FormMessage />
@@ -390,7 +329,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
                   )}
                 />
               </div>
-              {fields.length > 0 && ( // Show remove button for all items if there is at least one
+              {fields.length > 0 && ( 
                 <Button
                   type="button"
                   variant="destructive"
@@ -466,5 +405,3 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
     </Card>
   );
 };
-
-    

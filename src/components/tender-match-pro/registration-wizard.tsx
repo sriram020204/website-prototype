@@ -12,7 +12,7 @@ import {
   financialLegalInfoSchema,
   tenderExperienceSchema,
   geographicDigitalReachSchema,
-  termsAndConditionsSchema, // New import
+  termsAndConditionsSchema, 
   declarationsUploadsSchema
 } from '@/lib/schemas/registration-schema';
 import { useFormPersistence } from '@/hooks/use-form-persistence';
@@ -25,7 +25,7 @@ import { BusinessCapabilitiesStep } from './steps/business-capabilities-step';
 import { FinancialLegalInfoStep } from './steps/financial-info-step';
 import { TenderExperienceStep } from './steps/tender-experience-step';
 import { GeographicDigitalReachStep } from './steps/geographic-reach-step';
-import { TermsConditionsStep } from './steps/terms-conditions-step'; // New import
+import { TermsConditionsStep } from './steps/terms-conditions-step'; 
 import { DeclarationsUploadsStep } from './steps/declarations-uploads-step';
 import { ReviewSubmitStep } from './steps/review-submit-step';
 
@@ -35,7 +35,7 @@ const STEPS = [
   { id: 'financialLegalInfo', title: 'Financial & Legal Info', component: FinancialLegalInfoStep, schema: financialLegalInfoSchema, fields: ['financialLegalInfo'] as const },
   { id: 'tenderExperience', title: 'Tender Experience', component: TenderExperienceStep, schema: tenderExperienceSchema, fields: ['tenderExperience'] as const },
   { id: 'geographicDigitalReach', title: 'Geographic & Digital', component: GeographicDigitalReachStep, schema: geographicDigitalReachSchema, fields: ['geographicDigitalReach'] as const },
-  { id: 'termsAndConditions', title: 'Terms & Conditions', component: TermsConditionsStep, schema: termsAndConditionsSchema, fields: ['termsAndConditions'] as const }, // New step
+  { id: 'termsAndConditions', title: 'Terms & Conditions', component: TermsConditionsStep, schema: termsAndConditionsSchema, fields: ['termsAndConditions'] as const }, 
   { id: 'declarationsUploads', title: 'Declarations', component: DeclarationsUploadsStep, schema: declarationsUploadsSchema, fields: ['declarationsUploads'] as const },
   { id: 'reviewSubmit', title: 'Review & Submit', component: ReviewSubmitStep, schema: registrationSchema, fields: [] as const },
 ];
@@ -74,10 +74,8 @@ export function RegistrationWizard() {
       gstin: '',
       hasMsmeUdyam: false,
       msmeUdyamNumber: '',
-      msmeUdyamCertificate: '',
       hasNsic: false,
       nsicNumber: '',
-      nsicCertificate: '',
       annualTurnovers: [],
       netWorthAmount: '',
       netWorthCurrency: '',
@@ -102,7 +100,7 @@ export function RegistrationWizard() {
       hasDigitalSignature: false,
       preferredTenderLanguages: ''
     },
-    termsAndConditions: { // New default values
+    termsAndConditions: { 
       acknowledgmentOfTenderMatching: false,
       accuracyOfSharedCompanyProfile: false,
       noResponsibilityForTenderOutcomes: false,
@@ -141,7 +139,6 @@ export function RegistrationWizard() {
     if (currentStep < STEPS.length - 1) {
       const currentStepFields = STEPS[currentStep].fields as (keyof RegistrationFormData)[];
       
-      // For nested objects like 'termsAndConditions', RHF trigger works better with the top-level key
       const fieldsToValidate: (keyof RegistrationFormData)[] | (Path<RegistrationFormData>)[] = 
         STEPS[currentStep].id === 'termsAndConditions' ? ['termsAndConditions'] :
         (currentStepFields.length > 0 ? currentStepFields as any : undefined);
@@ -183,7 +180,7 @@ export function RegistrationWizard() {
   const onSubmit = async (data: RegistrationFormData) => {
     setIsSubmitting(true);
     console.log("Form Submitted:", data);
-    // Simulate API call
+    
     await new Promise(resolve => setTimeout(resolve, 1500)); 
     setIsSubmitting(false);
     toast({
@@ -191,11 +188,11 @@ export function RegistrationWizard() {
       description: "Your company profile has been successfully submitted.",
       className: "bg-green-500 text-white",
     });
-    // Clear form data from localStorage and reset form state
+    
     localStorage.removeItem(FORM_DATA_STORAGE_KEY);
     localStorage.removeItem(CURRENT_STEP_STORAGE_KEY);
-    methods.reset(initialDefaultValues); // Reset to initial default values
-    setCurrentStep(0); // Go back to the first step
+    methods.reset(initialDefaultValues); 
+    setCurrentStep(0); 
   };
 
   const CurrentStepComponent = STEPS[currentStep].component;

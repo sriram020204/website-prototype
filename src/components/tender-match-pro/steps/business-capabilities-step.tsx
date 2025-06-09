@@ -227,7 +227,7 @@ export const BusinessCapabilitiesStep: FC<BusinessCapabilitiesStepProps> = ({ fo
                 />
               </FormControl>
               <FormDescription id="certifications-description">
-                Enter certification names if applicable. Upload actual files in the 'Declarations & Uploads' step.
+                Enter certification names if applicable. This field is for names only.
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -237,5 +237,3 @@ export const BusinessCapabilitiesStep: FC<BusinessCapabilitiesStepProps> = ({ fo
     </Card>
   );
 };
-
-    

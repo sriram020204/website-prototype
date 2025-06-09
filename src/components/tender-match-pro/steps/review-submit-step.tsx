@@ -14,7 +14,7 @@ interface ReviewSubmitStepProps {
 }
 
 const formatDisplayData = (data: any, fieldName?: string, sectionData?: Record<string, any>): string => {
-  if (typeof data === 'boolean') return data ? 'Agreed' : 'Not Agreed'; // Changed for T&C
+  if (typeof data === 'boolean') return data ? 'Agreed' : 'Not Agreed';
   if (typeof data === 'number') return data.toString();
 
   if (data === null || data === undefined || data === '') {
@@ -24,7 +24,7 @@ const formatDisplayData = (data: any, fieldName?: string, sectionData?: Record<s
      if (fieldName === 'technicalCapabilities' && sectionData && (sectionData as RegistrationFormData['businessCapabilities']).technicalCapabilities === '') {
         return 'Not Provided';
      }
-     const financialFields = ['pan', 'gstin', 'msmeUdyamNumber', 'msmeUdyamCertificate', 'nsicNumber', 'nsicCertificate', 'blacklistedDetails'];
+     const financialFields = ['pan', 'gstin', 'msmeUdyamNumber', 'nsicNumber', 'blacklistedDetails']; // Removed certificate file fields
      if (financialFields.includes(fieldName || '')) {
          return 'Details not provided';
      }
@@ -45,12 +45,6 @@ const formatDisplayData = (data: any, fieldName?: string, sectionData?: Record<s
     return data.join(', ');
   }
   if (typeof data === 'object' && data !== null && !Array.isArray(data)) {
-    // For T&C, we want specific display for each key
-    // This case should be handled by specific logic in renderSectionData for T&C
-    // Default object stringification is not ideal here
-    // title is not available here, so we cannot check title === "Terms & Conditions"
-    // However, the T&C section has its own rendering logic for its specific keys.
-    // So, this generic object rendering is a fallback.
     return Object.entries(data)
       .map(([key, value]) => `${key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}: ${formatDisplayData(value, key, data as Record<string, any>)}`)
       .join('; ');
@@ -86,7 +80,7 @@ const renderSectionData = (title: string, sectionData: Record<string, any> | und
 
           if (title === "Terms & Conditions") {
             displayKey = T_AND_C_DISPLAY_LABELS[key as keyof RegistrationFormData['termsAndConditions']] || displayKey;
-            displayValue = formatDisplayData(value); // Boolean will become "Agreed" / "Not Agreed"
+            displayValue = formatDisplayData(value); 
           } else if (title === "Business Capabilities") {
             if (key === 'hasNoCertifications') {
                return (
@@ -130,8 +124,6 @@ const renderSectionData = (title: string, sectionData: Record<string, any> | und
                 );
             } else if (key === 'msmeUdyamNumber') {
               displayValue = sectionData.hasMsmeUdyam ? (value ? formatDisplayData(value, key, sectionData) : "Details not provided") : "Not Applicable (No MSME/Udyam declared)";
-            } else if (key === 'msmeUdyamCertificate') {
-              displayValue = sectionData.hasMsmeUdyam ? (value ? formatDisplayData(value, key, sectionData) : "File name not provided") : "Not Applicable (No MSME/Udyam declared)";
             } else if (key === 'hasNsic') {
                 return (
                     <div key={key} className="grid grid-cols-1 md:grid-cols-3 gap-1 md:gap-2 items-start">
@@ -141,8 +133,6 @@ const renderSectionData = (title: string, sectionData: Record<string, any> | und
                 );
             } else if (key === 'nsicNumber') {
               displayValue = sectionData.hasNsic ? (value ? formatDisplayData(value, key, sectionData) : "Details not provided") : "Not Applicable (No NSIC declared)";
-            } else if (key === 'nsicCertificate') {
-              displayValue = sectionData.hasNsic ? (value ? formatDisplayData(value, key, sectionData) : "File name not provided") : "Not Applicable (No NSIC declared)";
             } else if (key === 'isBlacklistedOrLitigation') {
                  return (
                     <div key={key} className="grid grid-cols-1 md:grid-cols-3 gap-1 md:gap-2 items-start">
@@ -246,17 +236,24 @@ const renderSectionData = (title: string, sectionData: Record<string, any> | und
           } else if (title === "Declarations") {
             if (key === 'infoConfirmed') {
                  displayKey = "Information Confirmed Accurate";
-                 displayValue = formatDisplayData(value); // Boolean will become "Agreed" / "Not Agreed"
+                 displayValue = formatDisplayData(value); 
             }
           }
           else {
             displayValue = formatDisplayData(value, key, sectionData);
           }
 
+          // Filter out internal boolean flags from direct display, as they are handled by conditional text or separate divs
           const handledFlags = ['hasPan', 'hasGstin', 'hasMsmeUdyam', 'hasNsic', 'isBlacklistedOrLitigation', 'hasNoCertifications', 'hasPastClients', 'operatesInMultipleStates', 'exportsToOtherCountries', 'suppliedToGovtPsus', 'hasImportLicense', 'hasExportLicense', 'registeredOnPortals', 'hasDigitalSignature'];
           if (title !== "Terms & Conditions" && title !== "Declarations" && handledFlags.includes(key)) {
+            return null; 
+          }
+          
+          // Filter out certificate file name fields that were removed
+          if (key === 'msmeUdyamCertificate' || key === 'nsicCertificate') {
             return null;
           }
+
 
           if (key === 'annualTurnovers') return null;
 
@@ -311,4 +308,3 @@ export const ReviewSubmitStep: FC<ReviewSubmitStepProps> = ({ form }) => {
     </Card>
   );
 };
-
