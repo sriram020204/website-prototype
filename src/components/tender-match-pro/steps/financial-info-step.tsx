@@ -2,7 +2,7 @@
 "use client";
 
 import type { FC } from 'react';
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect } from 'react';
 import type { UseFormReturn } from 'react-hook-form';
 import { useFieldArray } from 'react-hook-form';
 import type { RegistrationFormData } from '@/lib/schemas/registration-schema';
@@ -38,18 +38,20 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
     name: "financialLegalInfo.annualTurnovers",
   });
 
-  // Ensure form state has the financialYear property for the initial 10 entries
+  // Ensure form state has the financialYear property for the initial entries
   useEffect(() => {
     const currentTurnovers = watch('financialLegalInfo.annualTurnovers');
-    if (currentTurnovers && currentTurnovers.length === MIN_DISPLAY_YEARS) {
+    if (currentTurnovers && currentTurnovers.length >= MIN_DISPLAY_YEARS) {
       let changed = false;
       const currentYear = new Date().getFullYear();
       const updatedTurnovers = currentTurnovers.map((entry, index) => {
-        const startYear = currentYear - index;
-        const expectedYear = getFinancialYearString(startYear);
-        if (entry.financialYear !== expectedYear) {
-          changed = true;
-          return { ...entry, financialYear: expectedYear };
+        if (index < MIN_DISPLAY_YEARS) { // Only manage financialYear for the initial set
+          const startYear = currentYear - index; // Corrected to use currentYear - index
+          const expectedYear = getFinancialYearString(startYear);
+          if (entry.financialYear !== expectedYear) {
+            changed = true;
+            return { ...entry, financialYear: expectedYear };
+          }
         }
         return entry;
       });
@@ -57,7 +59,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
         setValue('financialLegalInfo.annualTurnovers', updatedTurnovers, { shouldValidate: false, shouldDirty: false });
       }
     }
-  }, [setValue, watch]);
+  }, [setValue, watch, fields.length]); // Re-run if fields.length changes to set new year for added fields
 
   const handleAddYear = () => {
     if (fields.length < MAX_TOTAL_YEARS) {
@@ -67,9 +69,9 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
         const lastStartYear = parseInt(lastEntry.financialYear.substring(0, 4), 10);
         newStartYear = lastStartYear - 1;
       } else {
-        // Fallback if somehow the last entry is malformed (shouldn't happen)
+        // Fallback if somehow the last entry is malformed or no entries exist yet
         const currentYear = new Date().getFullYear();
-        newStartYear = currentYear - fields.length;
+        newStartYear = currentYear - fields.length; // Calculate based on current length
       }
       append({ financialYear: getFinancialYearString(newStartYear), amount: '' });
     }
@@ -234,19 +236,20 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
         <div className="space-y-4">
           <h4 className="text-lg font-medium">Annual Turnover (Last {MIN_DISPLAY_YEARS}-{MAX_TOTAL_YEARS} Years)</h4>
           <FormDescription>
-             Turnover for the latest financial year ({fields[0]?.financialYear || '...'}) is required. 
-             Other years are optional. You can add up to {MAX_TOTAL_YEARS - MIN_DISPLAY_YEARS} more preceding years.
-             Amounts will use the Net Worth currency selected above.
+            Turnover for the latest financial year ({fields[0]?.financialYear || getFinancialYearString(new Date().getFullYear())}) is required. 
+            While amounts for other past years are optional, <strong>providing data for at least the last {MIN_DISPLAY_YEARS} financial years is recommended for better results.</strong>
+            You can add up to {MAX_TOTAL_YEARS - MIN_DISPLAY_YEARS} more preceding years beyond the initial {MIN_DISPLAY_YEARS}.
+            Amounts will use the Net Worth currency selected above.
           </FormDescription>
           <div className="space-y-3">
             {fields.map((item, index) => (
               <div key={item.id} className="p-3 border rounded-md space-y-2">
                 <div className="flex justify-between items-center">
                     <FormLabel htmlFor={`financialLegalInfo.annualTurnovers.${index}.amount`}>
-                        Financial Year: {item.financialYear}
+                        Financial Year: {item.financialYear || getFinancialYearString(new Date().getFullYear() - index)}
                         {index === 0 && <span className="text-destructive">*</span>}
                     </FormLabel>
-                    {index >= MIN_DISPLAY_YEARS && (
+                    {index >= MIN_DISPLAY_YEARS && ( // Only show remove for additionally added years
                         <Button
                         type="button"
                         variant="ghost"
@@ -280,7 +283,8 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
                   control={control}
                   name={`financialLegalInfo.annualTurnovers.${index}.financialYear`}
                   render={({ field }) => (
-                    <Input type="hidden" {...field} />
+                    // This input is hidden but ensures the financialYear is part of the form data
+                    <Input type="hidden" {...field} value={item.financialYear || getFinancialYearString(new Date().getFullYear() - index)} />
                   )}
                 />
               </div>
@@ -292,7 +296,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
               Add Previous Financial Year
             </Button>
           )}
-           {errors.financialLegalInfo?.annualTurnovers && !errors.financialLegalInfo?.annualTurnovers?.root && !errors.financialLegalInfo.annualTurnovers?.[0]?.amount && (
+           {errors.financialLegalInfo?.annualTurnovers && !errors.financialLegalInfo?.annualTurnovers?.root && typeof errors.financialLegalInfo.annualTurnovers.message === 'string' && (
              <p className="text-sm font-medium text-destructive">
                 {errors.financialLegalInfo.annualTurnovers.message}
              </p>
@@ -344,3 +348,5 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
     </Card>
   );
 };
+
+    
