@@ -46,28 +46,10 @@ const turnoverEntrySchema = z.object({
 
 export const financialLegalInfoSchema = z.object({
   hasPan: z.boolean().default(false),
-  pan: z.string()
-    .optional()
-    .or(z.literal(''))
-    .refine(val => val === '' || val === undefined || /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(val), {
-      message: "Invalid PAN format if provided."
-    }),
   hasGstin: z.boolean().default(false),
-  gstin: z.string()
-    .optional()
-    .or(z.literal(''))
-    .refine(val => val === '' || val === undefined || /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/.test(val), {
-      message: "Invalid GSTIN format if provided."
-    }),
-
   hasMsmeUdyam: z.boolean().default(false),
-  msmeUdyamNumber: z.string().optional().or(z.literal('')),
-
   hasNsic: z.boolean().default(false),
-  nsicNumber: z.string().optional().or(z.literal('')),
-
   annualTurnovers: z.array(turnoverEntrySchema).min(1, { message: "At least one annual turnover entry is required." }),
-
   netWorthAmount: z.string().regex(/^\d+(\.\d{1,2})?$/, { message: "Invalid amount format." }).min(1, { message: "Net worth amount is required." }),
   netWorthCurrency: z.string().min(1, { message: "Net worth currency is required." }),
   isBlacklistedOrLitigation: z.boolean().default(false),

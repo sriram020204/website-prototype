@@ -51,11 +51,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
   });
 
   const watchIsBlacklisted = watch('financialLegalInfo.isBlacklistedOrLitigation');
-  const watchHasPan = watch('financialLegalInfo.hasPan');
-  const watchHasGstin = watch('financialLegalInfo.hasGstin');
-  const watchHasMsmeUdyam = watch('financialLegalInfo.hasMsmeUdyam');
-  const watchHasNsic = watch('financialLegalInfo.hasNsic');
-
+  
   const handleAddTurnoverYear = () => {
     if (fields.length >= MAX_YEARS_HISTORY + 1) {
       toast({
@@ -77,7 +73,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
         </CardTitle>
         <CardDescription>
           Provide your company's financial and legal details. 
-          Checking a box indicates possession; providing the specific number is optional.
+          Check the boxes to confirm possession of registrations.
           Net Worth and at least one Annual Turnover entry are required.
         </CardDescription>
       </CardHeader>
@@ -90,9 +86,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
               <FormControl>
                 <Checkbox
                   checked={field.value}
-                  onCheckedChange={(checked) => {
-                    field.onChange(checked);
-                  }}
+                  onCheckedChange={field.onChange}
                   id={field.name}
                 />
               </FormControl>
@@ -104,22 +98,6 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
             </FormItem>
           )}
         />
-        {watchHasPan && (
-          <FormField
-            control={control}
-            name="financialLegalInfo.pan"
-            render={({ field }) => (
-              <FormItem className="pl-10"> 
-                <FormLabel>PAN Number</FormLabel>
-                <FormControl>
-                  <Input type="text" placeholder="Enter PAN" {...field} />
-                </FormControl>
-                <FormDescription>Optional. Format will be checked if provided.</FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        )}
 
         <FormField
           control={control}
@@ -129,9 +107,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
               <FormControl>
                 <Checkbox
                   checked={field.value}
-                  onCheckedChange={(checked) => {
-                    field.onChange(checked);
-                  }}
+                  onCheckedChange={field.onChange}
                   id={field.name}
                 />
               </FormControl>
@@ -143,22 +119,6 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
             </FormItem>
           )}
         />
-        {watchHasGstin && (
-          <FormField
-            control={control}
-            name="financialLegalInfo.gstin"
-            render={({ field }) => (
-              <FormItem className="pl-10"> 
-                <FormLabel>GSTIN Number</FormLabel>
-                <FormControl>
-                  <Input type="text" placeholder="Enter GSTIN" {...field} />
-                </FormControl>
-                <FormDescription>Optional. Format will be checked if provided.</FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        )}
         
         <FormField
           control={control}
@@ -168,9 +128,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
               <FormControl>
                 <Checkbox
                   checked={field.value}
-                  onCheckedChange={(checked) => {
-                    field.onChange(checked);
-                  }}
+                  onCheckedChange={field.onChange}
                   id={field.name}
                 />
               </FormControl>
@@ -182,24 +140,6 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
             </FormItem>
           )}
         />
-        {watchHasMsmeUdyam && (
-          <div className="pl-10 space-y-4">
-            <FormField
-              control={control}
-              name="financialLegalInfo.msmeUdyamNumber"
-              render={({ field }) => (
-                <FormItem> 
-                  <FormLabel>MSME/Udyam Number</FormLabel>
-                  <FormControl>
-                    <Input type="text" placeholder="Enter MSME/Udyam registration number" {...field} />
-                  </FormControl>
-                  <FormDescription>Optional.</FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-        )}
 
         <FormField
           control={control}
@@ -209,9 +149,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
               <FormControl>
                 <Checkbox
                   checked={field.value}
-                  onCheckedChange={(checked) => {
-                    field.onChange(checked);
-                  }}
+                  onCheckedChange={field.onChange}
                   id={field.name}
                 />
               </FormControl>
@@ -223,24 +161,6 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
             </FormItem>
           )}
         />
-        {watchHasNsic && (
-          <div className="pl-10 space-y-4">
-            <FormField
-              control={control}
-              name="financialLegalInfo.nsicNumber"
-              render={({ field }) => (
-                <FormItem> 
-                  <FormLabel>NSIC Number</FormLabel>
-                  <FormControl>
-                    <Input type="text" placeholder="Enter NSIC registration number" {...field} />
-                  </FormControl>
-                  <FormDescription>Optional.</FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-        )}
         
          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
            <FormField

@@ -69,13 +69,9 @@ export function RegistrationWizard() {
     },
     financialLegalInfo: {
       hasPan: false,
-      pan: '',
       hasGstin: false,
-      gstin: '',
       hasMsmeUdyam: false,
-      msmeUdyamNumber: '',
       hasNsic: false,
-      nsicNumber: '',
       annualTurnovers: [],
       netWorthAmount: '',
       netWorthCurrency: '',

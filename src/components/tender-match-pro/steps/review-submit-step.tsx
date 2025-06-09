@@ -24,7 +24,7 @@ const formatDisplayData = (data: any, fieldName?: string, sectionData?: Record<s
      if (fieldName === 'technicalCapabilities' && sectionData && (sectionData as RegistrationFormData['businessCapabilities']).technicalCapabilities === '') {
         return 'Not Provided';
      }
-     const financialFields = ['pan', 'gstin', 'msmeUdyamNumber', 'nsicNumber', 'blacklistedDetails']; // Removed certificate file fields
+     const financialFields = ['blacklistedDetails'];
      if (financialFields.includes(fieldName || '')) {
          return 'Details not provided';
      }
@@ -104,8 +104,6 @@ const renderSectionData = (title: string, sectionData: Record<string, any> | und
                         <span className="col-span-1 md:col-span-2 whitespace-pre-wrap break-words">{booleanDisplay(value)}</span>
                     </div>
                 );
-            } else if (key === 'pan') {
-              displayValue = sectionData.hasPan ? (value ? formatDisplayData(value, key, sectionData) : "Details not provided") : "Not Applicable (No PAN declared)";
             } else if (key === 'hasGstin') {
                  return (
                     <div key={key} className="grid grid-cols-1 md:grid-cols-3 gap-1 md:gap-2 items-start">
@@ -113,8 +111,6 @@ const renderSectionData = (title: string, sectionData: Record<string, any> | und
                         <span className="col-span-1 md:col-span-2 whitespace-pre-wrap break-words">{booleanDisplay(value)}</span>
                     </div>
                 );
-            } else if (key === 'gstin') {
-              displayValue = sectionData.hasGstin ? (value ? formatDisplayData(value, key, sectionData) : "Details not provided") : "Not Applicable (No GSTIN declared)";
             } else if (key === 'hasMsmeUdyam') {
                 return (
                     <div key={key} className="grid grid-cols-1 md:grid-cols-3 gap-1 md:gap-2 items-start">
@@ -122,8 +118,6 @@ const renderSectionData = (title: string, sectionData: Record<string, any> | und
                         <span className="col-span-1 md:col-span-2 whitespace-pre-wrap break-words">{booleanDisplay(value)}</span>
                     </div>
                 );
-            } else if (key === 'msmeUdyamNumber') {
-              displayValue = sectionData.hasMsmeUdyam ? (value ? formatDisplayData(value, key, sectionData) : "Details not provided") : "Not Applicable (No MSME/Udyam declared)";
             } else if (key === 'hasNsic') {
                 return (
                     <div key={key} className="grid grid-cols-1 md:grid-cols-3 gap-1 md:gap-2 items-start">
@@ -131,8 +125,6 @@ const renderSectionData = (title: string, sectionData: Record<string, any> | und
                         <span className="col-span-1 md:col-span-2 whitespace-pre-wrap break-words">{booleanDisplay(value)}</span>
                     </div>
                 );
-            } else if (key === 'nsicNumber') {
-              displayValue = sectionData.hasNsic ? (value ? formatDisplayData(value, key, sectionData) : "Details not provided") : "Not Applicable (No NSIC declared)";
             } else if (key === 'isBlacklistedOrLitigation') {
                  return (
                     <div key={key} className="grid grid-cols-1 md:grid-cols-3 gap-1 md:gap-2 items-start">
@@ -249,12 +241,6 @@ const renderSectionData = (title: string, sectionData: Record<string, any> | und
             return null; 
           }
           
-          // Filter out certificate file name fields that were removed
-          if (key === 'msmeUdyamCertificate' || key === 'nsicCertificate') {
-            return null;
-          }
-
-
           if (key === 'annualTurnovers') return null;
 
 
