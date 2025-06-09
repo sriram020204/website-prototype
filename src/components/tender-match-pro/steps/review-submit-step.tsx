@@ -46,11 +46,11 @@ const formatDisplayData = (data: any, fieldName?: string, sectionData?: Record<s
   }
   if (typeof data === 'object' && data !== null && !Array.isArray(data)) {
     // For T&C, we want specific display for each key
-    if (title === "Terms & Conditions") {
-      // This case should be handled by specific logic in renderSectionData for T&C
-      // Default object stringification is not ideal here
-      return 'See individual terms below';
-    }
+    // This case should be handled by specific logic in renderSectionData for T&C
+    // Default object stringification is not ideal here
+    // title is not available here, so we cannot check title === "Terms & Conditions"
+    // However, the T&C section has its own rendering logic for its specific keys.
+    // So, this generic object rendering is a fallback.
     return Object.entries(data)
       .map(([key, value]) => `${key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}: ${formatDisplayData(value, key, data as Record<string, any>)}`)
       .join('; ');
@@ -284,8 +284,9 @@ export const ReviewSubmitStep: FC<ReviewSubmitStepProps> = ({ form }) => {
       <CardHeader>
         <CardTitle className="text-2xl">Review Your Profile</CardTitle>
         <CardDescription>
-          Please review all your information carefully before submission.
-          Ensure all fields marked as required in each step are filled.
+          This is a comprehensive summary of your entire company profile.
+          Please review all sections and details carefully before submission.
+          Ensure all fields marked as required in previous steps are accurately filled.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -310,3 +311,4 @@ export const ReviewSubmitStep: FC<ReviewSubmitStepProps> = ({ form }) => {
     </Card>
   );
 };
+
