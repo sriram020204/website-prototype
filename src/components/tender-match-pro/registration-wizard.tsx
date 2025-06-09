@@ -83,6 +83,7 @@ export function RegistrationWizard() {
     },
     tenderExperience: { 
       suppliedToGovtPsus: false,
+      hasPastClients: false,
       pastClients: '', 
       purchaseOrders: '', 
       performanceReports: '', 
@@ -204,5 +205,3 @@ export function RegistrationWizard() {
     </FormProvider>
   );
 }
-
-    

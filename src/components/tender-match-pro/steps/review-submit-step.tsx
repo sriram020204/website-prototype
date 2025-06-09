@@ -27,14 +27,17 @@ const formatDisplayData = (data: any, fieldName?: string, sectionData?: Record<s
      // For conditional fields that are now truly optional for data entry
      const financialFields = ['pan', 'gstin', 'msmeUdyamNumber', 'msmeUdyamCertificate', 'nsicNumber', 'nsicCertificate', 'blacklistedDetails'];
      if (financialFields.includes(fieldName || '')) {
-         // This case is handled more specifically in renderSectionData for clarity based on the 'has<Property>' flags
          return 'Details not provided'; 
+     }
+     // For pastClients when hasPastClients is true but pastClients is empty
+     if (fieldName === 'pastClients' && sectionData && (sectionData as RegistrationFormData['tenderExperience']).hasPastClients && (sectionData as RegistrationFormData['tenderExperience']).pastClients === '') {
+        return 'Details not provided';
      }
     return 'N/A (Data Missing)'; 
   }
 
   if (Array.isArray(data) && fieldName !== 'annualTurnovers') {
-    if (data.length === 0) return 'None (Data Missing)'; // Should not happen for mandatory array fields
+    if (data.length === 0) return 'None (Data Missing)';
     return data.join(', ');
   }
   if (typeof data === 'object' && data !== null && !Array.isArray(data)) { 
@@ -134,7 +137,10 @@ const renderSectionData = (title: string, sectionData: Record<string, any> | und
                 
                 const sortedTurnovers = [...value].sort((a, b) => {
                   if (a.financialYear && b.financialYear) {
-                    return a.financialYear.localeCompare(b.financialYear);
+                    // Assuming format YYYY-YY or YYYY-YYYY, sort by the first year part
+                    const yearA = parseInt(a.financialYear.substring(0,4), 10);
+                    const yearB = parseInt(b.financialYear.substring(0,4), 10);
+                    return yearA - yearB;
                   }
                   return 0;
                 });
@@ -158,13 +164,29 @@ const renderSectionData = (title: string, sectionData: Record<string, any> | und
             } else {
               displayValue = formatDisplayData(value, key, sectionData);
             }
-          } else {
+          } else if (title === "Tender Experience") {
+            if (key === 'hasPastClients') {
+              return (
+                <div key={key} className="grid grid-cols-1 md:grid-cols-3 gap-1 md:gap-2 items-start">
+                  <span className="font-medium col-span-1 capitalize break-words">Can List Past Clients:</span>
+                  <span className="col-span-1 md:col-span-2 whitespace-pre-wrap break-words">{formatDisplayData(value)}</span>
+                </div>
+              );
+            } else if (key === 'pastClients') {
+              displayValue = sectionData.hasPastClients 
+                ? (value ? formatDisplayData(value, key, sectionData) : "Details not provided") 
+                : "Not Applicable (Indicated no past clients to list)";
+            } else {
+              displayValue = formatDisplayData(value, key, sectionData);
+            }
+          }
+          else {
             displayValue = formatDisplayData(value, key, sectionData);
           }
           
           // Skip rendering for the handled boolean flags themselves
-          const handledFlags = ['hasPan', 'hasGstin', 'hasMsmeUdyam', 'hasNsic', 'isBlacklistedOrLitigation', 'hasNoCertifications'];
-          if (handledFlags.includes(key) && (title === "Financial & Legal Information" || title === "Business Capabilities")) {
+          const handledFlags = ['hasPan', 'hasGstin', 'hasMsmeUdyam', 'hasNsic', 'isBlacklistedOrLitigation', 'hasNoCertifications', 'hasPastClients'];
+          if (handledFlags.includes(key)) {
             return null;
           }
 
@@ -197,7 +219,6 @@ export const ReviewSubmitStep: FC<ReviewSubmitStepProps> = ({ form }) => {
         <CardDescription>
           Please review all your information carefully before submission. 
           Ensure all fields marked as required in each step are filled. 
-          For items like PAN/GSTIN, checking the box indicates possession; providing the detail itself is optional but recommended.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -221,5 +242,3 @@ export const ReviewSubmitStep: FC<ReviewSubmitStepProps> = ({ form }) => {
     </Card>
   );
 };
-
-    

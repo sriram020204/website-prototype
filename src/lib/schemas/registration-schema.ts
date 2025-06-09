@@ -40,7 +40,7 @@ export const businessCapabilitiesSchema = z.object({
 
 // Step 3: Financial & Legal Info
 const turnoverEntrySchema = z.object({
-  financialYear: z.string().min(4, { message: "Financial year is required." }),
+  financialYear: z.string().min(4, { message: "Financial year is required." }), // e.g. "2023-24"
   amount: z.string().regex(/^\d+(\.\d{1,2})?$/, { message: "Invalid amount format." }).min(1, {message: "Amount is required."}),
 });
 
@@ -75,17 +75,25 @@ export const financialLegalInfoSchema = z.object({
   isBlacklistedOrLitigation: z.boolean().default(false),
   blacklistedDetails: z.string().optional().or(z.literal('')),
 });
-// Removed superRefine block that made details mandatory if corresponding 'has<Property>' was true.
 
 
 // Step 4: Tender Experience
 export const tenderExperienceSchema = z.object({
-  suppliedToGovtPsus: z.boolean().default(false), 
-  pastClients: z.string().min(3, { message: "Past clients are required." }),
+  suppliedToGovtPsus: z.boolean().default(false),
+  hasPastClients: z.boolean().default(false),
+  pastClients: z.string().optional().or(z.literal('')),
   purchaseOrders: z.string().min(1, {message: "Purchase order file names are required."}).describe("Names of PO files, comma-separated"),
   performanceReports: z.string().min(1, {message: "Performance report file names are required."}).describe("Names of report files, comma-separated"),
   highestOrderValueFulfilled: z.coerce.number().min(0, {message: "Highest order value fulfilled is required (can be 0)."}),
   tenderTypesHandled: z.string().min(3, { message: "Tender types handled are required." }),
+}).superRefine((data, ctx) => {
+  if (data.hasPastClients && (!data.pastClients || data.pastClients.trim().length < 3)) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: "Past clients are required if you indicate you have them (minimum 3 characters).",
+      path: ['pastClients'],
+    });
+  }
 });
 
 // Step 5: Geographic Reach & Digital Readiness
@@ -121,5 +129,3 @@ export const registrationSchema = z.object({
 
 export type RegistrationFormData = z.infer<typeof registrationSchema>;
 export type TurnoverEntry = z.infer<typeof turnoverEntrySchema>;
-
-    
