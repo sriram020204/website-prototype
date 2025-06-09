@@ -18,18 +18,25 @@ interface CompanyDetailsStepProps {
 const DUMMY_COUNTRIES = [{ label: "India", value: "IN" }, { label: "United States", value: "US" }];
 
 const INDIAN_STATES_UTS = [
+  { label: "Andaman and Nicobar Islands", value: "AN" },
   { label: "Andhra Pradesh", value: "AP" },
   { label: "Arunachal Pradesh", value: "AR" },
   { label: "Assam", value: "AS" },
   { label: "Bihar", value: "BR" },
+  { label: "Chandigarh", value: "CH" },
   { label: "Chhattisgarh", value: "CG" },
+  { label: "Dadra & Nagar Haveli and Daman & Diu", value: "DD" },
+  { label: "Delhi", value: "DL" },
   { label: "Goa", value: "GA" },
   { label: "Gujarat", value: "GJ" },
   { label: "Haryana", value: "HR" },
   { label: "Himachal Pradesh", value: "HP" },
+  { label: "Jammu and Kashmir", value: "JK" },
   { label: "Jharkhand", value: "JH" },
   { label: "Karnataka", value: "KA" },
   { label: "Kerala", value: "KL" },
+  { label: "Ladakh", value: "LA" },
+  { label: "Lakshadweep", value: "LD" },
   { label: "Madhya Pradesh", value: "MP" },
   { label: "Maharashtra", value: "MH" },
   { label: "Manipur", value: "MN" },
@@ -37,6 +44,7 @@ const INDIAN_STATES_UTS = [
   { label: "Mizoram", value: "MZ" },
   { label: "Nagaland", value: "NL" },
   { label: "Odisha", value: "OD" },
+  { label: "Puducherry", value: "PY" },
   { label: "Punjab", value: "PB" },
   { label: "Rajasthan", value: "RJ" },
   { label: "Sikkim", value: "SK" },
@@ -45,16 +53,9 @@ const INDIAN_STATES_UTS = [
   { label: "Tripura", value: "TR" },
   { label: "Uttar Pradesh", value: "UP" },
   { label: "Uttarakhand", value: "UK" },
-  { label: "West Bengal", value: "WB" },
-  { label: "Andaman and Nicobar Islands", value: "AN" },
-  { label: "Chandigarh", value: "CH" },
-  { label: "Dadra and Nagar Haveli and Daman and Diu", value: "DD" },
-  { label: "Delhi (National Capital Territory)", value: "DL" },
-  { label: "Jammu and Kashmir", value: "JK" },
-  { label: "Ladakh", value: "LA" },
-  { label: "Lakshadweep", value: "LD" },
-  { label: "Puducherry", value: "PY" }
+  { label: "West Bengal", value: "WB" }
 ];
+
 
 const US_STATES = [
   { label: "Alabama", value: "AL" },
@@ -272,3 +273,4 @@ export const CompanyDetailsStep: FC<CompanyDetailsStepProps> = ({ form }) => {
     </Card>
   );
 };
+
