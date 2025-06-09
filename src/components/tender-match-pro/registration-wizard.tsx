@@ -70,9 +70,12 @@ export function RegistrationWizard() {
       pan: '',
       hasGstin: false,
       gstin: '',
-      hasMsmeUdyamNsic: false,
-      msmeUdyamNsicNumber: '',
-      msmeUdyamNsicCertificate: '', 
+      hasMsmeUdyam: false,
+      msmeUdyamNumber: '',
+      msmeUdyamCertificate: '',
+      hasNsic: false,
+      nsicNumber: '',
+      nsicCertificate: '',
       annualTurnoverFY1Amount: '',
       annualTurnoverFY1Currency: '',
       annualTurnoverFY2Amount: '',
@@ -103,7 +106,6 @@ export function RegistrationWizard() {
     declarationsUploads: {
       panUpload: '', 
       gstUpload: '', 
-      msmeCertUpload: '', 
       isoCertUpload: '', 
       bisCertUpload: '', 
       otherCertificatesUpload: '',
@@ -210,4 +212,3 @@ export function RegistrationWizard() {
     </FormProvider>
   );
 }
-

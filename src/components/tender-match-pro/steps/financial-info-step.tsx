@@ -33,7 +33,7 @@ const FileInputControl: FC<{ field: any; placeholder: string }> = ({ field, plac
       />
       {value && (
          <div className="mt-2 text-sm flex items-center justify-between">
-          <div className="flex items-center min-w-0"> {/* min-w-0 allows truncate to work in flex child */}
+          <div className="flex items-center min-w-0">
             <span className="text-muted-foreground mr-2 shrink-0">Selected:</span>
             <span className="truncate break-all" title={value}>{value}</span>
           </div>
@@ -57,7 +57,8 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
   const watchIsBlacklisted = form.watch('financialLegalInfo.isBlacklistedOrLitigation');
   const watchHasPan = form.watch('financialLegalInfo.hasPan');
   const watchHasGstin = form.watch('financialLegalInfo.hasGstin');
-  const watchHasMsme = form.watch('financialLegalInfo.hasMsmeUdyamNsic');
+  const watchHasMsmeUdyam = form.watch('financialLegalInfo.hasMsmeUdyam');
+  const watchHasNsic = form.watch('financialLegalInfo.hasNsic');
 
 
   const renderTurnoverFields = (fyLabel: string, amountFieldName: keyof RegistrationFormData['financialLegalInfo'], currencyFieldName: keyof RegistrationFormData['financialLegalInfo'] ) => (
@@ -193,11 +194,11 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
         
         <FormField
           control={form.control}
-          name="financialLegalInfo.hasMsmeUdyamNsic"
+          name="financialLegalInfo.hasMsmeUdyam"
           render={({ field }) => (
             <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4 shadow-sm">
               <div className="space-y-0.5">
-                <FormLabel htmlFor={field.name} className="text-base">Do you have an MSME/Udyam/NSIC Registration?</FormLabel>
+                <FormLabel htmlFor={field.name} className="text-base">Do you have an MSME/Udyam Registration?</FormLabel>
               </div>
               <FormControl>
                 <Switch
@@ -206,8 +207,8 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
                   onCheckedChange={(checked) => {
                     field.onChange(checked);
                     if (!checked) {
-                      form.setValue('financialLegalInfo.msmeUdyamNsicNumber', '', { shouldValidate: true });
-                      form.setValue('financialLegalInfo.msmeUdyamNsicCertificate', '', { shouldValidate: true });
+                      form.setValue('financialLegalInfo.msmeUdyamNumber', '', { shouldValidate: true });
+                      form.setValue('financialLegalInfo.msmeUdyamCertificate', '', { shouldValidate: true });
                     }
                   }}
                 />
@@ -215,16 +216,16 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
             </FormItem>
           )}
         />
-        {watchHasMsme && (
+        {watchHasMsmeUdyam && (
           <>
             <FormField
               control={form.control}
-              name="financialLegalInfo.msmeUdyamNsicNumber"
+              name="financialLegalInfo.msmeUdyamNumber"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>MSME/Udyam/NSIC Number (Optional)</FormLabel>
+                  <FormLabel>MSME/Udyam Number (Optional)</FormLabel>
                   <FormControl>
-                    <Input type="text" placeholder="Enter registration number" {...field} />
+                    <Input type="text" placeholder="Enter MSME/Udyam registration number" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -232,14 +233,70 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
             />
             <FormField
               control={form.control}
-              name="financialLegalInfo.msmeUdyamNsicCertificate"
+              name="financialLegalInfo.msmeUdyamCertificate"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>MSME/Udyam/NSIC Certificate (Optional)</FormLabel>
+                  <FormLabel>MSME/Udyam Certificate (Optional)</FormLabel>
                   <FormControl>
-                     <FileInputControl field={field} placeholder="MSME/Udyam/NSIC Certificate file" />
+                     <FileInputControl field={field} placeholder="MSME/Udyam Certificate file" />
                   </FormControl>
-                  <FormDescription>Select your MSME/Udyam/NSIC certificate file. Use this field to add the file name; only the file name is recorded.</FormDescription>
+                  <FormDescription>Select your MSME/Udyam certificate file. Use this field to add the file name.</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </>
+        )}
+
+        <FormField
+          control={form.control}
+          name="financialLegalInfo.hasNsic"
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4 shadow-sm">
+              <div className="space-y-0.5">
+                <FormLabel htmlFor={field.name} className="text-base">Do you have an NSIC Registration?</FormLabel>
+              </div>
+              <FormControl>
+                <Switch
+                  id={field.name}
+                  checked={field.value}
+                  onCheckedChange={(checked) => {
+                    field.onChange(checked);
+                    if (!checked) {
+                      form.setValue('financialLegalInfo.nsicNumber', '', { shouldValidate: true });
+                      form.setValue('financialLegalInfo.nsicCertificate', '', { shouldValidate: true });
+                    }
+                  }}
+                />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+        {watchHasNsic && (
+          <>
+            <FormField
+              control={form.control}
+              name="financialLegalInfo.nsicNumber"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>NSIC Number (Optional)</FormLabel>
+                  <FormControl>
+                    <Input type="text" placeholder="Enter NSIC registration number" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="financialLegalInfo.nsicCertificate"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>NSIC Certificate (Optional)</FormLabel>
+                  <FormControl>
+                     <FileInputControl field={field} placeholder="NSIC Certificate file" />
+                  </FormControl>
+                  <FormDescription>Select your NSIC certificate file. Use this field to add the file name.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}

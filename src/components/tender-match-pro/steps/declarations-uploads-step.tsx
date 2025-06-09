@@ -29,7 +29,7 @@ const FileInputControl: FC<{ field: any; placeholder: string }> = ({ field, plac
       />
       {value && (
         <div className="mt-2 text-sm flex items-center justify-between">
-          <div className="flex items-center min-w-0"> {/* min-w-0 allows truncate to work in flex child */}
+          <div className="flex items-center min-w-0"> 
             <span className="text-muted-foreground mr-2 shrink-0">Selected:</span>
             <span className="truncate break-all" title={value}>{value}</span>
           </div>
@@ -85,19 +85,6 @@ export const DeclarationsUploadsStep: FC<DeclarationsUploadsStepProps> = ({ form
               <FormLabel>GST Certificate (Optional)</FormLabel>
               <FormControl>
                 <FileInputControl field={field} placeholder="GST Certificate file" />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="declarationsUploads.msmeCertUpload"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>MSME Certificate (Optional)</FormLabel>
-              <FormControl>
-                <FileInputControl field={field} placeholder="MSME Certificate file" />
               </FormControl>
               <FormMessage />
             </FormItem>

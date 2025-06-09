@@ -30,9 +30,12 @@ export const financialLegalInfoSchema = z.object({
   pan: z.string().regex(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, { message: "Invalid PAN format." }).optional().or(z.literal('')),
   hasGstin: z.boolean().default(false),
   gstin: z.string().regex(/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/, { message: "Invalid GSTIN format." }).optional().or(z.literal('')),
-  hasMsmeUdyamNsic: z.boolean().default(false),
-  msmeUdyamNsicNumber: z.string().optional().or(z.literal('')),
-  msmeUdyamNsicCertificate: z.string().describe("Name or path of MSME/Udyam/NSIC certificate file").optional().or(z.literal('')),
+  hasMsmeUdyam: z.boolean().default(false),
+  msmeUdyamNumber: z.string().optional().or(z.literal('')),
+  msmeUdyamCertificate: z.string().describe("Name or path of MSME/Udyam certificate file").optional().or(z.literal('')),
+  hasNsic: z.boolean().default(false),
+  nsicNumber: z.string().optional().or(z.literal('')),
+  nsicCertificate: z.string().describe("Name or path of NSIC certificate file").optional().or(z.literal('')),
   annualTurnoverFY1Amount: z.string().regex(/^\d+(\.\d{1,2})?$/, { message: "Invalid amount format." }).optional().or(z.literal('')),
   annualTurnoverFY1Currency: z.string().optional().or(z.literal('')),
   annualTurnoverFY2Amount: z.string().regex(/^\d+(\.\d{1,2})?$/, { message: "Invalid amount format." }).optional().or(z.literal('')),
@@ -69,7 +72,6 @@ export const geographicDigitalReachSchema = z.object({
 export const declarationsUploadsSchema = z.object({
   panUpload: z.string().describe("Name of PAN card file").optional().or(z.literal('')),
   gstUpload: z.string().describe("Name of GST certificate file").optional().or(z.literal('')),
-  msmeCertUpload: z.string().describe("Name of MSME certificate file (if applicable)").optional().or(z.literal('')),
   isoCertUpload: z.string().describe("Name of ISO certificate file (if applicable)").optional().or(z.literal('')),
   bisCertUpload: z.string().describe("Name of BIS certificate file (if applicable)").optional().or(z.literal('')),
   otherCertificatesUpload: z.string().describe("File names for other certifications listed previously (comma-separated)").optional().or(z.literal('')),
@@ -90,4 +92,3 @@ export const registrationSchema = z.object({
 }).strict();
 
 export type RegistrationFormData = z.infer<typeof registrationSchema>;
-
