@@ -27,7 +27,8 @@ const formatDisplayData = (data: any, fieldName?: string, sectionData?: Record<s
      // For conditional fields that are now truly optional for data entry
      const financialFields = ['pan', 'gstin', 'msmeUdyamNumber', 'msmeUdyamCertificate', 'nsicNumber', 'nsicCertificate', 'blacklistedDetails'];
      if (financialFields.includes(fieldName || '')) {
-         return 'Details not provided';
+         // This case is handled more specifically in renderSectionData for clarity based on the 'has<Property>' flags
+         return 'Details not provided'; 
      }
     return 'N/A (Data Missing)'; 
   }
@@ -55,16 +56,6 @@ const renderSectionData = (title: string, sectionData: Record<string, any> | und
     );
   }
 
-  const booleanFlagsToRenderDirectly: Record<string, string> = {
-    hasPan: "PAN Holder",
-    hasGstin: "GSTIN Holder",
-    hasMsmeUdyam: "MSME/Udyam Registered",
-    hasNsic: "NSIC Registered",
-    isBlacklistedOrLitigation: "Blacklisted or in Litigation",
-    hasNoCertifications: "No Certifications Held (as declared)"
-  };
-
-
   return (
     <div className="mb-6">
       <h3 className="text-lg font-semibold text-primary mb-2">{title}</h3>
@@ -73,44 +64,87 @@ const renderSectionData = (title: string, sectionData: Record<string, any> | und
           const displayKey = key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
           let displayValue;
 
-          if (booleanFlagsToRenderDirectly[key]) {
-            return (
-              <div key={key} className="grid grid-cols-1 md:grid-cols-3 gap-1 md:gap-2 items-start">
-                <span className="font-medium col-span-1 capitalize break-words">
-                  {booleanFlagsToRenderDirectly[key]}:
-                </span>
-                <span className="col-span-1 md:col-span-2 whitespace-pre-wrap break-words">{formatDisplayData(value)}</span>
-              </div>
-            );
-          }
-          
-          if (title === "Business Capabilities" && key === 'certifications') {
-             if (sectionData.hasNoCertifications) return null; // Already handled by the flag above
-             displayValue = formatDisplayData(value, key, sectionData);
+          if (title === "Business Capabilities") {
+            if (key === 'hasNoCertifications') {
+               return (
+                <div key={key} className="grid grid-cols-1 md:grid-cols-3 gap-1 md:gap-2 items-start">
+                    <span className="font-medium col-span-1 capitalize break-words">Has No Certifications:</span>
+                    <span className="col-span-1 md:col-span-2 whitespace-pre-wrap break-words">{formatDisplayData(value)}</span>
+                </div>
+               );
+            }
+            if (key === 'certifications') {
+               displayValue = sectionData.hasNoCertifications ? "Not Applicable (Declared no certifications)" : formatDisplayData(value, key, sectionData);
+            } else {
+               displayValue = formatDisplayData(value, key, sectionData);
+            }
           } else if (title === "Financial & Legal Information") {
-            if (key === 'pan') {
-              displayValue = sectionData.hasPan ? (value ? formatDisplayData(value, key, sectionData) : "Details not provided") : "Not Applicable (No PAN)";
+            if (key === 'hasPan') {
+                return (
+                    <div key={key} className="grid grid-cols-1 md:grid-cols-3 gap-1 md:gap-2 items-start">
+                        <span className="font-medium col-span-1 capitalize break-words">PAN Holder:</span>
+                        <span className="col-span-1 md:col-span-2 whitespace-pre-wrap break-words">{formatDisplayData(value)}</span>
+                    </div>
+                );
+            } else if (key === 'pan') {
+              displayValue = sectionData.hasPan ? (value ? formatDisplayData(value, key, sectionData) : "Details not provided") : "Not Applicable (No PAN declared)";
+            } else if (key === 'hasGstin') {
+                 return (
+                    <div key={key} className="grid grid-cols-1 md:grid-cols-3 gap-1 md:gap-2 items-start">
+                        <span className="font-medium col-span-1 capitalize break-words">GSTIN Holder:</span>
+                        <span className="col-span-1 md:col-span-2 whitespace-pre-wrap break-words">{formatDisplayData(value)}</span>
+                    </div>
+                );
             } else if (key === 'gstin') {
-              displayValue = sectionData.hasGstin ? (value ? formatDisplayData(value, key, sectionData) : "Details not provided") : "Not Applicable (No GSTIN)";
+              displayValue = sectionData.hasGstin ? (value ? formatDisplayData(value, key, sectionData) : "Details not provided") : "Not Applicable (No GSTIN declared)";
+            } else if (key === 'hasMsmeUdyam') {
+                return (
+                    <div key={key} className="grid grid-cols-1 md:grid-cols-3 gap-1 md:gap-2 items-start">
+                        <span className="font-medium col-span-1 capitalize break-words">MSME/Udyam Registered:</span>
+                        <span className="col-span-1 md:col-span-2 whitespace-pre-wrap break-words">{formatDisplayData(value)}</span>
+                    </div>
+                );
             } else if (key === 'msmeUdyamNumber') {
-              displayValue = sectionData.hasMsmeUdyam ? (value ? formatDisplayData(value, key, sectionData) : "Details not provided") : "Not Applicable (No MSME/Udyam)";
+              displayValue = sectionData.hasMsmeUdyam ? (value ? formatDisplayData(value, key, sectionData) : "Details not provided") : "Not Applicable (No MSME/Udyam declared)";
             } else if (key === 'msmeUdyamCertificate') {
-              displayValue = sectionData.hasMsmeUdyam ? (value ? formatDisplayData(value, key, sectionData) : "File name not provided") : "Not Applicable (No MSME/Udyam)";
+              displayValue = sectionData.hasMsmeUdyam ? (value ? formatDisplayData(value, key, sectionData) : "File name not provided") : "Not Applicable (No MSME/Udyam declared)";
+            } else if (key === 'hasNsic') {
+                return (
+                    <div key={key} className="grid grid-cols-1 md:grid-cols-3 gap-1 md:gap-2 items-start">
+                        <span className="font-medium col-span-1 capitalize break-words">NSIC Registered:</span>
+                        <span className="col-span-1 md:col-span-2 whitespace-pre-wrap break-words">{formatDisplayData(value)}</span>
+                    </div>
+                );
             } else if (key === 'nsicNumber') {
-              displayValue = sectionData.hasNsic ? (value ? formatDisplayData(value, key, sectionData) : "Details not provided") : "Not Applicable (No NSIC)";
+              displayValue = sectionData.hasNsic ? (value ? formatDisplayData(value, key, sectionData) : "Details not provided") : "Not Applicable (No NSIC declared)";
             } else if (key === 'nsicCertificate') {
-              displayValue = sectionData.hasNsic ? (value ? formatDisplayData(value, key, sectionData) : "File name not provided") : "Not Applicable (No NSIC)";
+              displayValue = sectionData.hasNsic ? (value ? formatDisplayData(value, key, sectionData) : "File name not provided") : "Not Applicable (No NSIC declared)";
+            } else if (key === 'isBlacklistedOrLitigation') {
+                 return (
+                    <div key={key} className="grid grid-cols-1 md:grid-cols-3 gap-1 md:gap-2 items-start">
+                        <span className="font-medium col-span-1 capitalize break-words">Blacklisted or in Litigation:</span>
+                        <span className="col-span-1 md:col-span-2 whitespace-pre-wrap break-words">{formatDisplayData(value)}</span>
+                    </div>
+                );
             } else if (key === 'blacklistedDetails') {
-              displayValue = sectionData.isBlacklistedOrLitigation ? (value ? formatDisplayData(value, key, sectionData) : "Details not provided") : "Not Blacklisted or in Litigation";
+              displayValue = sectionData.isBlacklistedOrLitigation ? (value ? formatDisplayData(value, key, sectionData) : "Details not provided") : "Not Blacklisted or in Litigation (as declared)";
             } else if (key === 'annualTurnovers' && Array.isArray(value)) {
                 const netWorthCurrency = (sectionData as any).netWorthCurrency;
                 const currencySuffix = netWorthCurrency ? ` (in ${netWorthCurrency})` : '';
+                
+                const sortedTurnovers = [...value].sort((a, b) => {
+                  if (a.financialYear && b.financialYear) {
+                    return a.financialYear.localeCompare(b.financialYear);
+                  }
+                  return 0;
+                });
+
                 return (
                   <div key={key} className="space-y-1">
                     <span className="font-medium col-span-1 capitalize break-words">{displayKey}:</span>
-                    {value.length > 0 ? (
+                    {sortedTurnovers.length > 0 ? (
                       <ul className="list-disc pl-5 space-y-0.5">
-                        {value.map((entry: TurnoverEntry, index: number) => (
+                        {sortedTurnovers.map((entry: TurnoverEntry, index: number) => (
                           <li key={index} className="whitespace-pre-wrap break-words">
                             {`FY: ${formatDisplayData(entry.financialYear, 'financialYear', sectionData)}, Amount: ${formatDisplayData(entry.amount, 'amount', sectionData)}${currencySuffix}`}
                           </li>
@@ -128,7 +162,14 @@ const renderSectionData = (title: string, sectionData: Record<string, any> | und
             displayValue = formatDisplayData(value, key, sectionData);
           }
           
-          if (displayValue === undefined && key === 'annualTurnovers') { /* already handled */ return null; }
+          // Skip rendering for the handled boolean flags themselves
+          const handledFlags = ['hasPan', 'hasGstin', 'hasMsmeUdyam', 'hasNsic', 'isBlacklistedOrLitigation', 'hasNoCertifications'];
+          if (handledFlags.includes(key) && (title === "Financial & Legal Information" || title === "Business Capabilities")) {
+            return null;
+          }
+
+          // Skip rendering for annualTurnovers as it's handled with custom layout
+          if (key === 'annualTurnovers') return null;
 
 
           return (
@@ -153,7 +194,11 @@ export const ReviewSubmitStep: FC<ReviewSubmitStepProps> = ({ form }) => {
     <Card className="w-full shadow-lg">
       <CardHeader>
         <CardTitle className="text-2xl">Review Your Profile</CardTitle>
-        <CardDescription>Please review all your information carefully before submission. Ensure all mandatory fields are filled as per each step's requirements. For items like PAN/GSTIN, checking the box indicates possession; providing the detail itself is optional but recommended.</CardDescription>
+        <CardDescription>
+          Please review all your information carefully before submission. 
+          Ensure all fields marked as required in each step are filled. 
+          For items like PAN/GSTIN, checking the box indicates possession; providing the detail itself is optional but recommended.
+        </CardDescription>
       </CardHeader>
       <CardContent>
         {renderSectionData("Company Details", formData.companyDetails)}
