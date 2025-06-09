@@ -19,6 +19,22 @@ interface FinancialLegalInfoStepProps {
 
 const CURRENCY_OPTIONS = ["USD", "INR", "EUR", "GBP", "JPY", "AUD", "CAD", "CHF", "CNY", "SGD", "AED"];
 
+const generateFinancialYearOptions = () => {
+  const currentYear = new Date().getFullYear();
+  const options = [];
+  // Current financial year (e.g., if 2024, then 2024-25)
+  options.push(`${currentYear}-${(currentYear + 1).toString().slice(-2)}`);
+  // Previous 20 financial years
+  for (let i = 0; i < 20; i++) {
+    const yearStart = currentYear - 1 - i;
+    const yearEnd = currentYear - i;
+    options.push(`${yearStart}-${yearEnd.toString().slice(-2)}`);
+  }
+  return options;
+};
+
+const FINANCIAL_YEAR_OPTIONS = generateFinancialYearOptions();
+
 
 const FileInputControl: FC<{ field: any; placeholder: string }> = ({ field, placeholder }) => {
   const { name, value, onChange, ref } = field;
@@ -288,9 +304,18 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Financial Year</FormLabel>
-                      <FormControl>
-                        <Input type="text" placeholder="e.g., 2022-23 or YYYY" {...field} />
-                      </FormControl>
+                       <Select onValueChange={field.onChange} value={field.value || ''}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select year" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {FINANCIAL_YEAR_OPTIONS.map(year => (
+                            <SelectItem key={year} value={year}>{year}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -440,3 +465,6 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
     </Card>
   );
 };
+
+
+    
