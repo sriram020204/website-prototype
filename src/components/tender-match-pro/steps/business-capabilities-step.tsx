@@ -40,7 +40,7 @@ const EXAMPLE_HSN_SAC_OPTIONS = [
   "8471", "998313", "4901", "7308", "9954", "8517", "6203", "9018"
 ].sort();
 
-const CERTIFICATION_OPTIONS = [
+const rawCertifications = [
   "MSME Registration", "UDYAM Registration", "GSTIN", "PAN", "TAN",
   "Trade License", "Factory License", "Shops & Establishment License", "FSSAI",
   "Import Export Code (IEC)", "RERA Registration", "DPIIT Startup India Recognition",
@@ -67,8 +67,14 @@ const CERTIFICATION_OPTIONS = [
   "LGBTQ+ Inclusive Labels", "AI Ethics Certification", "Cyber Insurance Compliance",
   "ESG Audit", "Data Sovereignty Compliance", "Blockchain Certification",
   "ISO 42001", "NIST Cybersecurity Framework"
-].filter((value, index, self) => self.indexOf(value) === index) // Deduplicate
- .sort(); // Sort alphabetically
+];
+
+const CERTIFICATION_OPTIONS = [
+  "No Certificates", 
+  ...rawCertifications
+    .filter((value, index, self) => self.indexOf(value) === index) // Deduplicate
+    .sort() // Sort alphabetically
+];
 
 
 export const BusinessCapabilitiesStep: FC<BusinessCapabilitiesStepProps> = ({ form }) => {
@@ -247,7 +253,3 @@ export const BusinessCapabilitiesStep: FC<BusinessCapabilitiesStepProps> = ({ fo
     </Card>
   );
 };
-
-    
-
-    
