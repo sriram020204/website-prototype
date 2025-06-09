@@ -125,11 +125,6 @@ export const geographicDigitalReachSchema = z.object({
 
 // Step 6: Declarations & Uploads
 export const declarationsUploadsSchema = z.object({
-  panUpload: z.string().min(1, {message: "PAN card file name is required."}).describe("Name of PAN card file"),
-  gstUpload: z.string().min(1, {message: "GST certificate file name is required."}).describe("Name of GST certificate file"),
-  isoCertUpload: z.string().min(1, {message: "ISO certificate file name is required."}).describe("Name of ISO certificate file (if applicable)"),
-  bisCertUpload: z.string().min(1, {message: "BIS certificate file name is required."}).describe("Name of BIS certificate file (if applicable)"),
-  otherCertificatesUpload: z.string().min(1, {message: "Other certificate file names are required."}).describe("File names for other certifications listed previously (comma-separated)"),
   infoConfirmed: z.boolean().refine(val => val === true, { message: "You must confirm the information is true." }),
 });
 

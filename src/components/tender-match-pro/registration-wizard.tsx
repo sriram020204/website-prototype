@@ -33,7 +33,7 @@ const STEPS = [
   { id: 'financialLegalInfo', title: 'Financial & Legal Info', component: FinancialLegalInfoStep, schema: financialLegalInfoSchema, fields: ['financialLegalInfo'] as const },
   { id: 'tenderExperience', title: 'Tender Experience', component: TenderExperienceStep, schema: tenderExperienceSchema, fields: ['tenderExperience'] as const },
   { id: 'geographicDigitalReach', title: 'Geographic & Digital', component: GeographicDigitalReachStep, schema: geographicDigitalReachSchema, fields: ['geographicDigitalReach'] as const },
-  { id: 'declarationsUploads', title: 'Declarations & Uploads', component: DeclarationsUploadsStep, schema: declarationsUploadsSchema, fields: ['declarationsUploads'] as const },
+  { id: 'declarationsUploads', title: 'Declarations', component: DeclarationsUploadsStep, schema: declarationsUploadsSchema, fields: ['declarationsUploads'] as const },
   { id: 'reviewSubmit', title: 'Review & Submit', component: ReviewSubmitStep, schema: registrationSchema, fields: [] as const },
 ];
 
@@ -100,11 +100,6 @@ export function RegistrationWizard() {
       preferredTenderLanguages: ''
     },
     declarationsUploads: {
-      panUpload: '',
-      gstUpload: '',
-      isoCertUpload: '',
-      bisCertUpload: '',
-      otherCertificatesUpload: '',
       infoConfirmed: false,
     },
   }), []);
@@ -173,15 +168,19 @@ export function RegistrationWizard() {
   const onSubmit = async (data: RegistrationFormData) => {
     setIsSubmitting(true);
     console.log("Form Submitted:", data);
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1500)); 
     setIsSubmitting(false);
     toast({
       title: "Profile Submitted!",
       description: "Your company profile has been successfully submitted.",
       className: "bg-green-500 text-white",
     });
+    // Clear form data from localStorage and reset form state
+    localStorage.removeItem(FORM_DATA_STORAGE_KEY);
     localStorage.removeItem(CURRENT_STEP_STORAGE_KEY);
-    setCurrentStep(0);
+    methods.reset(initialDefaultValues); // Reset to initial default values
+    setCurrentStep(0); // Go back to the first step
   };
 
   const CurrentStepComponent = STEPS[currentStep].component;

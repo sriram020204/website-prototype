@@ -254,7 +254,7 @@ export const ReviewSubmitStep: FC<ReviewSubmitStepProps> = ({ form }) => {
         {renderSectionData("Financial & Legal Information", formData.financialLegalInfo)}
         {renderSectionData("Tender Experience", formData.tenderExperience)}
         {renderSectionData("Geographic Reach & Digital Readiness", formData.geographicDigitalReach)}
-        {renderSectionData("Declarations & Uploads", formData.declarationsUploads)}
+        {renderSectionData("Declarations", formData.declarationsUploads)}
 
         <Separator className="my-8" />
 
