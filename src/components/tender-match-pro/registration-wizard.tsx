@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useMemo, useEffect } from 'react';
-import { useForm, FormProvider } from 'react-hook-form';
+import { useForm, FormProvider, Path } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   registrationSchema,
@@ -43,6 +43,19 @@ const STEPS = [
 const FORM_DATA_STORAGE_KEY = 'tenderMatchProRegistrationForm_v2';
 const CURRENT_STEP_STORAGE_KEY = 'tenderMatchProRegistrationStep_v2';
 
+const generateInitialTurnovers = () => {
+  const currentYear = new Date().getFullYear();
+  const turnovers = [];
+  for (let i = 0; i < 10; i++) { // Last 10 years
+    const startYear = currentYear - i;
+    const endYearShort = (startYear + 1).toString().slice(-2);
+    const yearString = `${startYear}-${endYearShort}`;
+    turnovers.push({ financialYear: yearString, amount: '' });
+  }
+  return turnovers;
+};
+
+
 export function RegistrationWizard() {
   const [currentStep, setCurrentStep] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -72,7 +85,7 @@ export function RegistrationWizard() {
       hasGstin: false,
       hasMsmeUdyam: false,
       hasNsic: false,
-      annualTurnovers: [],
+      annualTurnovers: generateInitialTurnovers(),
       netWorthAmount: '',
       netWorthCurrency: '',
       isBlacklistedOrLitigation: false,
@@ -110,7 +123,7 @@ export function RegistrationWizard() {
 
   const methods = useForm<RegistrationFormData>({
     resolver: zodResolver(registrationSchema),
-    mode: 'onChange',
+    mode: 'onChange', // Changed to 'onChange' for more responsive validation
     defaultValues: initialDefaultValues,
   });
 
@@ -163,6 +176,7 @@ export function RegistrationWizard() {
         });
       }
     } else {
+      // This is the final step, attempt to submit the whole form
       await methods.handleSubmit(onSubmit)();
     }
   };
@@ -177,18 +191,20 @@ export function RegistrationWizard() {
     setIsSubmitting(true);
     console.log("Form Submitted:", data);
     
+    // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1500)); 
     setIsSubmitting(false);
     toast({
       title: "Profile Submitted!",
       description: "Your company profile has been successfully submitted.",
-      className: "bg-green-500 text-white",
+      className: "bg-green-500 text-white", // Example of custom styling for success
     });
     
+    // Clear form data from localStorage and reset form
     localStorage.removeItem(FORM_DATA_STORAGE_KEY);
     localStorage.removeItem(CURRENT_STEP_STORAGE_KEY);
     methods.reset(initialDefaultValues); 
-    setCurrentStep(0); 
+    setCurrentStep(0); // Go back to the first step
   };
 
   const CurrentStepComponent = STEPS[currentStep].component;
@@ -206,7 +222,7 @@ export function RegistrationWizard() {
           totalSteps={STEPS.length}
           onNext={handleNext}
           onPrevious={handlePrevious}
-          isNextDisabled={methods.formState.isSubmitting || currentStep === STEPS.length -1 && !methods.formState.isValid && methods.formState.isSubmitted }
+          isNextDisabled={methods.formState.isSubmitting || (currentStep === STEPS.length -1 && !methods.formState.isValid && methods.formState.isSubmitted) }
           isSubmitting={isSubmitting}
         />
       </form>

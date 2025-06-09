@@ -40,8 +40,8 @@ export const businessCapabilitiesSchema = z.object({
 
 // Step 3: Financial & Legal Info
 const turnoverEntrySchema = z.object({
-  financialYear: z.string().min(4, { message: "Financial year is required." }),
-  amount: z.string().regex(/^\d+(\.\d{1,2})?$/, { message: "Invalid amount format." }).min(1, {message: "Amount is required."}),
+  financialYear: z.string(), // Pre-filled, read-only in UI
+  amount: z.string(), // Can be empty for years 2-10. Format validated in superRefine.
 });
 
 export const financialLegalInfoSchema = z.object({
@@ -49,7 +49,35 @@ export const financialLegalInfoSchema = z.object({
   hasGstin: z.boolean().default(false),
   hasMsmeUdyam: z.boolean().default(false),
   hasNsic: z.boolean().default(false),
-  annualTurnovers: z.array(turnoverEntrySchema).min(1, { message: "At least one annual turnover entry is required." }),
+  annualTurnovers: z.array(turnoverEntrySchema)
+    .length(10, { message: "Turnover data for 10 financial years is expected." })
+    .superRefine((turnovers, ctx) => {
+      // Validate the latest year (first item in the array)
+      if (!turnovers[0]?.amount || turnovers[0].amount.trim() === "") {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Turnover amount for the latest financial year is required.",
+          path: [0, 'amount'], // Path to the amount of the first entry
+        });
+      } else if (!/^\d+(\.\d{1,2})?$/.test(turnovers[0].amount)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Invalid amount format for the latest financial year. Must be a number.",
+          path: [0, 'amount'],
+        });
+      }
+
+      // Validate other years (items 1 to 9 in the array) if amount is provided
+      for (let i = 1; i < turnovers.length; i++) {
+        if (turnovers[i]?.amount && turnovers[i].amount.trim() !== "" && !/^\d+(\.\d{1,2})?$/.test(turnovers[i].amount)) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: `Invalid amount format for financial year ${turnovers[i].financialYear}. Must be a number.`,
+            path: [i, 'amount'],
+          });
+        }
+      }
+    }),
   netWorthAmount: z.string().regex(/^\d+(\.\d{1,2})?$/, { message: "Invalid amount format." }).min(1, { message: "Net worth amount is required." }),
   netWorthCurrency: z.string().min(1, { message: "Net worth currency is required." }),
   isBlacklistedOrLitigation: z.boolean().default(false),
@@ -146,4 +174,3 @@ export const registrationSchema = z.object({
 
 export type RegistrationFormData = z.infer<typeof registrationSchema>;
 export type TurnoverEntry = z.infer<typeof turnoverEntrySchema>;
-

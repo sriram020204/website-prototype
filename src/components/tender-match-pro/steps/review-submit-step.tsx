@@ -138,28 +138,28 @@ const renderSectionData = (title: string, sectionData: Record<string, any> | und
                 const netWorthCurrency = (sectionData as any).netWorthCurrency;
                 const currencySuffix = netWorthCurrency ? ` (in ${netWorthCurrency})` : '';
 
-                const sortedTurnovers = [...value].sort((a, b) => {
-                  if (a.financialYear && b.financialYear) {
-                    const yearA = parseInt(a.financialYear.substring(0,4), 10);
-                    const yearB = parseInt(b.financialYear.substring(0,4), 10);
-                    return yearA - yearB;
-                  }
-                  return 0;
-                });
+                // The annualTurnovers array is already sorted latest first from initial values
+                const sortedTurnovers = value as TurnoverEntry[];
 
                 return (
                   <div key={key} className="space-y-1">
-                    <span className="font-medium col-span-1 capitalize break-words">{displayKey}:</span>
+                    <span className="font-medium col-span-1 capitalize break-words">{displayKey} (Last 10 Years):</span>
                     {sortedTurnovers.length > 0 ? (
                       <ul className="list-disc pl-5 space-y-0.5">
-                        {sortedTurnovers.map((entry: TurnoverEntry, index: number) => (
-                          <li key={index} className="whitespace-pre-wrap break-words">
-                            {`FY: ${formatDisplayData(entry.financialYear, 'financialYear', sectionData)}, Amount: ${formatDisplayData(entry.amount, 'amount', sectionData)}${currencySuffix}`}
-                          </li>
-                        ))}
+                        {sortedTurnovers.map((entry: TurnoverEntry, index: number) => {
+                           const displayAmount = (entry.amount && entry.amount.trim() !== "")
+                           ? formatDisplayData(entry.amount, 'amount', entry)
+                           : (index === 0 ? "Required (Data Missing)" : "Not Provided"); 
+                          return (
+                            <li key={index} className="whitespace-pre-wrap break-words">
+                              {`FY: ${formatDisplayData(entry.financialYear, 'financialYear', entry)}, Amount: ${displayAmount}${currencySuffix}`}
+                            </li>
+                          );
+                        })}
                       </ul>
                     ) : (
-                      <span className="col-span-1 md:col-span-2 whitespace-pre-wrap break-words"> No turnover entries provided (Data Missing).</span>
+                      // This case should not happen as annualTurnovers is initialized with 10 entries
+                      <span className="col-span-1 md:col-span-2 whitespace-pre-wrap break-words"> Annual turnover data structure error.</span>
                     )}
                   </div>
                 );

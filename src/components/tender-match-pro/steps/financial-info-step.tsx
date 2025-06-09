@@ -2,8 +2,8 @@
 "use client";
 
 import type { FC } from 'react';
-import React, { useEffect, useState } from 'react';
-import { useFieldArray, type UseFormReturn } from 'react-hook-form';
+import React, { useEffect, useState, useMemo } from 'react';
+import type { UseFormReturn } from 'react-hook-form';
 import type { RegistrationFormData } from '@/lib/schemas/registration-schema';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from '@/components/ui/form';
@@ -11,9 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Button } from '@/components/ui/button';
-import { Landmark, Trash2, PlusCircle } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+import { Landmark } from 'lucide-react';
 
 interface FinancialLegalInfoStepProps {
   form: UseFormReturn<RegistrationFormData>;
@@ -21,48 +19,43 @@ interface FinancialLegalInfoStepProps {
 
 const CURRENCY_OPTIONS = ["USD", "INR", "EUR", "GBP", "JPY", "AUD", "CAD", "CHF", "CNY", "SGD", "AED"];
 
-const MAX_YEARS_HISTORY = 20; 
+const MAX_DISPLAY_YEARS = 10; // Display last 10 financial years
 
 export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }) => {
-  const { control, watch, setValue } = form;
-  const { toast } = useToast();
-  const [financialYearOptions, setFinancialYearOptions] = useState<{label: string, value: string}[]>([]);
+  const { control, watch, setValue, formState: { errors } } = form;
 
-  useEffect(() => {
-    const generateFinancialYearOptions = () => {
-      const currentYear = new Date().getFullYear();
-      const options = [];
-      // Create options like "2024-25", "2023-24", etc.
-      for (let i = 0; i <= MAX_YEARS_HISTORY; i++) {
-        const startYear = currentYear - i;
-        const endYearShort = (startYear + 1).toString().slice(-2);
-        const yearString = `${startYear}-${endYearShort}`;
-        options.push({ label: yearString, value: yearString });
-      }
-      return options;
-    };
-    setFinancialYearOptions(generateFinancialYearOptions());
+  const financialYearStrings = useMemo(() => {
+    const years = [];
+    const currentYear = new Date().getFullYear();
+    for (let i = 0; i < MAX_DISPLAY_YEARS; i++) {
+      const startYear = currentYear - i;
+      const endYearShort = (startYear + 1).toString().slice(-2);
+      years.push(`${startYear}-${endYearShort}`);
+    }
+    return years;
   }, []);
 
+  // Ensure form state has the financialYear property for each turnover entry
+  useEffect(() => {
+    const currentTurnovers = watch('financialLegalInfo.annualTurnovers');
+    if (currentTurnovers && currentTurnovers.length === MAX_DISPLAY_YEARS) {
+      let changed = false;
+      const updatedTurnovers = currentTurnovers.map((entry, index) => {
+        const expectedYear = financialYearStrings[index];
+        if (entry.financialYear !== expectedYear) {
+          changed = true;
+          return { ...entry, financialYear: expectedYear };
+        }
+        return entry;
+      });
+      if (changed) {
+        setValue('financialLegalInfo.annualTurnovers', updatedTurnovers, { shouldValidate: false, shouldDirty: false });
+      }
+    }
+  }, [financialYearStrings, setValue, watch]);
 
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: "financialLegalInfo.annualTurnovers",
-  });
 
   const watchIsBlacklisted = watch('financialLegalInfo.isBlacklistedOrLitigation');
-  
-  const handleAddTurnoverYear = () => {
-    if (fields.length >= MAX_YEARS_HISTORY + 1) {
-      toast({
-        title: "Limit Reached",
-        description: `You can add turnover data for up to ${MAX_YEARS_HISTORY + 1} financial years.`,
-        variant: "default",
-      });
-      return;
-    }
-    append({ financialYear: '', amount: '' });
-  };
   
   return (
     <Card className="w-full shadow-lg">
@@ -74,7 +67,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
         <CardDescription>
           Provide your company's financial and legal details. 
           Check the boxes to confirm possession of registrations.
-          Net Worth and at least one Annual Turnover entry are required.
+          Net Worth and the latest year's Annual Turnover are required.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -218,82 +211,51 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
         </div>
 
         <div className="space-y-4">
-          <h4 className="text-lg font-medium">Annual Turnover</h4>
+          <h4 className="text-lg font-medium">Annual Turnover (Last {MAX_DISPLAY_YEARS} Years)</h4>
           <FormDescription>
-             At least one entry is required. Please select the financial year from the dropdown and enter the amount.
+             Turnover for the latest financial year ({financialYearStrings[0]}) is required. Other years are optional.
              Amounts will use the Net Worth currency selected above.
-           </FormDescription>
-          {fields.map((item, index) => (
-            <div key={item.id} className="p-4 border rounded-md space-y-4 relative">
-              <FormLabel className="text-md font-semibold block mb-2">Turnover Entry #{index + 1}</FormLabel>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
-                <FormField
-                  control={control}
-                  name={`financialLegalInfo.annualTurnovers.${index}.financialYear`}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Financial Year</FormLabel>
-                       <Select onValueChange={field.onChange} value={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select financial year" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {financialYearOptions.map(option => (
-                            <SelectItem key={option.value} value={option.value}>
-                              {option.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+          </FormDescription>
+          <div className="space-y-3">
+            {financialYearStrings.map((yearLabel, index) => (
+              <div key={yearLabel} className="p-3 border rounded-md">
                 <FormField
                   control={control}
                   name={`financialLegalInfo.annualTurnovers.${index}.amount`}
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Amount</FormLabel>
+                      <FormLabel htmlFor={`turnover-amount-${index}`}>
+                        Financial Year: {yearLabel}
+                        {index === 0 && <span className="text-destructive">*</span>}
+                      </FormLabel>
                       <FormControl>
-                        <Input type="text" placeholder="e.g., 5000000" {...field} />
+                        <Input 
+                          id={`turnover-amount-${index}`}
+                          type="text" 
+                          placeholder="e.g., 5000000" 
+                          {...field} 
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
+                <FormField
+                  control={control}
+                  name={`financialLegalInfo.annualTurnovers.${index}.financialYear`}
+                  render={({ field }) => (
+                    <Input type="hidden" {...field} />
+                  )}
+                />
               </div>
-              {fields.length > 0 && ( 
-                <Button
-                  type="button"
-                  variant="destructive"
-                  size="sm"
-                  onClick={() => remove(index)}
-                  className="absolute top-2 right-2"
-                  aria-label={`Remove turnover entry ${index + 1}`}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              )}
-            </div>
-          ))}
-          <Button
-            type="button"
-            variant="default"
-            onClick={handleAddTurnoverYear}
-            className="mt-2"
-            disabled={fields.length >= MAX_YEARS_HISTORY + 1}
-          >
-            <PlusCircle className="mr-2 h-4 w-4" />
-            Add Turnover Year
-          </Button>
-           {fields.length >= MAX_YEARS_HISTORY + 1 && (
-            <p className="text-sm text-muted-foreground">
-              Maximum {MAX_YEARS_HISTORY + 1} financial years can be added.
-            </p>
-          )}
+            ))}
+          </div>
+           {/* Display general error for annualTurnovers array if any */}
+            {errors.financialLegalInfo?.annualTurnovers && !errors.financialLegalInfo?.annualTurnovers?.[0]?.amount && (
+                <p className="text-sm font-medium text-destructive">
+                    {errors.financialLegalInfo.annualTurnovers.message || errors.financialLegalInfo.annualTurnovers.root?.message}
+                </p>
+            )}
         </div>
         
         <FormField
@@ -341,4 +303,3 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
     </Card>
   );
 };
-
