@@ -74,7 +74,7 @@ export function RegistrationWizard() {
     companyDetails: {
       companyName: '',
       companyType: '',
-      yearOfEstablishment: undefined,
+      dateOfEstablishment: undefined, // Changed from yearOfEstablishment
       country: '',
       state: '',
       city: '',
@@ -94,7 +94,7 @@ export function RegistrationWizard() {
       hasGstin: false,
       hasMsmeUdyam: false,
       hasNsic: false,
-      annualTurnovers: generateInitialTurnovers(10), // Initialize with 10 years
+      annualTurnovers: generateInitialTurnovers(10),
       netWorthAmount: '',
       netWorthCurrency: '',
       isBlacklistedOrLitigation: false,

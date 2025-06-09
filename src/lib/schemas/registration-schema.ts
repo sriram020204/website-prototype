@@ -5,7 +5,12 @@ import { z } from 'zod';
 export const companyDetailsSchema = z.object({
   companyName: z.string().min(2, { message: "Company name must be at least 2 characters." }),
   companyType: z.string().min(1, { message: "Please select a company type." }),
-  yearOfEstablishment: z.coerce.number().min(1800, { message: "Invalid year." }).max(new Date().getFullYear(), { message: "Year cannot be in the future." }),
+  dateOfEstablishment: z.date({
+    required_error: "Date of establishment is required.",
+    invalid_type_error: "That's not a valid date!",
+  })
+  .min(new Date("1800-01-01"), { message: "Date cannot be before January 1, 1800." })
+  .max(new Date(), { message: "Date cannot be in the future." }),
   country: z.string().min(2, { message: "Please select a country." }),
   state: z.string().min(2, { message: "Please select a state." }),
   city: z.string().min(2, { message: "Please enter a city." }),
@@ -40,8 +45,8 @@ export const businessCapabilitiesSchema = z.object({
 
 // Step 3: Financial & Legal Info
 const turnoverEntrySchema = z.object({
-  financialYear: z.string(), 
-  amount: z.string().optional().or(z.literal('')), // Amount is optional here, superRefine handles first year
+  financialYear: z.string(),
+  amount: z.string().optional().or(z.literal('')),
 });
 
 export const financialLegalInfoSchema = z.object({
@@ -53,12 +58,11 @@ export const financialLegalInfoSchema = z.object({
     .min(10, { message: "Turnover data for at least 10 financial years is expected." })
     .max(15, { message: "Turnover data cannot exceed 15 financial years." })
     .superRefine((turnovers, ctx) => {
-      // Validate the latest year (first item in the array)
       if (!turnovers[0]?.amount || turnovers[0].amount.trim() === "") {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: "Turnover amount for the latest financial year is required.",
-          path: [0, 'amount'], 
+          path: [0, 'amount'],
         });
       } else if (turnovers[0]?.amount && !/^\d+(\.\d{1,2})?$/.test(turnovers[0].amount)) {
         ctx.addIssue({
@@ -68,7 +72,6 @@ export const financialLegalInfoSchema = z.object({
         });
       }
 
-      // Validate other years (items 1 up to turnovers.length -1) if amount is provided
       for (let i = 1; i < turnovers.length; i++) {
         if (turnovers[i]?.amount && turnovers[i].amount.trim() !== "" && !/^\d+(\.\d{1,2})?$/.test(turnovers[i].amount)) {
           ctx.addIssue({

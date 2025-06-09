@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Separator } from '@/components/ui/separator';
 import { Info } from 'lucide-react';
+import { format } from 'date-fns';
 
 interface ReviewSubmitStepProps {
   form: UseFormReturn<RegistrationFormData>;
@@ -16,6 +17,14 @@ interface ReviewSubmitStepProps {
 const formatDisplayData = (data: any, fieldName?: string, sectionData?: Record<string, any>): string => {
   if (typeof data === 'boolean') return data ? 'Agreed' : 'Not Agreed';
   if (typeof data === 'number') return data.toString();
+  if (data instanceof Date) {
+    try {
+      return format(data, "PPP"); // e.g., "Mar 15th, 2024"
+    } catch (e) {
+      return "Invalid Date";
+    }
+  }
+
 
   if (data === null || data === undefined || data === '') {
      if (fieldName === 'websiteUrl' && sectionData && (sectionData as RegistrationFormData['companyDetails']).websiteUrl === '') {
@@ -76,6 +85,7 @@ const renderSectionData = (title: string, sectionData: Record<string, any> | und
       <div className="p-4 bg-muted/50 rounded-md text-sm space-y-2">
         {Object.entries(sectionData).map(([key, value]) => {
           let displayKey = key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+          if (key === 'dateOfEstablishment') displayKey = 'Date Of Establishment'; // Correct display for new field
           let displayValue;
 
           if (title === "Terms & Conditions") {
