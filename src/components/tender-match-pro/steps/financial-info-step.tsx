@@ -2,6 +2,7 @@
 "use client";
 
 import type { FC } from 'react';
+import React, { useEffect, useState } from 'react'; // Added React and useState, useEffect
 import { useFieldArray, type UseFormReturn } from 'react-hook-form';
 import type { RegistrationFormData } from '@/lib/schemas/registration-schema';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -20,7 +21,6 @@ interface FinancialLegalInfoStepProps {
 
 const CURRENCY_OPTIONS = ["USD", "INR", "EUR", "GBP", "JPY", "AUD", "CAD", "CHF", "CNY", "SGD", "AED"];
 
-const START_YEAR_PREFIX = 2025; // The starting year of the financial year "2025-26"
 const MAX_YEARS_HISTORY = 20; // Go back 20 years from the start year, allowing 21 entries total.
 
 const FileInputControl: FC<{ field: any; placeholder: string }> = ({ field, placeholder }) => {
@@ -61,6 +61,16 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
   const { control, watch, setValue } = form;
   const { toast } = useToast();
 
+  const [dynamicStartYearPrefix, setDynamicStartYearPrefix] = useState<number | null>(null);
+  const [currentFinancialYearDisplay, setCurrentFinancialYearDisplay] = useState<string>("");
+
+  useEffect(() => {
+    const currentYear = new Date().getFullYear();
+    setDynamicStartYearPrefix(currentYear);
+    setCurrentFinancialYearDisplay(`${currentYear}-${(currentYear + 1).toString().slice(-2)}`);
+  }, []);
+
+
   const { fields, append, remove } = useFieldArray({
     control,
     name: "financialLegalInfo.annualTurnovers",
@@ -73,21 +83,29 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
   const watchHasNsic = watch('financialLegalInfo.hasNsic');
 
   const handleAddTurnoverYear = () => {
+    if (dynamicStartYearPrefix === null) {
+        toast({
+            title: "Initialization",
+            description: "Please wait for year initialization.",
+            variant: "default",
+        });
+        return;
+    }
+
     if (fields.length >= MAX_YEARS_HISTORY + 1) {
       toast({
         title: "Limit Reached",
         description: `You can add turnover data for up to ${MAX_YEARS_HISTORY + 1} financial years.`,
-        variant: "default", // Or "destructive" if preferred
+        variant: "default",
       });
       return;
     }
 
     let newFinancialYear;
     if (fields.length === 0) {
-      newFinancialYear = `${START_YEAR_PREFIX}-${(START_YEAR_PREFIX + 1).toString().slice(-2)}`;
+      newFinancialYear = `${dynamicStartYearPrefix}-${(dynamicStartYearPrefix + 1).toString().slice(-2)}`;
     } else {
       const lastEntryYear = fields[fields.length - 1].financialYear;
-      // Basic parsing, assuming "YYYY-YY" format from previous entries
       const lastYearPrefix = parseInt(lastEntryYear.split('-')[0], 10);
       const nextYearPrefixCandidate = lastYearPrefix - 1;
       newFinancialYear = `${nextYearPrefixCandidate}-${(nextYearPrefixCandidate + 1).toString().slice(-2)}`;
@@ -105,7 +123,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
         </CardTitle>
         <CardDescription>
           Provide your company's financial and legal details. 
-          Checking the box indicates possession; providing the specific number or file name is optional but recommended if possessed.
+          Checking the box indicates possession; providing the specific number or file name is optional.
           Net Worth and Annual Turnover details are required.
         </CardDescription>
       </CardHeader>
@@ -355,7 +373,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
           <h4 className="text-lg font-medium">Annual Turnover</h4>
           <FormDescription>
              At least one entry is required. Amounts will use the Net Worth currency selected above.
-             Financial years are added sequentially, starting from {`${START_YEAR_PREFIX}-${(START_YEAR_PREFIX + 1).toString().slice(-2)}`}.
+             Financial years are added sequentially, starting with the current financial year {currentFinancialYearDisplay ? `(${currentFinancialYearDisplay})` : ''} and decrementing.
            </FormDescription>
           {fields.map((item, index) => (
             <div key={item.id} className="p-4 border rounded-md space-y-4 relative">
@@ -366,7 +384,6 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
                   <p id={`financialYear-${item.id}`} className="pt-2 text-sm font-medium">
                     {item.financialYear}
                   </p>
-                   {/* The financialYear value is registered with RHF through useFieldArray and append */}
                 </FormItem>
                 <FormField
                   control={control}
@@ -401,7 +418,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
             variant="default"
             onClick={handleAddTurnoverYear}
             className="mt-2"
-            disabled={fields.length >= MAX_YEARS_HISTORY + 1}
+            disabled={fields.length >= MAX_YEARS_HISTORY + 1 || dynamicStartYearPrefix === null}
           >
             <PlusCircle className="mr-2 h-4 w-4" />
             Add Turnover Year
