@@ -216,8 +216,9 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
         <div className="space-y-4">
           <h4 className="text-lg font-medium">Annual Turnover (Last {MIN_DISPLAY_YEARS}-{MAX_TOTAL_YEARS} Years)</h4>
           <FormDescription>
-            Turnover for the latest financial year ({fields[0]?.financialYear || getFinancialYearString(new Date().getFullYear() - (new Date().getMonth() < 3 ? 1: 0))}) is required. 
-            While amounts for other past years are optional, <strong>providing data for at least the last {MIN_DISPLAY_YEARS} financial years is recommended for better results.</strong>
+            The turnover amount for the latest financial year ({fields[0]?.financialYear || getFinancialYearString(new Date().getFullYear() - (new Date().getMonth() < 3 ? 1: 0))}) is <strong className="text-foreground">required</strong>.
+            Amounts for all other preceding financial years displayed are <strong className="text-foreground">optional</strong>.
+            However, <strong>providing data for at least the last {MIN_DISPLAY_YEARS} financial years is recommended for better results.</strong>
             You can add up to {MAX_TOTAL_YEARS - MIN_DISPLAY_YEARS} more preceding years beyond the initial {MIN_DISPLAY_YEARS}.
             Amounts will use the Net Worth currency selected above.
           </FormDescription>
@@ -327,3 +328,5 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
     </Card>
   );
 };
+
+    
