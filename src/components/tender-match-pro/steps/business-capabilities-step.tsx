@@ -41,10 +41,34 @@ const EXAMPLE_HSN_SAC_OPTIONS = [
 ].sort();
 
 const CERTIFICATION_OPTIONS = [
-  "ISO 9001", "ISO 14001", "ISO 27001", "BIS Certified", "CE Marking",
-  "RoHS Compliant", "DGMS Approved", "Organic Certified", "GMP Certified",
-  "OHSAS 18001", "FSSAI License"
-].sort();
+  "MSME Registration", "UDYAM Registration", "GSTIN", "PAN", "TAN",
+  "Trade License", "Factory License", "Shops & Establishment License", "FSSAI",
+  "Import Export Code (IEC)", "RERA Registration", "DPIIT Startup India Recognition",
+  "Labour Law Compliances", "ESIC", "EPFO", "CSR Registration",
+  "Professional Tax Registration", "Fire Department NOC", "Pollution Control Certificate",
+  "ISO 9001", "ISO 14001", "ISO 45001", "ISO 50001", "ISO 31000",
+  "ISO 22301", "ISO 37001", "TQM", "TPM", "Kaizen Certification",
+  "Lean Manufacturing", "Six Sigma (Green/Black Belt)", "ISO 27001", "ISO 20000",
+  "CMMI", "SOC 1", "SOC 2", "SOC 3", "PCI-DSS", "HIPAA", "GDPR", "eSCM",
+  "CERT-In Empanelment", "BIS CRS", "STQC Approval", "NABL", "GLP",
+  "ASTM Standards", "ISO/IEC 17025", "FDA India", "FDA US", "CDSCO Licensing",
+  "ISI Mark", "BEE Star Rating", "IATF 16949", "AS9100", "CE Mark",
+  "UL Certification", "RoHS", "REACH", "PED", "API Certification", "ISO 3834",
+  "FSSAI License", "AGMARK", "HACCP", "ISO 22000", "GMP", "cGMP",
+  "Halal Certification", "Kosher Certification", "Jaivik Bharat", "NPOP",
+  "USDA Organic", "Rainforest Alliance", "Non-GMO", "Gluten-Free", "BRCGS",
+  "SQF", "LEED", "GRIHA", "GOTS", "FSC", "ISO 14064", "Ecomark",
+  "Fair Trade", "Carbon Neutral Certification", "Zero Liquid Discharge",
+  "Water Positive", "C-TPAT", "Authorized Economic Operator (AEO)", "GS1 Barcode",
+  "WTO-TBT Compliance", "RCMC", "UNGM Registration", "ITAR", "EAR",
+  "CEPA Compliance", "FTA Compliance", "UKCA Mark", "TGA", "MHRA", "ANVISA",
+  "SA 8000", "ISO 26000", "Ethical Trade Initiative (ETI)", "BSCI", "WRAP",
+  "SMETA", "Fair Wage Certification", "ISO 20400", "Women-Owned Certification",
+  "LGBTQ+ Inclusive Labels", "AI Ethics Certification", "Cyber Insurance Compliance",
+  "ESG Audit", "Data Sovereignty Compliance", "Blockchain Certification",
+  "ISO 42001", "NIST Cybersecurity Framework"
+].filter((value, index, self) => self.indexOf(value) === index) // Deduplicate
+ .sort(); // Sort alphabetically
 
 
 export const BusinessCapabilitiesStep: FC<BusinessCapabilitiesStepProps> = ({ form }) => {
@@ -223,5 +247,7 @@ export const BusinessCapabilitiesStep: FC<BusinessCapabilitiesStepProps> = ({ fo
     </Card>
   );
 };
+
+    
 
     
