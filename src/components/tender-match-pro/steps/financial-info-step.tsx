@@ -370,7 +370,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
           ))}
           <Button
             type="button"
-            variant="outline"
+            variant="default"
             onClick={() => append({ financialYear: '', amount: '', currency: '' })}
             className="mt-2"
           >
@@ -465,6 +465,3 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
     </Card>
   );
 };
-
-
-    
