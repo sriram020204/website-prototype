@@ -28,7 +28,6 @@ export const businessCapabilitiesSchema = z.object({
 const turnoverEntrySchema = z.object({
   financialYear: z.string().min(4, { message: "Financial year is required (e.g., 2022-23 or YYYY)." }),
   amount: z.string().regex(/^\d+(\.\d{1,2})?$/, { message: "Invalid amount format." }).min(1, {message: "Amount is required."}),
-  // currency field removed
 });
 
 export const financialLegalInfoSchema = z.object({
@@ -47,8 +46,8 @@ export const financialLegalInfoSchema = z.object({
   
   annualTurnovers: z.array(turnoverEntrySchema).optional(),
 
-  netWorthAmount: z.string().regex(/^\d+(\.\d{1,2})?$/, { message: "Invalid amount format." }).optional().or(z.literal('')),
-  netWorthCurrency: z.string().optional().or(z.literal('')), // This is the primary currency for this section
+  netWorthAmount: z.string().regex(/^\d+(\.\d{1,2})?$/, { message: "Invalid amount format." }).min(1, { message: "Net worth amount is required." }),
+  netWorthCurrency: z.string().min(1, { message: "Net worth currency is required." }), // This is the primary currency for this section
   isBlacklistedOrLitigation: z.boolean().default(false),
   blacklistedDetails: z.string().optional().or(z.literal('')),
 });
@@ -95,4 +94,5 @@ export const registrationSchema = z.object({
 }).strict();
 
 export type RegistrationFormData = z.infer<typeof registrationSchema>;
-export type TurnoverEntry = z.infer<typeof turnoverEntrySchema>; // Currency is removed here
+export type TurnoverEntry = z.infer<typeof turnoverEntrySchema>;
+

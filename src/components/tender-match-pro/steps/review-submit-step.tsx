@@ -23,7 +23,7 @@ const formatDisplayData = (data: any, fieldName?: string): string => {
         'msmeUdyamNumber', 'msmeUdyamCertificate', // FinancialLegal (MSME/Udyam)
         'nsicNumber', 'nsicCertificate', // FinancialLegal (NSIC)
         'blacklistedDetails', // FinancialLegal
-        'netWorthAmount', 'netWorthCurrency', // FinancialLegal (amounts & currency)
+        // 'netWorthAmount', 'netWorthCurrency', // Removed as they are now mandatory
         'pastClients', 'purchaseOrders', 'performanceReports', 'tenderTypesHandled', // TenderExperience
         'panUpload', 'gstUpload', 'isoCertUpload', 'bisCertUpload', 'otherCertificatesUpload' // Declarations
     ];
@@ -128,3 +128,4 @@ export const ReviewSubmitStep: FC<ReviewSubmitStepProps> = ({ form }) => {
     </Card>
   );
 };
+
