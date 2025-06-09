@@ -7,7 +7,7 @@ import type { RegistrationFormData } from '@/lib/schemas/registration-schema';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Textarea } from '@/components/ui/textarea';
-import { Switch } from '@/components/ui/switch';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Globe2, Wifi } from 'lucide-react'; // Using Globe2 and Wifi
 
 interface GeographicDigitalReachStepProps { // Renamed
@@ -60,16 +60,19 @@ export const GeographicDigitalReachStep: FC<GeographicDigitalReachStepProps> = (
           control={form.control}
           name="geographicDigitalReach.hasImportExportLicense"
           render={({ field }) => (
-            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4 shadow-sm">
-              <div className="space-y-0.5">
-                <FormLabel className="text-base">Have Import/Export License?</FormLabel>
-              </div>
+            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow-sm">
               <FormControl>
-                <Switch
+                <Checkbox
                   checked={field.value}
                   onCheckedChange={field.onChange}
+                  id={field.name}
                 />
               </FormControl>
+              <div className="space-y-1 leading-none">
+                <FormLabel htmlFor={field.name} className="text-base font-normal">
+                  Have Import/Export License?
+                </FormLabel>
+              </div>
             </FormItem>
           )}
         />
@@ -79,16 +82,19 @@ export const GeographicDigitalReachStep: FC<GeographicDigitalReachStepProps> = (
           control={form.control}
           name="geographicDigitalReach.registeredOnPortals"
           render={({ field }) => (
-            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4 shadow-sm">
-              <div className="space-y-0.5">
-                <FormLabel className="text-base">Registered on GeM / CPPP / State Portals?</FormLabel>
-              </div>
+            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow-sm">
               <FormControl>
-                <Switch
+                <Checkbox
                   checked={field.value}
                   onCheckedChange={field.onChange}
+                  id={field.name}
                 />
               </FormControl>
+              <div className="space-y-1 leading-none">
+                <FormLabel htmlFor={field.name} className="text-base font-normal">
+                  Registered on GeM / CPPP / State Portals?
+                </FormLabel>
+              </div>
             </FormItem>
           )}
         />
@@ -96,16 +102,19 @@ export const GeographicDigitalReachStep: FC<GeographicDigitalReachStepProps> = (
           control={form.control}
           name="geographicDigitalReach.hasDigitalSignature"
           render={({ field }) => (
-            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4 shadow-sm">
-              <div className="space-y-0.5">
-                <FormLabel className="text-base">Have Digital Signature Certificate (DSC)?</FormLabel>
-              </div>
+            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow-sm">
               <FormControl>
-                <Switch
+                <Checkbox
                   checked={field.value}
                   onCheckedChange={field.onChange}
+                  id={field.name}
                 />
               </FormControl>
+              <div className="space-y-1 leading-none">
+                <FormLabel htmlFor={field.name} className="text-base font-normal">
+                  Have Digital Signature Certificate (DSC)?
+                </FormLabel>
+              </div>
             </FormItem>
           )}
         />

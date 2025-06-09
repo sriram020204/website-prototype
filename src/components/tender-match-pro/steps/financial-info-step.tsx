@@ -9,7 +9,7 @@ import { FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescripti
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Switch } from '@/components/ui/switch';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
 import { X, Landmark } from 'lucide-react';
 
@@ -118,13 +118,9 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
           control={form.control}
           name="financialLegalInfo.hasPan"
           render={({ field }) => (
-            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4 shadow-sm">
-              <div className="space-y-0.5">
-                <FormLabel htmlFor={field.name} className="text-base">Do you have a PAN (Permanent Account Number)?</FormLabel>
-              </div>
+            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow-sm">
               <FormControl>
-                <Switch
-                  id={field.name}
+                <Checkbox
                   checked={field.value}
                   onCheckedChange={(checked) => {
                     field.onChange(checked);
@@ -132,8 +128,14 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
                       form.setValue('financialLegalInfo.pan', '', { shouldValidate: true });
                     }
                   }}
+                  id={field.name}
                 />
               </FormControl>
+              <div className="space-y-1 leading-none">
+                <FormLabel htmlFor={field.name} className="text-base font-normal">
+                  Do you have a PAN (Permanent Account Number)?
+                </FormLabel>
+              </div>
             </FormItem>
           )}
         />
@@ -142,7 +144,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
             control={form.control}
             name="financialLegalInfo.pan"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="pl-7">
                 <FormLabel>PAN Number (Optional)</FormLabel>
                 <FormControl>
                   <Input type="text" placeholder="Enter PAN" {...field} />
@@ -157,13 +159,9 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
           control={form.control}
           name="financialLegalInfo.hasGstin"
           render={({ field }) => (
-            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4 shadow-sm">
-              <div className="space-y-0.5">
-                <FormLabel htmlFor={field.name} className="text-base">Do you have a GSTIN?</FormLabel>
-              </div>
+             <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow-sm">
               <FormControl>
-                <Switch
-                  id={field.name}
+                <Checkbox
                   checked={field.value}
                   onCheckedChange={(checked) => {
                     field.onChange(checked);
@@ -171,8 +169,14 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
                       form.setValue('financialLegalInfo.gstin', '', { shouldValidate: true });
                     }
                   }}
+                  id={field.name}
                 />
               </FormControl>
+              <div className="space-y-1 leading-none">
+                <FormLabel htmlFor={field.name} className="text-base font-normal">
+                  Do you have a GSTIN?
+                </FormLabel>
+              </div>
             </FormItem>
           )}
         />
@@ -181,7 +185,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
             control={form.control}
             name="financialLegalInfo.gstin"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="pl-7">
                 <FormLabel>GSTIN Number (Optional)</FormLabel>
                 <FormControl>
                   <Input type="text" placeholder="Enter GSTIN" {...field} />
@@ -196,13 +200,9 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
           control={form.control}
           name="financialLegalInfo.hasMsmeUdyam"
           render={({ field }) => (
-            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4 shadow-sm">
-              <div className="space-y-0.5">
-                <FormLabel htmlFor={field.name} className="text-base">Do you have an MSME/Udyam Registration?</FormLabel>
-              </div>
+            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow-sm">
               <FormControl>
-                <Switch
-                  id={field.name}
+                <Checkbox
                   checked={field.value}
                   onCheckedChange={(checked) => {
                     field.onChange(checked);
@@ -211,8 +211,14 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
                       form.setValue('financialLegalInfo.msmeUdyamCertificate', '', { shouldValidate: true });
                     }
                   }}
+                  id={field.name}
                 />
               </FormControl>
+              <div className="space-y-1 leading-none">
+                <FormLabel htmlFor={field.name} className="text-base font-normal">
+                  Do you have an MSME/Udyam Registration?
+                </FormLabel>
+              </div>
             </FormItem>
           )}
         />
@@ -222,7 +228,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
               control={form.control}
               name="financialLegalInfo.msmeUdyamNumber"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="pl-7">
                   <FormLabel>MSME/Udyam Number (Optional)</FormLabel>
                   <FormControl>
                     <Input type="text" placeholder="Enter MSME/Udyam registration number" {...field} />
@@ -235,8 +241,8 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
               control={form.control}
               name="financialLegalInfo.msmeUdyamCertificate"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>MSME/Udyam Certificate (Optional)</FormLabel>
+                <FormItem className="pl-7">
+                  <FormLabel>MSME/Udyam Certificate File Name (Optional)</FormLabel>
                   <FormControl>
                      <FileInputControl field={field} placeholder="MSME/Udyam Certificate file" />
                   </FormControl>
@@ -252,13 +258,9 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
           control={form.control}
           name="financialLegalInfo.hasNsic"
           render={({ field }) => (
-            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4 shadow-sm">
-              <div className="space-y-0.5">
-                <FormLabel htmlFor={field.name} className="text-base">Do you have an NSIC Registration?</FormLabel>
-              </div>
+             <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow-sm">
               <FormControl>
-                <Switch
-                  id={field.name}
+                <Checkbox
                   checked={field.value}
                   onCheckedChange={(checked) => {
                     field.onChange(checked);
@@ -267,8 +269,14 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
                       form.setValue('financialLegalInfo.nsicCertificate', '', { shouldValidate: true });
                     }
                   }}
+                  id={field.name}
                 />
               </FormControl>
+              <div className="space-y-1 leading-none">
+                <FormLabel htmlFor={field.name} className="text-base font-normal">
+                   Do you have an NSIC Registration?
+                </FormLabel>
+              </div>
             </FormItem>
           )}
         />
@@ -278,7 +286,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
               control={form.control}
               name="financialLegalInfo.nsicNumber"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="pl-7">
                   <FormLabel>NSIC Number (Optional)</FormLabel>
                   <FormControl>
                     <Input type="text" placeholder="Enter NSIC registration number" {...field} />
@@ -291,8 +299,8 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
               control={form.control}
               name="financialLegalInfo.nsicCertificate"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>NSIC Certificate (Optional)</FormLabel>
+                <FormItem className="pl-7">
+                  <FormLabel>NSIC Certificate File Name (Optional)</FormLabel>
                   <FormControl>
                      <FileInputControl field={field} placeholder="NSIC Certificate file" />
                   </FormControl>
@@ -353,17 +361,19 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
           control={form.control}
           name="financialLegalInfo.isBlacklistedOrLitigation"
           render={({ field }) => (
-            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4 shadow-sm">
-              <div className="space-y-0.5">
-                <FormLabel htmlFor={field.name} className="text-base">Is the company blacklisted or in litigation?</FormLabel>
-              </div>
+            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow-sm">
               <FormControl>
-                <Switch
-                  id={field.name}
+                <Checkbox
                   checked={field.value}
                   onCheckedChange={field.onChange}
+                  id={field.name}
                 />
               </FormControl>
+              <div className="space-y-1 leading-none">
+                <FormLabel htmlFor={field.name} className="text-base font-normal">
+                  Is the company blacklisted or in litigation?
+                </FormLabel>
+              </div>
             </FormItem>
           )}
         />
@@ -372,7 +382,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
             control={form.control}
             name="financialLegalInfo.blacklistedDetails"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="pl-7">
                 <FormLabel>Details of Blacklisting/Litigation (Optional)</FormLabel>
                 <FormControl>
                   <Textarea rows={3} placeholder="Provide details if yes..." {...field} />
