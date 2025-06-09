@@ -60,8 +60,6 @@ export function RegistrationWizard() {
       businessRoles: '', 
       industrySectors: '', 
       productServiceKeywords: '', 
-      hsnCodes: '', 
-      sacCodes: '',
       technicalCapabilities: '', 
       certifications: '' 
     },

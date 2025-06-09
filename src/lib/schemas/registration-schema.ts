@@ -18,8 +18,6 @@ export const businessCapabilitiesSchema = z.object({
   businessRoles: z.string().min(3, { message: "Please enter at least one business role." }),
   industrySectors: z.string().min(3, { message: "Please enter at least one industry sector." }),
   productServiceKeywords: z.string().min(3, { message: "Please enter product/service keywords." }),
-  hsnCodes: z.string().min(1, {message: "HSN Codes are required."}).describe("HSN (Harmonized System of Nomenclature) codes for goods"),
-  sacCodes: z.string().min(1, {message: "SAC Codes are required."}).describe("SAC (Services Accounting Code) codes for services"),
   technicalCapabilities: z.string().min(10, { message: "Technical capabilities must be at least 10 characters." }),
   certifications: z.string().min(1, {message: "Certification names are required."}),
 });
@@ -93,7 +91,7 @@ export const financialLegalInfoSchema = z.object({
 
 // Step 4: Tender Experience
 export const tenderExperienceSchema = z.object({
-  suppliedToGovtPsus: z.boolean().default(false), // This boolean itself implies a mandatory answer
+  suppliedToGovtPsus: z.boolean().default(false), 
   pastClients: z.string().min(3, { message: "Past clients are required." }),
   purchaseOrders: z.string().min(1, {message: "Purchase order file names are required."}).describe("Names of PO files, comma-separated"),
   performanceReports: z.string().min(1, {message: "Performance report file names are required."}).describe("Names of report files, comma-separated"),
@@ -105,9 +103,9 @@ export const tenderExperienceSchema = z.object({
 export const geographicDigitalReachSchema = z.object({
   operationalStates: z.string().min(2, { message: "Enter operational states, comma-separated." }),
   countriesServed: z.string().min(2, { message: "Enter countries served, comma-separated." }),
-  hasImportExportLicense: z.boolean().default(false), // Mandatory answer
-  registeredOnPortals: z.boolean().default(false), // Mandatory answer
-  hasDigitalSignature: z.boolean().default(false), // Mandatory answer
+  hasImportExportLicense: z.boolean().default(false), 
+  registeredOnPortals: z.boolean().default(false), 
+  hasDigitalSignature: z.boolean().default(false), 
   preferredTenderLanguages: z.string().min(2, { message: "Enter preferred languages, comma-separated." }),
 });
 
