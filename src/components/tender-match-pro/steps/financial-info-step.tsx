@@ -22,6 +22,7 @@ const CURRENCY_OPTIONS = ["USD", "INR", "EUR", "GBP", "JPY", "AUD", "CAD", "CHF"
 const generateFinancialYearOptions = () => {
   const currentYear = new Date().getFullYear();
   const options = [];
+  // Generate years from (currentYear - 20) up to currentYear
   for (let i = 0; i <= 20; i++) { 
     const yearStart = currentYear - 20 + i;
     const yearEnd = yearStart + 1;
@@ -129,9 +130,9 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
               <FormItem className="pl-10"> 
                 <FormLabel>PAN Number</FormLabel>
                 <FormControl>
-                  <Input type="text" placeholder="Enter PAN (if available)" {...field} />
+                  <Input type="text" placeholder="Enter PAN" {...field} />
                 </FormControl>
-                <FormDescription>Enter your PAN if you have one. Format will be checked if provided.</FormDescription>
+                <FormDescription>Optional. Format will be checked if provided.</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -171,9 +172,9 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
               <FormItem className="pl-10"> 
                 <FormLabel>GSTIN Number</FormLabel>
                 <FormControl>
-                  <Input type="text" placeholder="Enter GSTIN (if available)" {...field} />
+                  <Input type="text" placeholder="Enter GSTIN" {...field} />
                 </FormControl>
-                <FormDescription>Enter your GSTIN if you have one. Format will be checked if provided.</FormDescription>
+                <FormDescription>Optional. Format will be checked if provided.</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -215,9 +216,9 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
                 <FormItem> 
                   <FormLabel>MSME/Udyam Number</FormLabel>
                   <FormControl>
-                    <Input type="text" placeholder="Enter MSME/Udyam registration number (if available)" {...field} />
+                    <Input type="text" placeholder="Enter MSME/Udyam registration number" {...field} />
                   </FormControl>
-                  <FormDescription>Enter if available.</FormDescription>
+                  <FormDescription>Optional.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -229,9 +230,9 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
                 <FormItem> 
                   <FormLabel>MSME/Udyam Certificate File Name</FormLabel>
                   <FormControl>
-                     <FileInputControl field={field} placeholder="MSME/Udyam Certificate file (if available)" />
+                     <FileInputControl field={field} placeholder="MSME/Udyam Certificate file" />
                   </FormControl>
-                  <FormDescription>Select your MSME/Udyam certificate file if available.</FormDescription>
+                  <FormDescription>Optional.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -274,9 +275,9 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
                 <FormItem> 
                   <FormLabel>NSIC Number</FormLabel>
                   <FormControl>
-                    <Input type="text" placeholder="Enter NSIC registration number (if available)" {...field} />
+                    <Input type="text" placeholder="Enter NSIC registration number" {...field} />
                   </FormControl>
-                  <FormDescription>Enter if available.</FormDescription>
+                  <FormDescription>Optional.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -288,9 +289,9 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
                 <FormItem> 
                   <FormLabel>NSIC Certificate File Name</FormLabel>
                   <FormControl>
-                     <FileInputControl field={field} placeholder="NSIC Certificate file (if available)" />
+                     <FileInputControl field={field} placeholder="NSIC Certificate file" />
                   </FormControl>
-                  <FormDescription>Select your NSIC certificate file if available.</FormDescription>
+                  <FormDescription>Optional.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -440,9 +441,9 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
               <FormItem className="pl-10"> 
                 <FormLabel>Details of Blacklisting/Litigation</FormLabel>
                 <FormControl>
-                  <Textarea rows={3} placeholder="Provide details if yes (optional)" {...field} />
+                  <Textarea rows={3} placeholder="Provide details" {...field} />
                 </FormControl>
-                <FormDescription>Enter details if applicable.</FormDescription>
+                <FormDescription>Optional.</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
