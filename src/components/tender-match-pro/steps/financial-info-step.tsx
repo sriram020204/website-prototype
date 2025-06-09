@@ -22,13 +22,11 @@ const CURRENCY_OPTIONS = ["USD", "INR", "EUR", "GBP", "JPY", "AUD", "CAD", "CHF"
 const generateFinancialYearOptions = () => {
   const currentYear = new Date().getFullYear();
   const options = [];
-  // Previous 20 financial years (generate in ascending order)
   for (let i = 19; i >= 0; i--) { 
     const yearStart = currentYear - 1 - i;
     const yearEnd = currentYear - i;
     options.push(`${yearStart}-${yearEnd.toString().slice(-2)}`);
   }
-  // Current financial year (add at the end for ascending)
   options.push(`${currentYear}-${(currentYear + 1).toString().slice(-2)}`);
   return options;
 };
@@ -91,7 +89,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
           <Landmark className="mr-2 h-6 w-6 text-primary" />
           Financial & Legal Information
         </CardTitle>
-        <CardDescription>Provide your company's financial and legal details. For documents, you'll select the file but only its name is recorded here.</CardDescription>
+        <CardDescription>Provide your company's financial and legal details. All fields in this section are required unless conditional on a previous selection.</CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         <FormField
@@ -129,6 +127,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
                 <FormControl>
                   <Input type="text" placeholder="Enter PAN" {...field} />
                 </FormControl>
+                <FormDescription>Required if 'Has PAN' is checked.</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -170,6 +169,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
                 <FormControl>
                   <Input type="text" placeholder="Enter GSTIN" {...field} />
                 </FormControl>
+                <FormDescription>Required if 'Has GSTIN' is checked.</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -213,6 +213,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
                   <FormControl>
                     <Input type="text" placeholder="Enter MSME/Udyam registration number" {...field} />
                   </FormControl>
+                  <FormDescription>Required if 'Has MSME/Udyam' is checked.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -226,7 +227,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
                   <FormControl>
                      <FileInputControl field={field} placeholder="MSME/Udyam Certificate file" />
                   </FormControl>
-                  <FormDescription>Select your MSME/Udyam certificate file. Use this field to add the file name.</FormDescription>
+                  <FormDescription>Required if 'Has MSME/Udyam' is checked. Select your MSME/Udyam certificate file.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -271,6 +272,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
                   <FormControl>
                     <Input type="text" placeholder="Enter NSIC registration number" {...field} />
                   </FormControl>
+                  <FormDescription>Required if 'Has NSIC' is checked.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -284,7 +286,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
                   <FormControl>
                      <FileInputControl field={field} placeholder="NSIC Certificate file" />
                   </FormControl>
-                  <FormDescription>Select your NSIC certificate file. Use this field to add the file name.</FormDescription>
+                  <FormDescription>Required if 'Has NSIC' is checked. Select your NSIC certificate file.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -332,7 +334,10 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
         </div>
 
         <div className="space-y-4">
-          <h4 className="text-lg font-medium">Annual Turnover (Optional)</h4>
+          <h4 className="text-lg font-medium">Annual Turnover</h4>
+          <FormDescription>
+             At least one entry is required. Amounts will use the Net Worth currency selected above.
+           </FormDescription>
           {fields.map((item, index) => (
             <div key={item.id} className="p-4 border rounded-md space-y-4 relative">
               <FormLabel className="text-md font-semibold block mb-2">Turnover Entry #{index + 1}</FormLabel>
@@ -373,16 +378,18 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
                   )}
                 />
               </div>
-              <Button
-                type="button"
-                variant="destructive"
-                size="sm"
-                onClick={() => remove(index)}
-                className="absolute top-2 right-2"
-                aria-label={`Remove turnover entry ${index + 1}`}
-              >
-                <Trash2 className="h-4 w-4" />
-              </Button>
+              {fields.length > 1 && ( // Only show remove button if more than one entry
+                <Button
+                  type="button"
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => remove(index)}
+                  className="absolute top-2 right-2"
+                  aria-label={`Remove turnover entry ${index + 1}`}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              )}
             </div>
           ))}
           <Button
@@ -394,9 +401,6 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
             <PlusCircle className="mr-2 h-4 w-4" />
             Add Turnover Year
           </Button>
-           <FormDescription>
-             You can add multiple financial year turnover entries. Amounts will use the Net Worth currency selected above.
-           </FormDescription>
         </div>
         
         <FormField
@@ -434,6 +438,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
                 <FormControl>
                   <Textarea rows={3} placeholder="Provide details if yes..." {...field} />
                 </FormControl>
+                <FormDescription>Required if 'Is blacklisted' is checked.</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -443,7 +448,5 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
     </Card>
   );
 };
-
-    
 
     

@@ -25,7 +25,7 @@ export const TenderExperienceStep: FC<TenderExperienceStepProps> = ({ form }) =>
           <Award className="mr-2 h-6 w-6 text-primary" />
           Tender Experience
         </CardTitle>
-        <CardDescription>Detail your company's experience with government and private tenders.</CardDescription>
+        <CardDescription>Detail your company's experience with government and private tenders. All fields are required.</CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         <FormField
@@ -67,11 +67,11 @@ export const TenderExperienceStep: FC<TenderExperienceStepProps> = ({ form }) =>
           name="tenderExperience.purchaseOrders"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Purchase Orders</FormLabel>
+              <FormLabel>Purchase Orders (File Names)</FormLabel>
               <FormControl>
                 <Input type="text" placeholder="e.g., PO_Ref_123.pdf, ClientX_Order.docx" {...field} />
               </FormControl>
-              <FormDescription>Enter file names separated by commas. Upload actual files in the final step.</FormDescription>
+              <FormDescription>Enter file names separated by commas. Upload actual files in the 'Declarations & Uploads' step.</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -81,11 +81,11 @@ export const TenderExperienceStep: FC<TenderExperienceStepProps> = ({ form }) =>
           name="tenderExperience.performanceReports"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Performance Reports</FormLabel>
+              <FormLabel>Performance Reports (File Names)</FormLabel>
               <FormControl>
                 <Input type="text" placeholder="e.g., Q1_Report.pdf, ProjectAlpha_Completion.doc" {...field} />
               </FormControl>
-              <FormDescription>Enter file names separated by commas. Upload actual files in the final step.</FormDescription>
+              <FormDescription>Enter file names separated by commas. Upload actual files in the 'Declarations & Uploads' step.</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -130,6 +130,5 @@ export const TenderExperienceStep: FC<TenderExperienceStepProps> = ({ form }) =>
     </Card>
   );
 };
-
 
     

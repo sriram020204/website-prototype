@@ -2,7 +2,7 @@
 "use client";
 
 import type { FC } from 'react';
-import React from 'react'; // Import React for useState and useEffect
+import React from 'react';
 import type { UseFormReturn } from 'react-hook-form';
 import type { RegistrationFormData } from '@/lib/schemas/registration-schema';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -76,7 +76,7 @@ const rawCertifications = [
 ];
 
 const CERTIFICATION_OPTIONS = [
-  "No Certificates", 
+  // "No Certificates", // Removed as certifications are now mandatory
   ...rawCertifications
     .filter((value, index, self) => self.indexOf(value) === index) 
     .sort() 
@@ -137,7 +137,7 @@ export const BusinessCapabilitiesStep: FC<BusinessCapabilitiesStepProps> = ({ fo
           <Zap className="mr-2 h-6 w-6 text-primary" />
           Business Capabilities
         </CardTitle>
-        <CardDescription>Describe your company's roles, sectors, products, and capacities.</CardDescription>
+        <CardDescription>Describe your company's roles, sectors, products, and capacities. All fields are required.</CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         <FormField
@@ -270,7 +270,6 @@ export const BusinessCapabilitiesStep: FC<BusinessCapabilitiesStepProps> = ({ fo
                   {...field} 
                  />
               </FormControl>
-              <FormDescription>This field uses a standard text input.</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -302,6 +301,5 @@ export const BusinessCapabilitiesStep: FC<BusinessCapabilitiesStepProps> = ({ fo
     </Card>
   );
 };
-
 
     

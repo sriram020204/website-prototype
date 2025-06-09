@@ -16,28 +16,22 @@ interface ReviewSubmitStepProps {
 const formatDisplayData = (data: any, fieldName?: string): string => {
   if (typeof data === 'boolean') return data ? 'Yes' : 'No';
   if (typeof data === 'number') return data.toString();
+  
+  // Since all fields are now mandatory, empty string or undefined should ideally not occur
+  // if form validation is working correctly before reaching review.
+  // However, we can keep a fallback for robustness.
   if (data === null || data === undefined || data === '') {
-    const optionalTextLikeFields = [
-        'hsnCodes', 'sacCodes', 'certifications', // BusinessCapabilities
-        'pan', 'gstin', // FinancialLegal - numbers conditional on booleans
-        'msmeUdyamNumber', 'msmeUdyamCertificate', // FinancialLegal (MSME/Udyam)
-        'nsicNumber', 'nsicCertificate', // FinancialLegal (NSIC)
-        'blacklistedDetails', // FinancialLegal
-        // 'netWorthAmount', 'netWorthCurrency', // Removed as they are now mandatory
-        'pastClients', 'purchaseOrders', 'performanceReports', 'tenderTypesHandled', // TenderExperience
-        'panUpload', 'gstUpload', 'isoCertUpload', 'bisCertUpload', 'otherCertificatesUpload' // Declarations
-    ];
-    
-    if (fieldName && ['financialYear', 'amount'].includes(fieldName) && data === '') return 'Not Provided';
-    if (fieldName && optionalTextLikeFields.includes(fieldName)) return 'Not Provided';
-    return 'N/A'; 
+     // The optionalTextLikeFields array is removed as all fields are now mandatory.
+     // If a field reaches here as empty, it might indicate a bypass of validation or an issue.
+     // For display purposes, we'll show "Not Provided" or "N/A".
+    return 'N/A (Data Missing)'; 
   }
-  // General array handling (excluding annualTurnovers, which is handled specially in renderSectionData)
+
   if (Array.isArray(data) && fieldName !== 'annualTurnovers') {
-    if (data.length === 0) return 'None';
+    if (data.length === 0) return 'None (Data Missing)'; // Should not happen for mandatory array
     return data.join(', ');
   }
-  if (typeof data === 'object' && data !== null && !Array.isArray(data)) { // Check if not an array
+  if (typeof data === 'object' && data !== null && !Array.isArray(data)) { 
     return Object.entries(data)
       .map(([key, value]) => `${key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}: ${formatDisplayData(value, key)}`)
       .join('; '); 
@@ -76,8 +70,8 @@ const renderSectionData = (title: string, sectionData: Record<string, any> | und
                       </li>
                     ))}
                   </ul>
-                ) : (
-                  <span className="col-span-1 md:col-span-2 whitespace-pre-wrap break-words"> No turnover entries provided.</span>
+                ) : ( // This case should not be reached if annualTurnovers is mandatory and requires min 1 entry
+                  <span className="col-span-1 md:col-span-2 whitespace-pre-wrap break-words"> No turnover entries provided (Data Missing).</span>
                 )}
               </div>
             );
@@ -105,7 +99,7 @@ export const ReviewSubmitStep: FC<ReviewSubmitStepProps> = ({ form }) => {
     <Card className="w-full shadow-lg">
       <CardHeader>
         <CardTitle className="text-2xl">Review Your Profile</CardTitle>
-        <CardDescription>Please review all your information carefully before submission.</CardDescription>
+        <CardDescription>Please review all your information carefully before submission. All fields were required.</CardDescription>
       </CardHeader>
       <CardContent>
         {renderSectionData("Company Details", formData.companyDetails)}
@@ -129,3 +123,4 @@ export const ReviewSubmitStep: FC<ReviewSubmitStepProps> = ({ form }) => {
   );
 };
 
+    

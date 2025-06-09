@@ -58,7 +58,7 @@ export const DeclarationsUploadsStep: FC<DeclarationsUploadsStepProps> = ({ form
           <ClipboardList className="mr-2 h-6 w-6 text-primary" />
           Declarations & Uploads
         </CardTitle>
-        <CardDescription>Select document files and confirm declarations. File contents are not uploaded in this step, only their names are recorded.</CardDescription>
+        <CardDescription>Select document files and confirm declarations. File contents are not uploaded; only names are recorded. All fields are required.</CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         <h3 className="text-lg font-semibold text-primary">Document Uploads (Select Files)</h3>
@@ -69,7 +69,7 @@ export const DeclarationsUploadsStep: FC<DeclarationsUploadsStepProps> = ({ form
           name="declarationsUploads.panUpload"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>PAN Card</FormLabel>
+              <FormLabel>PAN Card File Name</FormLabel>
               <FormControl>
                 <FileInputControl field={field} placeholder="PAN Card file" />
               </FormControl>
@@ -82,7 +82,7 @@ export const DeclarationsUploadsStep: FC<DeclarationsUploadsStepProps> = ({ form
           name="declarationsUploads.gstUpload"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>GST Certificate</FormLabel>
+              <FormLabel>GST Certificate File Name</FormLabel>
               <FormControl>
                 <FileInputControl field={field} placeholder="GST Certificate file" />
               </FormControl>
@@ -95,11 +95,11 @@ export const DeclarationsUploadsStep: FC<DeclarationsUploadsStepProps> = ({ form
           name="declarationsUploads.isoCertUpload"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>ISO Certificate(s)</FormLabel>
+              <FormLabel>ISO Certificate(s) File Name</FormLabel>
               <FormControl>
                 <FileInputControl field={field} placeholder="ISO Certificate file(s)" />
               </FormControl>
-              <FormDescription>If multiple, please select one or provide a combined document. Alternatively, list additional file names if a multi-file upload component were available.</FormDescription>
+              <FormDescription>If multiple, select one or provide a combined document, or list names.</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -109,11 +109,11 @@ export const DeclarationsUploadsStep: FC<DeclarationsUploadsStepProps> = ({ form
           name="declarationsUploads.bisCertUpload"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>BIS Certificate(s)</FormLabel>
+              <FormLabel>BIS Certificate(s) File Name</FormLabel>
               <FormControl>
                 <FileInputControl field={field} placeholder="BIS Certificate file(s)" />
               </FormControl>
-               <FormDescription>If multiple, select one or a combined document.</FormDescription>
+               <FormDescription>If multiple, select one or a combined document, or list names.</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -123,11 +123,11 @@ export const DeclarationsUploadsStep: FC<DeclarationsUploadsStepProps> = ({ form
           name="declarationsUploads.otherCertificatesUpload"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Other Listed Certificates</FormLabel>
+              <FormLabel>Other Listed Certificates File Name(s)</FormLabel>
               <FormControl>
                 <FileInputControl field={field} placeholder="Other certificate file(s)" />
               </FormControl>
-              <FormDescription>For certifications listed in Business Capabilities not covered above (e.g., FSSAI). If multiple, select one or a combined document.</FormDescription>
+              <FormDescription>For certifications listed in Business Capabilities not covered above. If multiple, select one, a combined document, or list names.</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -159,6 +159,5 @@ export const DeclarationsUploadsStep: FC<DeclarationsUploadsStepProps> = ({ form
     </Card>
   );
 };
-
 
     
