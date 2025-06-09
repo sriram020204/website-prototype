@@ -27,7 +27,7 @@ const FileInputControl: FC<{ field: any; placeholder: string }> = ({ field, plac
         type="file"
         id={name}
         onChange={(e) => onChange(e.target.files?.[0]?.name || '')}
-        className="block w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20"
+        className="w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20"
         ref={ref}
         aria-label={placeholder}
       />
@@ -144,7 +144,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
             control={form.control}
             name="financialLegalInfo.pan"
             render={({ field }) => (
-              <FormItem className="pl-10"> {/* Adjusted padding for alignment with checkbox */}
+              <FormItem className="pl-10"> 
                 <FormLabel>PAN Number (Optional)</FormLabel>
                 <FormControl>
                   <Input type="text" placeholder="Enter PAN" {...field} />
@@ -185,7 +185,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
             control={form.control}
             name="financialLegalInfo.gstin"
             render={({ field }) => (
-              <FormItem className="pl-10"> {/* Adjusted padding */}
+              <FormItem className="pl-10"> 
                 <FormLabel>GSTIN Number (Optional)</FormLabel>
                 <FormControl>
                   <Input type="text" placeholder="Enter GSTIN" {...field} />
@@ -228,7 +228,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
               control={form.control}
               name="financialLegalInfo.msmeUdyamNumber"
               render={({ field }) => (
-                <FormItem className="pl-10"> {/* Adjusted padding */}
+                <FormItem className="pl-10"> 
                   <FormLabel>MSME/Udyam Number (Optional)</FormLabel>
                   <FormControl>
                     <Input type="text" placeholder="Enter MSME/Udyam registration number" {...field} />
@@ -241,7 +241,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
               control={form.control}
               name="financialLegalInfo.msmeUdyamCertificate"
               render={({ field }) => (
-                <FormItem className="pl-10"> {/* Adjusted padding */}
+                <FormItem className="pl-10"> 
                   <FormLabel>MSME/Udyam Certificate File Name (Optional)</FormLabel>
                   <FormControl>
                      <FileInputControl field={field} placeholder="MSME/Udyam Certificate file" />
@@ -286,7 +286,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
               control={form.control}
               name="financialLegalInfo.nsicNumber"
               render={({ field }) => (
-                <FormItem className="pl-10"> {/* Adjusted padding */}
+                <FormItem className="pl-10"> 
                   <FormLabel>NSIC Number (Optional)</FormLabel>
                   <FormControl>
                     <Input type="text" placeholder="Enter NSIC registration number" {...field} />
@@ -299,7 +299,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
               control={form.control}
               name="financialLegalInfo.nsicCertificate"
               render={({ field }) => (
-                <FormItem className="pl-10"> {/* Adjusted padding */}
+                <FormItem className="pl-10"> 
                   <FormLabel>NSIC Certificate File Name (Optional)</FormLabel>
                   <FormControl>
                      <FileInputControl field={field} placeholder="NSIC Certificate file" />
@@ -365,7 +365,12 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
               <FormControl>
                 <Checkbox
                   checked={field.value}
-                  onCheckedChange={field.onChange}
+                  onCheckedChange={(checked) => {
+                    field.onChange(checked)
+                    if (!checked) {
+                        form.setValue('financialLegalInfo.blacklistedDetails', '', { shouldValidate: true });
+                    }
+                  }}
                   id={field.name}
                 />
               </FormControl>
@@ -382,7 +387,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
             control={form.control}
             name="financialLegalInfo.blacklistedDetails"
             render={({ field }) => (
-              <FormItem className="pl-10"> {/* Adjusted padding */}
+              <FormItem className="pl-10"> 
                 <FormLabel>Details of Blacklisting/Litigation (Optional)</FormLabel>
                 <FormControl>
                   <Textarea rows={3} placeholder="Provide details if yes..." {...field} />
@@ -396,5 +401,3 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
     </Card>
   );
 };
-
-    
