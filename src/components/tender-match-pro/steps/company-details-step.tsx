@@ -54,7 +54,7 @@ const INDIAN_STATES_UTS = [
   { label: "Uttar Pradesh", value: "UP" },
   { label: "Uttarakhand", value: "UK" },
   { label: "West Bengal", value: "WB" }
-];
+].sort((a, b) => a.label.localeCompare(b.label));
 
 
 const US_STATES = [
@@ -108,7 +108,7 @@ const US_STATES = [
   { label: "West Virginia", value: "WV" },
   { label: "Wisconsin", value: "WI" },
   { label: "Wyoming", value: "WY" }
-];
+].sort((a, b) => a.label.localeCompare(b.label));
 
 const COMPANY_TYPES = ["Proprietorship", "Pvt Ltd", "LLP", "Public Ltd", "Partnership", "Other"];
 
@@ -121,6 +121,8 @@ export const CompanyDetailsStep: FC<CompanyDetailsStepProps> = ({ form }) => {
     return [];
   };
   
+  const stateLabel = selectedCountry === "IN" ? "State / Union Territory" : "State";
+
   return (
     <Card className="w-full shadow-lg">
       <CardHeader>
@@ -138,7 +140,7 @@ export const CompanyDetailsStep: FC<CompanyDetailsStepProps> = ({ form }) => {
             <FormItem>
               <FormLabel>Company Name</FormLabel>
               <FormControl>
-                <Input type="text" placeholder="e.g., Acme Innovations Inc." {...field} />
+                <Input type="text" placeholder="e.g., Acme Innovations Inc." {...field} value={field.value || ''} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -212,11 +214,11 @@ export const CompanyDetailsStep: FC<CompanyDetailsStepProps> = ({ form }) => {
           name="companyDetails.state"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>State</FormLabel>
+              <FormLabel>{stateLabel}</FormLabel>
               <Select onValueChange={field.onChange} value={field.value || ''} disabled={!selectedCountry}>
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select state" />
+                    <SelectValue placeholder={`Select ${stateLabel.toLowerCase()}`} />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
@@ -237,7 +239,7 @@ export const CompanyDetailsStep: FC<CompanyDetailsStepProps> = ({ form }) => {
             <FormItem>
               <FormLabel>City</FormLabel>
               <FormControl>
-                <Input type="text" placeholder="e.g., Mumbai" {...field} />
+                <Input type="text" placeholder="e.g., Mumbai" {...field} value={field.value || ''} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -250,7 +252,7 @@ export const CompanyDetailsStep: FC<CompanyDetailsStepProps> = ({ form }) => {
             <FormItem>
               <FormLabel>Full Company Address</FormLabel>
               <FormControl>
-                <Textarea rows={3} placeholder="e.g., 123 Tech Park, Silicon Valley, CA 94000" {...field} />
+                <Textarea rows={3} placeholder="e.g., 123 Tech Park, Silicon Valley, CA 94000" {...field} value={field.value || ''} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -263,7 +265,7 @@ export const CompanyDetailsStep: FC<CompanyDetailsStepProps> = ({ form }) => {
             <FormItem>
               <FormLabel>Company Website URL (Optional)</FormLabel>
               <FormControl>
-                <Input type="url" placeholder="e.g., https://www.acmeinnovations.com" {...field} />
+                <Input type="url" placeholder="e.g., https://www.acmeinnovations.com" {...field} value={field.value || ''} />
               </FormControl>
               <FormMessage />
             </FormItem>
