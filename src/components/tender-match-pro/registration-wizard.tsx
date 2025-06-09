@@ -50,10 +50,15 @@ const getFinancialYearString = (startYear: number): string => {
 };
 
 const generateInitialTurnovers = (count: number = 10) => {
-  const currentYear = new Date().getFullYear();
+  let latestFinancialYearStart = new Date().getFullYear();
+  // Financial year in India (and many places) is typically April-March.
+  // If current month is Jan, Feb, Mar (0,1,2), then the current FY started in the previous calendar year.
+  if (new Date().getMonth() < 3) { 
+    latestFinancialYearStart -= 1;
+  }
   const turnovers = [];
   for (let i = 0; i < count; i++) { 
-    const startYear = currentYear - i;
+    const startYear = latestFinancialYearStart - i;
     turnovers.push({ financialYear: getFinancialYearString(startYear), amount: '' });
   }
   return turnovers;

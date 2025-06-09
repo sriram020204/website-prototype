@@ -2,7 +2,7 @@
 "use client";
 
 import type { FC } from 'react';
-import React, { useEffect } from 'react';
+import React from 'react';
 import type { UseFormReturn } from 'react-hook-form';
 import { useFieldArray } from 'react-hook-form';
 import type { RegistrationFormData } from '@/lib/schemas/registration-schema';
@@ -31,35 +31,12 @@ const getFinancialYearString = (startYear: number): string => {
 };
 
 export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }) => {
-  const { control, watch, setValue, formState: { errors } } = form;
+  const { control, watch, setValue, getValues, formState: { errors } } = form;
 
   const { fields, append, remove } = useFieldArray({
     control,
     name: "financialLegalInfo.annualTurnovers",
   });
-
-  // Ensure form state has the financialYear property for the initial entries
-  useEffect(() => {
-    const currentTurnovers = watch('financialLegalInfo.annualTurnovers');
-    if (currentTurnovers && currentTurnovers.length >= MIN_DISPLAY_YEARS) {
-      let changed = false;
-      const currentYear = new Date().getFullYear();
-      const updatedTurnovers = currentTurnovers.map((entry, index) => {
-        if (index < MIN_DISPLAY_YEARS) { // Only manage financialYear for the initial set
-          const startYear = currentYear - index; // Corrected to use currentYear - index
-          const expectedYear = getFinancialYearString(startYear);
-          if (entry.financialYear !== expectedYear) {
-            changed = true;
-            return { ...entry, financialYear: expectedYear };
-          }
-        }
-        return entry;
-      });
-      if (changed) {
-        setValue('financialLegalInfo.annualTurnovers', updatedTurnovers, { shouldValidate: false, shouldDirty: false });
-      }
-    }
-  }, [setValue, watch, fields.length]); // Re-run if fields.length changes to set new year for added fields
 
   const handleAddYear = () => {
     if (fields.length < MAX_TOTAL_YEARS) {
@@ -69,9 +46,12 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
         const lastStartYear = parseInt(lastEntry.financialYear.substring(0, 4), 10);
         newStartYear = lastStartYear - 1;
       } else {
-        // Fallback if somehow the last entry is malformed or no entries exist yet
-        const currentYear = new Date().getFullYear();
-        newStartYear = currentYear - fields.length; // Calculate based on current length
+        // Fallback: calculate based on current number of fields and date
+        let latestFinancialYearStart = new Date().getFullYear();
+        if (new Date().getMonth() < 3) { // Before April
+          latestFinancialYearStart -= 1;
+        }
+        newStartYear = latestFinancialYearStart - fields.length;
       }
       append({ financialYear: getFinancialYearString(newStartYear), amount: '' });
     }
@@ -236,7 +216,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
         <div className="space-y-4">
           <h4 className="text-lg font-medium">Annual Turnover (Last {MIN_DISPLAY_YEARS}-{MAX_TOTAL_YEARS} Years)</h4>
           <FormDescription>
-            Turnover for the latest financial year ({fields[0]?.financialYear || getFinancialYearString(new Date().getFullYear())}) is required. 
+            Turnover for the latest financial year ({fields[0]?.financialYear || getFinancialYearString(new Date().getFullYear() - (new Date().getMonth() < 3 ? 1: 0))}) is required. 
             While amounts for other past years are optional, <strong>providing data for at least the last {MIN_DISPLAY_YEARS} financial years is recommended for better results.</strong>
             You can add up to {MAX_TOTAL_YEARS - MIN_DISPLAY_YEARS} more preceding years beyond the initial {MIN_DISPLAY_YEARS}.
             Amounts will use the Net Worth currency selected above.
@@ -246,10 +226,10 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
               <div key={item.id} className="p-3 border rounded-md space-y-2">
                 <div className="flex justify-between items-center">
                     <FormLabel htmlFor={`financialLegalInfo.annualTurnovers.${index}.amount`}>
-                        Financial Year: {item.financialYear || getFinancialYearString(new Date().getFullYear() - index)}
+                        Financial Year: {item.financialYear}
                         {index === 0 && <span className="text-destructive">*</span>}
                     </FormLabel>
-                    {index >= MIN_DISPLAY_YEARS && ( // Only show remove for additionally added years
+                    {index >= MIN_DISPLAY_YEARS && ( 
                         <Button
                         type="button"
                         variant="ghost"
@@ -283,8 +263,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
                   control={control}
                   name={`financialLegalInfo.annualTurnovers.${index}.financialYear`}
                   render={({ field }) => (
-                    // This input is hidden but ensures the financialYear is part of the form data
-                    <Input type="hidden" {...field} value={item.financialYear || getFinancialYearString(new Date().getFullYear() - index)} />
+                    <Input type="hidden" {...field} value={item.financialYear} />
                   )}
                 />
               </div>
@@ -348,5 +327,3 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
     </Card>
   );
 };
-
-    
