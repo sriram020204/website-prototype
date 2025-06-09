@@ -21,7 +21,7 @@ interface FinancialLegalInfoStepProps {
 
 const CURRENCY_OPTIONS = ["USD", "INR", "EUR", "GBP", "JPY", "AUD", "CAD", "CHF", "CNY", "SGD", "AED"];
 
-const MAX_YEARS_HISTORY = 20; // Go back 20 years from the start year, allowing 21 entries total.
+const MAX_YEARS_HISTORY = 20; 
 const FIXED_START_YEAR_PREFIX = 2025;
 
 const FileInputControl: FC<{ field: any; placeholder: string }> = ({ field, placeholder }) => {
@@ -85,12 +85,15 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
 
     let newFinancialYear;
     if (fields.length === 0) {
-      newFinancialYear = `${FIXED_START_YEAR_PREFIX}-${(FIXED_START_YEAR_PREFIX + 1).toString()}`;
+      const fromYear = FIXED_START_YEAR_PREFIX;
+      const toYearPart = (fromYear - 1).toString().slice(-2);
+      newFinancialYear = `${fromYear}-${toYearPart}`; // e.g., 2025-24
     } else {
-      const lastEntryYear = fields[fields.length - 1].financialYear;
-      const lastYearPrefix = parseInt(lastEntryYear.split('-')[0], 10);
-      const nextYearPrefixCandidate = lastYearPrefix - 1;
-      newFinancialYear = `${nextYearPrefixCandidate}-${(nextYearPrefixCandidate + 1).toString()}`;
+      const lastEntryYearString = fields[fields.length - 1].financialYear;
+      const lastFromYear = parseInt(lastEntryYearString.split('-')[0], 10);
+      const newFromYear = lastFromYear - 1;
+      const newToYearPart = (newFromYear - 1).toString().slice(-2);
+      newFinancialYear = `${newFromYear}-${newToYearPart}`; // e.g., if last was 2025-24, new is 2024-23
     }
     
     append({ financialYear: newFinancialYear, amount: '' });
@@ -355,7 +358,7 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
           <h4 className="text-lg font-medium">Annual Turnover</h4>
           <FormDescription>
              At least one entry is required. Amounts will use the Net Worth currency selected above.
-             The first financial year added will be {`${FIXED_START_YEAR_PREFIX}-${(FIXED_START_YEAR_PREFIX + 1).toString()}`}, and subsequent years will decrement.
+             The first financial year added will be {`${FIXED_START_YEAR_PREFIX}-${(FIXED_START_YEAR_PREFIX - 1).toString().slice(-2)}`}, and subsequent years will decrement (e.g., {`${FIXED_START_YEAR_PREFIX-1}-${(FIXED_START_YEAR_PREFIX - 2).toString().slice(-2)}`}).
            </FormDescription>
           {fields.map((item, index) => (
             <div key={item.id} className="p-4 border rounded-md space-y-4 relative">
@@ -457,4 +460,6 @@ export const FinancialLegalInfoStep: FC<FinancialLegalInfoStepProps> = ({ form }
     </Card>
   );
 };
+    
+
     
